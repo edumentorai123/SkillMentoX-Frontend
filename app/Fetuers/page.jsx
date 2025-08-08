@@ -5,7 +5,6 @@ const features = () => {
     <div>
         <h1>hlo welom</h1>
     </div>
-    
 )
 }
 
