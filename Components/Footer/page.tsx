@@ -1,6 +1,3 @@
-// app/components/Footer.tsx
-// Place this in the "components" folder.
-
 import React from 'react';
 import Link from 'next/link';
 import { Bot } from 'lucide-react';

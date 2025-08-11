@@ -1,6 +1,3 @@
-// app/components/CTA.tsx
-// Place this in the "components" folder.
-
 import React from 'react';
 import Link from 'next/link';
 
