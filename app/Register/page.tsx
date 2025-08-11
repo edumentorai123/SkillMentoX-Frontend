@@ -8,7 +8,6 @@ export default function SignUpPage() {
   const [rememberMe, setRememberMe] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
-  
   const handleModeChange = (newIsSignUp) => {
     if (newIsSignUp !== isSignUp) {
       setIsTransitioning(true);
