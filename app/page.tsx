@@ -1,91 +1,38 @@
 "use client";
 
-import CTA from "@/Components/CTA/page";
-import Footer from "@/Components/Footer/page";
-import Hero from "@/Components/Hero/page";
-import HowItWorks from "@/Components/HowitWorks/page";
-import Mentors from "@/Components/Mentors/page";
-import Nav from "@/Components/Navbar/page";
-import Features from "@/Components/powefulfeatures/page";
-import SuccessStories from "@/Components/SuccessStories/page";
+import CTA from "@/Components/landing/cta";
+import Footer from "@/Components/landing/footer";
+import Hero from "@/Components/landing/Hero";
+import Mentors from "@/Components/landing/Mentors";
+import Nav from "@/Components/landing/Nav";
+import Features from "@/Components/landing/powerfulfeatures";
+import SuccessStories from "@/Components/landing/SuccessStories";
 import { useEffect, useRef } from "react";
+import "aos/dist/aos.css";
+import AOS from 'aos'
+import HowItWorks from "@/Components/landing/Howitworks";
 
 const Home = () => {
   const heroRef = useRef<HTMLDivElement>(null);
   const rightSideRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const observerOptions = {
-      threshold: 0.1,
-      rootMargin: "0px 0px -50px 0px",
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("animate-fade-in-up");
-        }
-      });
-    }, observerOptions);
-
-    document.querySelectorAll(".scroll-animation").forEach((el) => {
-      observer.observe(el);
+    AOS.init({
+      duration: 1000,
+      once: true, 
     });
-
-    return () => observer.disconnect();
   }, []);
 
   return (
     <div className="min-h-screen bg-white">
       <Nav />
-      <Hero heroRef={heroRef} rightSideRef={rightSideRef} />
-      <HowItWorks />
-      <Features />
-      <Mentors />
-      <SuccessStories />
-      <CTA />
+      <Hero _heroRef={heroRef} _rightSideRef={rightSideRef} data-aos="fade-up" />
+      <HowItWorks data-aos="fade-up" />
+      <Features data-aos="fade-up" />
+      <Mentors data-aos="fade-up" />
+      <SuccessStories data-aos="fade-up" />
+      <CTA data-aos="fade-up" />
       <Footer />
-
-      <style jsx global>{`
-        .animate-fade-in-up {
-          opacity: 1 !important;
-          transform: translateY(0) !important;
-        }
-
-2025-08-11 15:04:58,563 [INFO] xAI.grok.services.chat: assistant: .scroll-animation {
-          opacity: 0;
-          transform: translateY(20px);
-          transition: all 1s ease-out;
-        }
-
-        @keyframes float {
-          0%,
-          100% {
-            transform: translateY(0px);
-          }
-          50% {
-            transform: translateY(-10px);
-          }
-        }
-
-        .animate-float {
-          animation: float 3s ease-in-out infinite;
-        }
-
-        .animate-pulse-slow {
-          animation: pulse 3s infinite;
-        }
-
-        @keyframes pulse {
-          0%,
-          100% {
-            transform: scale(1);
-          }
-          50% {
-            transform: scale(1.05);
-          }
-        }
-      `}</style>
     </div>
   );
 };

@@ -1,4 +1,11 @@
 import "./globals.css";
+import {Outfit} from 'next/font/google'
+
+
+const outfit = Outfit({
+  variable:"--font-outfit",
+  subsets: ["latin"]
+})
 
 export const metadata = {
   title: "SkillMentorX",
@@ -11,7 +18,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className="bg-white text-gray-800">{children}</body>
+      <body className={`bg-white text-gray-800 ${outfit.className}`} >{children}</body>
     </html>
   );
 }
