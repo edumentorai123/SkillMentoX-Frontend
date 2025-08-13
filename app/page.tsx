@@ -1,5 +1,4 @@
 "use client";
-
 import CTA from "@/Components/landing/cta";
 import Footer from "@/Components/landing/footer";
 import Hero from "@/Components/landing/Hero";
