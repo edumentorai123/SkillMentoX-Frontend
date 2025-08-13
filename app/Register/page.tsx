@@ -1,15 +1,16 @@
 "use client";
 import React, { useState } from "react";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, GraduationCap, BookOpen, X } from "lucide-react";
 
 export default function SignUpPage() {
   const [isSignUp, setIsSignUp] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
-
+  const [showRoleModal, setShowRoleModal] = useState(false);
+  const [selectedRole, setSelectedRole] = useState<String>("");
   
-  const handleModeChange = (newIsSignUp) => {
+
+  const handleModeChange = (newIsSignUp: boolean) => {
     if (newIsSignUp !== isSignUp) {
       setIsTransitioning(true);
       setTimeout(() => {
@@ -21,39 +22,96 @@ export default function SignUpPage() {
     }
   };
 
+  const handleSignupClick = () => {
+    setShowRoleModal(true);
+  };
+
+  const handleRoleSelect = (role: String) => {
+    setSelectedRole(role);
+    setShowRoleModal(false);
+    setTimeout(() => {
+      handleModeChange(false);
+    }, 500);
+  };
+
+  const closeModal = () => {
+    setShowRoleModal(false);
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4 font-sans">
-      <div className="w-full max-w-6xl mx-auto relative">
-        <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10">
-          <div className="bg-white rounded-full p-1 shadow-lg border border-gray-100">
-            <div className="flex">
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4 font-sans relative">
+      {showRoleModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl p-8 max-w-md w-full mx-4 shadow-2xl transform transition-all duration-300 scale-100">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-2xl font-bold text-gray-900">
+                Choose Your Role
+              </h3>
               <button
-                onClick={() => handleModeChange(true)}
-                className={`px-6 py-3 rounded-full font-semibold text-sm transition-all duration-700 transform ${
-                  isSignUp
-                    ? "bg-teal-500 text-white shadow-md scale-105"
-                    : "text-gray-600 hover:text-gray-800 hover:bg-gray-50"
-                }`}
+                onClick={closeModal}
+                className="text-gray-400 hover:text-gray-600 transition-colors duration-200 hover:scale-110 transform"
               >
-                Sign up
+                <X size={24} />
               </button>
+            </div>
+
+            <p className="text-gray-600 mb-8 text-center">
+              Select how you'd like to join our learning community
+            </p>
+
+            <div className="space-y-4">
+              {/* Student Option */}
               <button
-                onClick={() => handleModeChange(false)}
-                className={`px-6 py-3 rounded-full font-semibold text-sm transition-all duration-700 transform ${
-                  !isSignUp
-                    ? "bg-teal-500 text-white shadow-md scale-105"
-                    : "text-gray-600 hover:text-gray-800 hover:bg-gray-50"
-                }`}
+                onClick={() => handleRoleSelect("student")}
+                className="w-full p-6 border-2 border-gray-200 rounded-xl hover:border-teal-500 hover:bg-teal-50 transition-all duration-300 transform hover:scale-105 group"
               >
-                Login
+                <div className="flex items-center space-x-4">
+                  <div className="bg-teal-100 p-3 rounded-full group-hover:bg-teal-200 transition-colors duration-300">
+                    <GraduationCap className="text-teal-600" size={24} />
+                  </div>
+                  <div className="text-left">
+                    <h4 className="font-semibold text-gray-900 text-lg">
+                      Student
+                    </h4>
+                    <p className="text-gray-600 text-sm">
+                      Learn from expert mentors and advance your skills
+                    </p>
+                  </div>
+                </div>
+              </button>
+
+              {/* Mentor Option */}
+              <button
+                onClick={() => handleRoleSelect("mentor")}
+                className="w-full p-6 border-2 border-gray-200 rounded-xl hover:border-purple-500 hover:bg-purple-50 transition-all duration-300 transform hover:scale-105 group"
+              >
+                <div className="flex items-center space-x-4">
+                  <div className="bg-purple-100 p-3 rounded-full group-hover:bg-purple-200 transition-colors duration-300">
+                    <BookOpen className="text-purple-600" size={24} />
+                  </div>
+                  <div className="text-left">
+                    <h4 className="font-semibold text-gray-900 text-lg">
+                      Mentor
+                    </h4>
+                    <p className="text-gray-600 text-sm">
+                      Share your expertise and guide the next generation
+                    </p>
+                  </div>
+                </div>
               </button>
             </div>
           </div>
         </div>
+      )}
 
-      
+      <div className="w-full max-w-6xl mx-auto relative">
+        <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10">
+          <div className="bg-white rounded-full p-1 shadow-lg border border-gray-100">
+            <div className="flex"></div>
+          </div>
+        </div>
+
         <div className="grid lg:grid-cols-2 gap-0 bg-white rounded-3xl shadow-2xl overflow-hidden min-h-[600px] relative">
-         
           <div
             className={`bg-white p-8 lg:p-12 flex flex-col justify-center transition-all duration-1000 ease-in-out transform ${
               isSignUp ? "lg:order-1" : "lg:order-2"
@@ -62,7 +120,6 @@ export default function SignUpPage() {
             }`}
           >
             <div className="max-w-md mx-auto w-full">
-           
               <div className="mb-8 mt-8 lg:mt-0">
                 <h1
                   className={`text-3xl font-bold text-gray-900 mb-2 transition-all duration-800 transform ${
@@ -82,11 +139,12 @@ export default function SignUpPage() {
                 >
                   {isSignUp
                     ? "Join us and start your learning journey"
+                    : selectedRole
+                    ? `Sign in as ${selectedRole} to continue your journey`
                     : "Sign in to continue your learning journey"}
                 </p>
               </div>
 
-              
               <div className="space-y-6">
                 {isSignUp && (
                   <div
@@ -168,6 +226,11 @@ export default function SignUpPage() {
 
                 <button
                   type="button"
+                  onClick={
+                    isSignUp
+                      ? handleSignupClick
+                      : () => alert("Login successful!")
+                  }
                   className={`w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold py-3 px-6 rounded-full transition-all duration-500 transform hover:scale-105 shadow-lg hover:shadow-xl active:scale-95 delay-500 ${
                     isTransitioning
                       ? "translate-y-6 opacity-0 scale-95"
@@ -267,7 +330,6 @@ export default function SignUpPage() {
             </div>
           </div>
 
-       
           <div
             className={`bg-gradient-to-br ${
               isSignUp
@@ -279,7 +341,6 @@ export default function SignUpPage() {
               isTransitioning ? "opacity-50 scale-95" : "opacity-100 scale-100"
             }`}
           >
-        
             <div
               className={`absolute top-8 ${
                 isSignUp ? "right-8" : "left-8"
@@ -331,6 +392,10 @@ export default function SignUpPage() {
               >
                 {isSignUp
                   ? "Connect with expert mentors and unlock your learning potential. Join thousands of students transforming their future."
+                  : selectedRole
+                  ? selectedRole === "student"
+                    ? "Continue your learning journey with personalized courses and expert mentors. Ready to unlock your potential!"
+                    : "Welcome back! Continue sharing your expertise and inspiring the next generation of learners."
                   : "Continue your learning journey with personalized courses and expert guidance. We're excited to have you back!"}
               </p>
 
@@ -361,6 +426,18 @@ export default function SignUpPage() {
                           : index === 1
                           ? "Personalized learning paths"
                           : "24/7 community support"
+                        : selectedRole === "student"
+                        ? index === 0
+                          ? "Continue your courses"
+                          : index === 1
+                          ? "Connect with mentors"
+                          : "Track your progress"
+                        : selectedRole === "mentor"
+                        ? index === 0
+                          ? "Manage your students"
+                          : index === 1
+                          ? "Create new courses"
+                          : "View your impact"
                         : index === 0
                         ? "Continue where you left off"
                         : index === 1
