@@ -1,11 +1,11 @@
 import "./globals.css";
-import {Outfit} from 'next/font/google'
-
+import { Outfit } from "next/font/google";
+import Providers from "@/redux/Providers";
 
 const outfit = Outfit({
-  variable:"--font-outfit",
-  subsets: ["latin"]
-})
+  variable: "--font-outfit",
+  subsets: ["latin"],
+});
 
 export const metadata = {
   title: "SkillMentorX",
@@ -15,10 +15,14 @@ export const metadata = {
   },
 };
 
-export default function RootLayout({ children }) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className={`bg-white text-gray-800 ${outfit.className}`} >{children}</body>
+      <body className={`bg-white text-gray-800 ${outfit.className}`}>
+        <Providers>
+          {children}
+        </Providers>
+      </body>
     </html>
   );
 }
