@@ -1,8 +1,8 @@
-import SignUpPage from "./SignupPage";
-
 const page = () => {
     return (
-        <SignUpPage/>
+        <div>
+            Enter didn&apos;t
+        </div>
     );
 }
 

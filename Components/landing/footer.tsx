@@ -5,7 +5,7 @@ import { Bot } from 'lucide-react';
 const Footer = () => {
   return (
     <footer className="bg-gray-900 text-gray-300 py-16">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div data-aos="fade-up" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid md:grid-cols-4 gap-8">
           <div>
             <Link href="/" className="flex items-center space-x-2 mb-6 cursor-pointer">

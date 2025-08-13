@@ -36,15 +36,15 @@ const features = [
 
 const Features = () => {
   return (
-    <section id="features" className="py-20 bg-white" style={{ background: 'linear-gradient(135deg, #f0f4f8 0%, #ffffff 100%)' }}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16 scroll-animation opacity-0 translate-y-8 transition-all duration-1000">
+    <section id="features"  className="py-20 bg-white" style={{ background: 'linear-gradient(135deg, #f0f4f8 0%, #ffffff 100%)' }}>
+      <div data-aos="fade-up" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-16  transition-all duration-1000">
           <h2 className="text-4xl font-bold text-gray-900 mb-4">Powerful Features</h2>
           <p className="text-xl text-gray-600">Everything you need for effective learning in one integrated platform</p>
         </div>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div data-aos="fade-up" className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {features.map((feature, index) => (
-            <div key={index} className="scroll-animation opacity-0 translate-y-8 bg-white border-2 border-transparent rounded-2xl p-8 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 group cursor-pointer" style={{ transitionDelay: `${index * 100}ms` }}>
+            <div key={index} className=" bg-white border-2 border-transparent rounded-2xl p-8 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 group cursor-pointer" style={{ transitionDelay: `${index * 100}ms` }}>
               <div className="w-14 h-14 bg-gradient-to-br from-[#1887A1] to-[#0D4C5B] rounded-xl flex items-center justify-center mb-6 group-hover:animate-bounce-slow transition-transform duration-300">
                 <feature.icon className="w-7 h-7 text-white" />
               </div>
