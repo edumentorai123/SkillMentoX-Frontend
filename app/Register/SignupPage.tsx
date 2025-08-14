@@ -79,7 +79,7 @@ export default function SignUpPage() {
       setIsVerified(true);
       setTimeout(() => {
         setShowOTPModal(false);
-       
+      
         setTimeout(() => {
           setShowRoleModal(true);
         }, 300);
@@ -439,7 +439,7 @@ export default function SignUpPage() {
             </div>
 
             <p className="text-gray-600 mb-8 text-center">
-              Select how you'd like to join our learning community
+              Select how you&apos;d like to join our learning community
             </p>
 
             <div className="space-y-4">
@@ -502,7 +502,7 @@ export default function SignUpPage() {
                 <Mail className="w-8 h-8 text-blue-600" />
               </div>
               <p className="text-gray-600">
-                We've sent a 6-digit verification code to
+                We&apos;ve sent a 6-digit verification code to
               </p>
               <p className="font-semibold text-gray-900">{email}</p>
             </div>
@@ -543,7 +543,7 @@ export default function SignUpPage() {
 
             <div className="text-center mt-4">
               <p className="text-gray-600 text-sm">
-                Didn't receive the code?{" "}
+                Didn&apos;t receive the code?{" "}
                 <button
                   onClick={handleResendOTP}
                   className="text-blue-600 hover:text-blue-700 font-semibold"
