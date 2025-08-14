@@ -292,7 +292,7 @@ const Hero: React.FC<HeroProps> = ({ _heroRef, _rightSideRef }) => {
               <div className="absolute bottom-4 left-0 right-0 flex items-center justify-center space-x-3 z-20">
                 <button
                   onClick={handlePrev}
-                  className="p-2 bg-white/95 backdrop-blur-sm rounded-full hover:bg-white transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-110 border border-gray-200"
+                  className="p-2 bg-white/95 backdrop-blur-sm rounded-full hover:bg-white transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-110 border border-gray-200 cursor-pointer"
                 >
                   <ChevronLeft className="w-4 h-4 text-gray-700" />
                 </button>
@@ -303,8 +303,8 @@ const Hero: React.FC<HeroProps> = ({ _heroRef, _rightSideRef }) => {
                       key={index}
                       onClick={() => handleDotClick(index)}
                       className={`h-2 rounded-full transition-all duration-300 transform hover:scale-125 ${activeIndex === index
-                          ? "bg-blue-600 w-6 scale-125"
-                          : "bg-gray-300 w-2 hover:bg-gray-400"
+                          ? "bg-blue-600 w-6"
+                          : "bg-gray-300 w-2 hover:bg-gray-400 cursor-pointer"
                         }`}
                     />
                   ))}
@@ -312,9 +312,9 @@ const Hero: React.FC<HeroProps> = ({ _heroRef, _rightSideRef }) => {
 
                 <button
                   onClick={handleNext}
-                  className="p-2 bg-white/95 backdrop-blur-sm rounded-full hover:bg-white transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-110 border border-gray-200"
+                  className="p-2 bg-white/95 backdrop-blur-sm rounded-full cursor-pointer hover:bg-white transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-110 border border-gray-200"
                 >
-                  <ChevronRight className="w-4 h-4 text-gray-700" />
+                  <ChevronRight className="w-4 h-4 text-gray-700 " />
                 </button>
               </div>
 
