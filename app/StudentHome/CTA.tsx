@@ -4,7 +4,7 @@ import Link from "next/link";
 const CTA = () => {
   return (
     <section className="py-20 bg-gradient-to-r from-[#1887A1] to-[#0D4C5B]">
-      <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
+      <div data-aos="fade-up" className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
         {/* Removed opacity-0 so it's always visible */}
         <div className="transition-all duration-1000 transform">
           <h2 className="text-3xl sm:text-4xl font-bold text-white mb-6">
