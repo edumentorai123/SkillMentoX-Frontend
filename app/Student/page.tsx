@@ -2,7 +2,7 @@
 
 "use client";
 import React, { useState } from "react";
-import { Bell, User, Menu, X } from "lucide-react";
+import { Bell,Menu, X } from "lucide-react";
 
 const Dashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);

@@ -18,7 +18,7 @@ const Nav = () => {
             <Link href="/mentors" className="text-gray-600 hover:text-gray-900 transition-colors cursor-pointer">Mentors</Link>
             <Link href="/premium" className="text-gray-600 hover:text-gray-900 transition-colors cursor-pointer">Premium</Link>
             <Link href="/about" className="text-gray-600 hover:text-gray-900 transition-colors cursor-pointer">About</Link>
-            <Link href="/Register">
+            <Link href="/registerForm">
               <button className="bg-[#1887A1] text-white px-6 py-2 rounded-2xl hover:bg-[#0D4C5B] transition-colors cursor-pointer">
                 Signup Free
               </button>
