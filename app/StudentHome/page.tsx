@@ -1,9 +1,9 @@
-import SetupProfilePage from "./SetupProfilePage";
+import StudentHome from "./StudentHome";
 
 const page = () => {
     return (
         <div>
-            <SetupProfilePage/>
+            <StudentHome/>
         </div>
     );
 }

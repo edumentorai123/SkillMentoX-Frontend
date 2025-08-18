@@ -1,6 +1,5 @@
 import React from 'react';
 import Link from 'next/link';
-import { Bot } from 'lucide-react';
 
 const Footer = () => {
   return (
@@ -8,13 +7,14 @@ const Footer = () => {
       <div data-aos="fade-up" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid md:grid-cols-4 gap-8">
           <div>
-            <Link href="/" className="flex items-center space-x-2 mb-6 cursor-pointer">
-              <div className="w-8 h-8 bg-gradient-to-r from-[#1887A1] to-[#0D4C5B] rounded-lg flex items-center justify-center">
-                <Bot className="w-5 h-5 text-white" />
+            <Link href="/" className="inline-block">
+              <div className="flex flex-col items-start space-y-2">
+                <span className="text-2xl font-bold tracking-wide text-white hover:text-[#1887A1] transition-colors duration-200">
+                  SkillMentorX
+                </span>
               </div>
-              <span className="text-xl font-bold text-white">SkillMentroX</span>
             </Link>
-            <p className="text-gray-400 leading-relaxed">
+            <p className="mt-4 text-gray-400 leading-relaxed max-w-xs">
               AI-powered learning with human expertise to accelerate your growth.
             </p>
           </div>

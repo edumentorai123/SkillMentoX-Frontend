@@ -30,34 +30,6 @@ const Hero: React.FC<HeroProps> = ({ _heroRef, _rightSideRef }) => {
   const [isPaused, setIsPaused] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  useEffect(() => {
-    const startInterval = () => {
-      intervalRef.current = setInterval(() => {
-        setActiveIndex((prev) => (prev + 1) % 2);
-      }, 2000); 
-    };
-
-    if (!isPaused) {
-      startInterval();
-    }
-
-    return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-    };
-  }, [isPaused]);
-
-  const handlePrev = () => {
-    setActiveIndex((prev) => (prev === 0 ? 3 : prev - 1));
-  };
-
-  const handleNext = () => {
-    setActiveIndex((prev) => (prev + 1) % 4);
-  };
-
-  const handleDotClick = (index: number) => {
-    setActiveIndex(index);
-  };
-
   const slides = [
     {
       id: 0,
@@ -101,6 +73,36 @@ const Hero: React.FC<HeroProps> = ({ _heroRef, _rightSideRef }) => {
     },
   ];
 
+  const totalSlides = slides.length;
+
+  useEffect(() => {
+    const startInterval = () => {
+      intervalRef.current = setInterval(() => {
+        setActiveIndex((prev) => (prev + 1) % totalSlides);
+      }, 3000);
+    };
+
+    if (!isPaused) {
+      startInterval();
+    }
+
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, [isPaused, totalSlides]);
+
+  const handlePrev = () => {
+    setActiveIndex((prev) => (prev === 0 ? totalSlides - 1 : prev - 1));
+  };
+
+  const handleNext = () => {
+    setActiveIndex((prev) => (prev + 1) % totalSlides);
+  };
+
+  const handleDotClick = (index: number) => {
+    setActiveIndex(index);
+  };
+
   return (
     <section
       ref={_heroRef}
@@ -127,10 +129,10 @@ const Hero: React.FC<HeroProps> = ({ _heroRef, _rightSideRef }) => {
 
             <div className="flex flex-col sm:flex-row gap-4">
               <Link href="/Register">
-              <button className="bg-gradient-to-r from-[#1887A1] to-[#0D4C5B] text-white px-8 py-4 rounded-2xl hover:shadow-xl transition-all duration-300 transform hover:scale-105 flex items-center justify-center space-x-2 font-semibold cursor-pointer">
-                <span>Start Learning</span>
-                <ChevronRight className="w-5 h-5" />
-              </button>
+                <button className="bg-gradient-to-r from-[#1887A1] to-[#0D4C5B] text-white px-8 py-4 rounded-2xl hover:shadow-xl transition-all duration-300 transform hover:scale-105 flex items-center justify-center space-x-2 font-semibold cursor-pointer">
+                  <span>Start Learning</span>
+                  <ChevronRight className="w-5 h-5" />
+                </button>
               </Link>
               <button className="border-2 border-gray-200 text-gray-700 px-8 py-4 rounded-2xl hover:border-gray-300 hover:shadow-lg transition-all duration-300 flex items-center justify-center space-x-2 font-semibold bg-white cursor-pointer">
                 <Play className="w-5 h-5" />
@@ -139,10 +141,10 @@ const Hero: React.FC<HeroProps> = ({ _heroRef, _rightSideRef }) => {
             </div>
           </div>
 
-          {/* Right Side - Enhanced Real-world Slider */}
-          <div  ref={_rightSideRef} className="relative scroll-animation">
+          {/* Right Side - Slider */}
+          <div ref={_rightSideRef} className="relative scroll-animation">
             <div
-              className="relative h-[500px] w-full bg-white rounded-3xl shadow-2xl overflow-hidden"
+              className="relative h-[500px] w-full max-w-lg mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden"
               onMouseEnter={() => setIsPaused(true)}
               onMouseLeave={() => setIsPaused(false)}
             >
@@ -154,75 +156,71 @@ const Hero: React.FC<HeroProps> = ({ _heroRef, _rightSideRef }) => {
                 {slides.map((slide, index) => (
                   <div
                     key={slide.id}
-                    className={`absolute inset-0 transition-all duration-700 ease-in-out ${
-                      index === activeIndex
+                    className={`absolute inset-0 transition-all duration-700 ease-in-out ${index === activeIndex
                         ? "opacity-100 translate-x-0"
                         : index < activeIndex
-                        ? "opacity-0 -translate-x-full"
-                        : "opacity-0 translate-x-full"
-                    }`}
+                          ? "opacity-0 -translate-x-full"
+                          : "opacity-0 translate-x-full"
+                      }`}
                   >
-                    <div className="h-full p-8 flex flex-col justify-between">
-                      {/* Header */}
-                      <div className="flex items-center justify-between mb-6">
+                    <div className="h-full p-6 flex flex-col">
+                      {/* Header - Fixed height for consistency */}
+                      <div className="flex items-center justify-between mb-4 h-8">
                         <div className="flex items-center space-x-3">
                           <div
-                            className={`w-3 h-3 rounded-full ${
-                              slide.status === "online"
+                            className={`w-3 h-3 rounded-full ${slide.status === "online"
                                 ? "bg-green-500"
                                 : slide.status === "available"
-                                ? "bg-blue-500"
-                                : "bg-gray-400"
-                            } animate-pulse`}
+                                  ? "bg-blue-500"
+                                  : "bg-gray-400"
+                              } animate-pulse`}
                           ></div>
                           <span className="text-sm font-medium text-gray-600">
                             {slide.status === "online"
                               ? "Online Now"
                               : slide.status === "available"
-                              ? "Available"
-                              : "Active"}
+                                ? "Available"
+                                : "Active"}
                           </span>
                         </div>
                         <div className="text-sm text-gray-400">
-                          {index + 1}/4
+                          {index + 1}/{totalSlides}
                         </div>
                       </div>
 
-                      {/* Main Content */}
-                      <div className="flex-1 flex flex-col items-center justify-center space-y-6">
+                      {/* Main Content - Takes remaining space minus footer */}
+                      <div className="flex-1 flex flex-col items-center justify-center space-y-6 pb-16">
                         {/* Icon */}
                         <div
-                          className={`w-24 h-24 bg-gradient-to-br ${slide.color} rounded-3xl flex items-center justify-center shadow-lg transform hover:scale-110 transition-transform duration-300`}
+                          className={`w-20 h-20 bg-gradient-to-br ${slide.color} rounded-3xl flex items-center justify-center shadow-lg transform hover:scale-110 transition-transform duration-300`}
                         >
-                          <slide.icon className="w-12 h-12 text-white" />
+                          <slide.icon className="w-10 h-10 text-white" />
                         </div>
 
                         {/* Title and Description */}
-                        <div className="text-center space-y-2">
-                          <h3 className="text-3xl font-bold text-gray-800">
+                        <div className="text-center space-y-2 px-4">
+                          <h3 className="text-2xl font-bold text-gray-800">
                             {slide.title}
                           </h3>
-                          <p className="text-lg text-gray-500 font-medium">
+                          <p className="text-base text-gray-500 font-medium">
                             {slide.subtitle}
                           </p>
-                          <p className="text-gray-600 max-w-sm">
+                          <p className="text-sm text-gray-600 leading-relaxed">
                             {slide.description}
                           </p>
                         </div>
 
                         {/* Features or Progress */}
-                        <div className="w-full max-w-sm">
+                        <div className="w-full max-w-xs">
                           {slide.progress !== undefined ? (
                             <div className="space-y-3">
                               <div className="flex items-center justify-between text-sm">
-                                <span className="text-gray-600">
-                                  Course Progress
-                                </span>
+                                <span className="text-gray-600">Progress</span>
                                 <span className="font-semibold text-gray-800">
                                   {slide.progress}%
                                 </span>
                               </div>
-                              <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                              <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
                                 <div
                                   className={`bg-gradient-to-r ${slide.color} h-full rounded-full transition-all duration-1000 ease-out`}
                                   style={{ width: `${slide.progress}%` }}
@@ -230,53 +228,41 @@ const Hero: React.FC<HeroProps> = ({ _heroRef, _rightSideRef }) => {
                               </div>
                               <div className="flex items-center justify-center space-x-4 pt-2">
                                 <div className="flex items-center space-x-1">
-                                  <Clock className="w-4 h-4 text-gray-400" />
-                                  <span className="text-sm text-gray-500">
-                                    2h left
-                                  </span>
+                                  <Clock className="w-3 h-3 text-gray-400" />
+                                  <span className="text-xs text-gray-500">2h left</span>
                                 </div>
                                 <div className="flex items-center space-x-1">
-                                  <TrendingUp className="w-4 h-4 text-green-500" />
-                                  <span className="text-sm text-green-600">
-                                    On track
-                                  </span>
+                                  <TrendingUp className="w-3 h-3 text-green-500" />
+                                  <span className="text-xs text-green-600">On track</span>
                                 </div>
                               </div>
                             </div>
                           ) : slide.achievements !== undefined ? (
                             <div className="text-center space-y-4">
-                              <div className="grid grid-cols-3 gap-3">
-                                <div
-                                  className={`w-16 h-16 bg-gradient-to-br ${slide.color} rounded-2xl flex items-center justify-center transform hover:scale-110 transition-transform duration-200`}
-                                >
-                                  <GraduationCap className="w-8 h-8 text-white" />
+                              <div className="flex justify-center space-x-2">
+                                <div className={`w-12 h-12 bg-gradient-to-br ${slide.color} rounded-xl flex items-center justify-center transform hover:scale-110 transition-transform duration-200`}>
+                                  <GraduationCap className="w-6 h-6 text-white" />
                                 </div>
-                                <div
-                                  className={`w-16 h-16 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl flex items-center justify-center transform hover:scale-110 transition-transform duration-200`}
-                                >
-                                  <Target className="w-8 h-8 text-white" />
+                                <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl flex items-center justify-center transform hover:scale-110 transition-transform duration-200">
+                                  <Target className="w-6 h-6 text-white" />
                                 </div>
-                                <div
-                                  className={`w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center transform hover:scale-110 transition-transform duration-200`}
-                                >
-                                  <Zap className="w-8 h-8 text-white" />
+                                <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center transform hover:scale-110 transition-transform duration-200">
+                                  <Zap className="w-6 h-6 text-white" />
                                 </div>
                               </div>
-                              <div className="text-2xl font-bold text-gray-800">
+                              <div className="text-xl font-bold text-gray-800">
                                 {slide.achievements} Badges Earned
                               </div>
                             </div>
                           ) : (
-                            <div className="space-y-3">
-                              {slide.features.map((feature, idx) => (
+                            <div className="space-y-2">
+                              {slide.features.slice(0, 3).map((feature, idx) => (
                                 <div
                                   key={idx}
-                                  className="flex items-center space-x-3 bg-gray-50 rounded-xl p-3"
+                                  className="flex items-center space-x-2 bg-gray-50 rounded-lg p-2"
                                 >
-                                  <CheckCircle
-                                    className={`w-5 h-5 text-green-500`}
-                                  />
-                                  <span className="text-gray-700 font-medium">
+                                  <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                                  <span className="text-xs text-gray-700 font-medium">
                                     {feature}
                                   </span>
                                 </div>
@@ -286,19 +272,15 @@ const Hero: React.FC<HeroProps> = ({ _heroRef, _rightSideRef }) => {
                         </div>
                       </div>
 
-                      {/* Footer */}
-                      <div className="flex items-center justify-between pt-6 border-t border-gray-100">
+                      {/* Footer - Fixed at bottom */}
+                      <div className="absolute bottom-13 left-6 right-6 flex items-center justify-between pt-4 border-t border-gray-100">
                         <div className="flex items-center space-x-2">
-                          <MessageCircle className="w-4 h-4 text-gray-400" />
-                          <span className="text-sm text-gray-500">
-                            Interactive
-                          </span>
+                          <MessageCircle className="w-3 h-3 text-gray-400" />
+                          <span className="text-xs text-gray-500">Interactive</span>
                         </div>
                         <div className="flex items-center space-x-2">
-                          <Calendar className="w-4 h-4 text-gray-400" />
-                          <span className="text-sm text-gray-500">
-                            Updated daily
-                          </span>
+                          <Calendar className="w-3 h-3 text-gray-400" />
+                          <span className="text-xs text-gray-500">Updated daily</span>
                         </div>
                       </div>
                     </div>
@@ -307,47 +289,46 @@ const Hero: React.FC<HeroProps> = ({ _heroRef, _rightSideRef }) => {
               </div>
 
               {/* Navigation Controls */}
-              <div className="absolute bottom-6 left-0 right-0 flex items-center justify-center space-x-4 z-10">
+              <div className="absolute bottom-4 left-0 right-0 flex items-center justify-center space-x-3 z-20">
                 <button
                   onClick={handlePrev}
-                  className="p-3 bg-white/90 backdrop-blur-sm rounded-full hover:bg-white transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-110"
+                  className="p-2 bg-white/95 backdrop-blur-sm rounded-full hover:bg-white transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-110 border border-gray-200 cursor-pointer"
                 >
-                  <ChevronLeft className="w-5 h-5 text-gray-700" />
+                  <ChevronLeft className="w-4 h-4 text-gray-700" />
                 </button>
 
-                <div className="flex space-x-2">
+                <div className="flex space-x-1 bg-white/95 backdrop-blur-sm rounded-full px-2 py-1 shadow-lg border border-gray-200">
                   {slides.map((_, index) => (
                     <button
                       key={index}
                       onClick={() => handleDotClick(index)}
-                      className={`h-2 rounded-full transition-all duration-300 transform hover:scale-125 ${
-                        activeIndex === index
-                          ? "bg-blue-600 w-8 scale-125"
-                          : "bg-gray-300 w-2 hover:bg-gray-400"
-                      }`}
+                      className={`h-2 rounded-full transition-all duration-300 transform hover:scale-125 ${activeIndex === index
+                          ? "bg-blue-600 w-6"
+                          : "bg-gray-300 w-2 hover:bg-gray-400 cursor-pointer"
+                        }`}
                     />
                   ))}
                 </div>
 
                 <button
                   onClick={handleNext}
-                  className="p-3 bg-white/90 backdrop-blur-sm rounded-full hover:bg-white transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-110"
+                  className="p-2 bg-white/95 backdrop-blur-sm rounded-full cursor-pointer hover:bg-white transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-110 border border-gray-200"
                 >
-                  <ChevronRight className="w-5 h-5 text-gray-700" />
+                  <ChevronRight className="w-4 h-4 text-gray-700 " />
                 </button>
               </div>
 
               {/* Pause indicator */}
               {isPaused && (
-                <div className="absolute top-6 right-6 bg-black/20 backdrop-blur-sm rounded-full p-2">
+                <div className="absolute top-4 right-4 bg-black/20 backdrop-blur-sm rounded-full p-2 z-10">
                   <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
                 </div>
               )}
             </div>
 
             {/* Floating Elements */}
-            <div className="absolute -top-4 -right-4 w-20 h-20 bg-gradient-to-br from-blue-400 to-purple-400 rounded-full opacity-20 animate-pulse"></div>
-            <div className="absolute -bottom-6 -left-6 w-16 h-16 bg-gradient-to-br from-emerald-400 to-blue-400 rounded-full opacity-20 animate-pulse delay-1000"></div>
+            <div className="absolute -top-6 -right-0.5 w-16 h-16 bg-gradient-to-br from-blue-400 to-purple-400 rounded-full opacity-20 animate-pulse pointer-events-none"></div>
+            <div className="absolute -bottom-6  w-12 h-12 bg-gradient-to-br from-emerald-400 to-blue-400 rounded-full opacity-20 animate-pulse delay-1000 pointer-events-none"></div>
           </div>
         </div>
       </div>
