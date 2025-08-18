@@ -5,7 +5,7 @@ import { Bell, MessageSquare, Star } from 'lucide-react';
 const SkillMentroXDashboard = () => {
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
+  
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex justify-between items-center">
@@ -31,23 +31,22 @@ const SkillMentroXDashboard = () => {
         </div>
       </div>
 
-      {/* Main Content */}
+
       <div className="max-w-7xl mx-auto px-6 py-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           
-          {/* Current Students Card */}
+      
           <div className="bg-yellow-100 rounded-2xl p-6 shadow-sm">
             <h3 className="text-gray-700 font-medium text-sm mb-4">No.Of Current Students</h3>
             <div className="text-4xl font-bold text-gray-800">57</div>
           </div>
 
-          {/* Current Batches Card */}
           <div className="bg-purple-200 rounded-2xl p-6 shadow-sm">
             <h3 className="text-gray-700 font-medium text-sm mb-4">No.Of Current Batches</h3>
             <div className="text-4xl font-bold text-gray-800">12</div>
           </div>
 
-          {/* Average Rating Card */}
+
           <div className="bg-gray-200 rounded-2xl p-6 shadow-sm">
             <h3 className="text-gray-700 font-medium text-sm mb-4">Average Rating</h3>
             <div className="flex items-center">
