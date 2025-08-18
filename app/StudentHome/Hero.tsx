@@ -116,7 +116,7 @@ const Hero: React.FC<HeroProps> = ({ _heroRef, _rightSideRef, studentName = "Stu
                     <ChevronRight className="w-5 h-5" />
                 </button>
                 </Link>
-                <Link href="/student/courses">
+                <Link href="/StudentHome/courses">
                 <button className="border-2 border-gray-200 text-gray-700 px-8 py-4 rounded-2xl hover:border-gray-300 hover:shadow-lg transition-all duration-300 flex items-center justify-center space-x-2 font-semibold bg-white cursor-pointer">
                     Browse Courses
                 </button>

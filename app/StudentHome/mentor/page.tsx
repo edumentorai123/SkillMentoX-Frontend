@@ -1,4 +1,5 @@
-import MentorsPage from "./mentors";
+import MentorsPage from "./MentorsPage";
+
 
 const mentor = () => {
     return (
