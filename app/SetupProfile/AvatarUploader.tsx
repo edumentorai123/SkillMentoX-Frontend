@@ -11,7 +11,6 @@ const AvatarUploader: React.FC = () => {
   const dispatch = useAppDispatch()
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  // Generate initials from name
   const getInitials = (fullName: string): string => {
     if (!fullName.trim()) return 'U'
     const names = fullName.trim().split(' ')
@@ -19,7 +18,6 @@ const AvatarUploader: React.FC = () => {
     return (names[0].charAt(0) + names[names.length - 1].charAt(0)).toUpperCase()
   }
 
-    // Generate deterministic gradient based on name length
   const getGradientColors = (fullName: string) => {
     const colors = [
       'from-blue-400 to-blue-600',
@@ -37,19 +35,16 @@ const AvatarUploader: React.FC = () => {
     const file = event.target.files?.[0]
     if (!file) return
 
-    // Validate file type
     if (!file.type.match(/^image\/(jpeg|jpg|png)$/)) {
       alert('Please upload a JPG or PNG image')
       return
     }
 
-    // Validate file size (5MB max)
     if (file.size > 5 * 1024 * 1024) {
       alert('File size must be less than 5MB')
       return
     }
 
-    // Read file as data URL
     const reader = new FileReader()
     reader.onload = (e) => {
       if (e.target?.result) {
@@ -73,7 +68,7 @@ const AvatarUploader: React.FC = () => {
   return (
     <div className="flex flex-col items-center space-y-4">
       <div className="relative">
-        {/* Avatar Circle */}
+
         <div className="w-28 h-28 rounded-full overflow-hidden border-4 border-white shadow-lg">
   {avatarPreview ? (
     <Image
@@ -93,7 +88,7 @@ const AvatarUploader: React.FC = () => {
   )}
 </div>
 
-        {/* Remove Button (if avatar exists) */}
+        {/* Remove Button */}
         {avatarPreview && (
           <button
             onClick={handleRemoveAvatar}

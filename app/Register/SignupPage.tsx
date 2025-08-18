@@ -1,15 +1,29 @@
-"use client";
 
+"use client";
 import React, { useState } from "react";
-import { Eye, EyeOff } from "lucide-react";
+import {
+  Eye,
+  EyeOff,
+  X,
+  User,
+  BookOpen,
+  Mail,
+  CheckCircle,
+} from "lucide-react";
 
 export default function SignUpPage() {
   const [isSignUp, setIsSignUp] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [showRoleModal, setShowRoleModal] = useState(false);
+  const [selectedRole, setSelectedRole] = useState("");
+  const [showOTPModal, setShowOTPModal] = useState(false);
+  const [otp, setOtp] = useState(["", "", "", "", "", ""]);
+  const [email, setEmail] = useState("");
+  const [isVerified, setIsVerified] = useState(false);
+  
 
-
-  const handleModeChange = (newIsSignUp: boolean) => {
+  const handleModeChange = (newIsSignUp :boolean) => {
     if (newIsSignUp !== isSignUp) {
       setIsTransitioning(true);
       setTimeout(() => {
@@ -21,60 +35,95 @@ export default function SignUpPage() {
     }
   };
 
-  
+  const handleSignUpClick = () => {
+    if (!email.trim()) {
+      alert("Please enter your email address first");
+      return;
+    }
+    setShowOTPModal(true);
+  };
+
+  const handleRoleSelect = (role :string) => {
+    setSelectedRole(role);
+    setShowRoleModal(false);
+    setIsVerified(false);
+    setOtp(["", "", "", "", "", ""]);
+    alert(`Account created successfully as ${role}!`);
+    
+    
+  };
+
+  const handleOtpChange = (index:number, value:string) => {
+    if (value.length > 1) return;
+    const newOtp = [...otp];
+    newOtp[index] = value;
+    setOtp(newOtp);
+
+    if (value && index < 5) {
+      const nextInput = document.getElementById(`otp-${index + 1}`);
+      if (nextInput) nextInput.focus();
+    }
+  };
+
+  const handleKeyDown = (index:number, e:React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Backspace" && !otp[index] && index > 0) {
+      const prevInput = document.getElementById(`otp-${index - 1}`);
+      if (prevInput) prevInput.focus();
+    }
+  };
+
+  const handleVerifyOTP = () => {
+    const otpCode = otp.join("");
+    if (otpCode.length === 6) {
+    
+      setIsVerified(true);
+      setTimeout(() => {
+        setShowOTPModal(false);
+      
+        setTimeout(() => {
+          setShowRoleModal(true);
+        }, 300);
+      }, 1500);
+    }
+  };
+
+  const handleResendOTP = () => {
+    setOtp(["", "", "", "", "", ""]);
+    alert("New OTP sent to your email!");
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4 font-sans">
       <div className="w-full max-w-6xl mx-auto relative">
         <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10">
-          <div className="bg-white rounded-full p-1 shadow-lg border border-gray-100">
-            <div className="flex">
-              <button
-                onClick={() => handleModeChange(true)}
-                className={`px-6 py-3 rounded-full font-semibold text-sm transition-all duration-700 transform ${isSignUp
-                    ? "bg-teal-500 text-white shadow-md scale-105"
-                    : "text-gray-600 hover:text-gray-800 hover:bg-gray-50"
-                  }`}
-              >
-                Sign up
-              </button>
-              <button
-                onClick={() => handleModeChange(false)}
-                className={`px-6 py-3 rounded-full font-semibold text-sm transition-all duration-700 transform ${!isSignUp
-                    ? "bg-teal-500 text-white shadow-md scale-105"
-                    : "text-gray-600 hover:text-gray-800 hover:bg-gray-50"
-                  }`}
-              >
-                Login
-              </button>
-            </div>
-          </div>
+          <div className="bg-white rounded-full p-1 shadow-lg border border-gray-100"></div>
         </div>
 
-
         <div className="grid lg:grid-cols-2 gap-0 bg-white rounded-3xl shadow-2xl overflow-hidden min-h-[600px] relative">
-
           <div
-            className={`bg-white p-8 lg:p-12 flex flex-col justify-center transition-all duration-1000 ease-in-out transform ${isSignUp ? "lg:order-1" : "lg:order-2"
-              } ${isTransitioning ? "opacity-30 scale-95" : "opacity-100 scale-100"
-              }`}
+            className={`bg-white p-8 lg:p-12 flex flex-col justify-center transition-all duration-1000 ease-in-out transform ${
+              isSignUp ? "lg:order-1" : "lg:order-2"
+            } ${
+              isTransitioning ? "opacity-30 scale-95" : "opacity-100 scale-100"
+            }`}
           >
             <div className="max-w-md mx-auto w-full">
-
               <div className="mb-8 mt-8 lg:mt-0">
                 <h1
-                  className={`text-3xl font-bold text-gray-900 mb-2 transition-all duration-800 transform ${isTransitioning
+                  className={`text-3xl font-bold text-gray-900 mb-2 transition-all duration-800 transform ${
+                    isTransitioning
                       ? "translate-y-8 opacity-0"
                       : "translate-y-0 opacity-100"
-                    }`}
+                  }`}
                 >
                   {isSignUp ? "Create Account!" : "Welcome back!"}
                 </h1>
                 <p
-                  className={`text-gray-600 transition-all duration-800 delay-200 transform ${isTransitioning
+                  className={`text-gray-600 transition-all duration-800 delay-200 transform ${
+                    isTransitioning
                       ? "translate-y-8 opacity-0"
                       : "translate-y-0 opacity-100"
-                    }`}
+                  }`}
                 >
                   {isSignUp
                     ? "Join us and start your learning journey"
@@ -82,14 +131,14 @@ export default function SignUpPage() {
                 </p>
               </div>
 
-
               <div className="space-y-6">
                 {isSignUp && (
                   <div
-                    className={`grid grid-cols-1 md:grid-cols-2 gap-4 transition-all duration-800 delay-300 transform ${isTransitioning
+                    className={`grid grid-cols-1 md:grid-cols-2 gap-4 transition-all duration-800 delay-300 transform ${
+                      isTransitioning
                         ? "translate-y-12 opacity-0 scale-90"
                         : "translate-y-0 opacity-100 scale-100"
-                      }`}
+                    }`}
                   >
                     <div>
                       <input
@@ -109,23 +158,27 @@ export default function SignUpPage() {
                 )}
 
                 <div
-                  className={`transition-all duration-800 delay-400 transform ${isTransitioning
+                  className={`transition-all duration-800 delay-400 transform ${
+                    isTransitioning
                       ? "translate-y-12 opacity-0 scale-90"
                       : "translate-y-0 opacity-100 scale-100"
-                    }`}
+                  }`}
                 >
                   <input
                     type="email"
                     placeholder="Email Address"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-300 hover:border-gray-400 hover:shadow-md focus:shadow-lg transform hover:scale-102"
                   />
                 </div>
 
                 <div
-                  className={`relative transition-all duration-800 delay-500 transform ${isTransitioning
+                  className={`relative transition-all duration-800 delay-500 transform ${
+                    isTransitioning
                       ? "translate-y-12 opacity-0 scale-90"
                       : "translate-y-0 opacity-100 scale-100"
-                    }`}
+                  }`}
                 >
                   <input
                     type={showPassword ? "text" : "password"}
@@ -142,10 +195,11 @@ export default function SignUpPage() {
                 </div>
 
                 <div
-                  className={`flex items-center justify-between transition-all duration-800 delay-600 transform ${isTransitioning
+                  className={`flex items-center justify-between transition-all duration-800 delay-600 transform ${
+                    isTransitioning
                       ? "translate-y-12 opacity-0 scale-90"
                       : "translate-y-0 opacity-100 scale-100"
-                    }`}
+                  }`}
                 >
                   <div className="flex items-center"></div>
                   {!isSignUp && (
@@ -160,19 +214,24 @@ export default function SignUpPage() {
 
                 <button
                   type="button"
-                  className={`w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold py-3 px-6 rounded-full transition-all duration-500 transform hover:scale-105 shadow-lg hover:shadow-xl active:scale-95 delay-500 ${isTransitioning
+                  onClick={
+                    isSignUp ? handleSignUpClick : () => alert("Logging in...")
+                  }
+                  className={`w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold py-3 px-6 rounded-full transition-all duration-500 transform hover:scale-105 shadow-lg hover:shadow-xl active:scale-95 delay-500 ${
+                    isTransitioning
                       ? "translate-y-6 opacity-0 scale-95"
                       : "translate-y-0 opacity-100 scale-100"
-                    }`}
+                  }`}
                 >
                   {isSignUp ? "Sign up" : "Log in"}
                 </button>
 
                 <div
-                  className={`text-center transition-all duration-800 delay-800 transform ${isTransitioning
+                  className={`text-center transition-all duration-800 delay-800 transform ${
+                    isTransitioning
                       ? "translate-y-12 opacity-0 scale-90"
                       : "translate-y-0 opacity-100 scale-100"
-                    }`}
+                  }`}
                 >
                   <div className="relative">
                     <div className="absolute inset-0 flex items-center">
@@ -188,10 +247,11 @@ export default function SignUpPage() {
 
                 <button
                   type="button"
-                  className={`w-full bg-white hover:bg-gray-50 border border-gray-300 text-gray-700 font-bold py-3 px-6 rounded-full transition-all duration-500 transform hover:scale-105 shadow-sm hover:shadow-md flex items-center justify-center space-x-2 active:scale-95 delay-700 ${isTransitioning
+                  className={`w-full bg-white hover:bg-gray-50 border border-gray-300 text-gray-700 font-bold py-3 px-6 rounded-full transition-all duration-500 transform hover:scale-105 shadow-sm hover:shadow-md flex items-center justify-center space-x-2 active:scale-95 delay-700 ${
+                    isTransitioning
                       ? "translate-y-6 opacity-0 scale-95"
                       : "translate-y-0 opacity-100 scale-100"
-                    }`}
+                  }`}
                 >
                   <svg
                     className="w-5 h-5 transition-transform duration-300 group-hover:rotate-12"
@@ -219,10 +279,11 @@ export default function SignUpPage() {
 
                 {!isSignUp && (
                   <div
-                    className={`text-center text-sm text-gray-600 transition-all duration-800 delay-1000 transform ${isTransitioning
+                    className={`text-center text-sm text-gray-600 transition-all duration-800 delay-1000 transform ${
+                      isTransitioning
                         ? "translate-y-12 opacity-0 scale-90"
                         : "translate-y-0 opacity-100 scale-100"
-                      }`}
+                    }`}
                   >
                     Dont have an account?{" "}
                     <button
@@ -236,10 +297,11 @@ export default function SignUpPage() {
 
                 {isSignUp && (
                   <div
-                    className={`text-center text-sm text-gray-600 transition-all duration-800 delay-1000 transform ${isTransitioning
+                    className={`text-center text-sm text-gray-600 transition-all duration-800 delay-1000 transform ${
+                      isTransitioning
                         ? "translate-y-12 opacity-0 scale-90"
                         : "translate-y-0 opacity-100 scale-100"
-                      }`}
+                    }`}
                   >
                     Already have an account?{" "}
                     <button
@@ -254,52 +316,65 @@ export default function SignUpPage() {
             </div>
           </div>
 
-
           <div
-            className={`bg-gradient-to-br ${isSignUp
+            className={`bg-gradient-to-br ${
+              isSignUp
                 ? "from-teal-500 to-blue-600"
                 : "from-purple-500 to-pink-600"
-              } p-8 lg:p-12 flex flex-col justify-center relative overflow-hidden transition-all duration-1000 ease-in-out transform ${isSignUp ? "lg:order-2" : "lg:order-1"
-              } ${isTransitioning ? "opacity-50 scale-95" : "opacity-100 scale-100"
-              }`}
+            } p-8 lg:p-12 flex flex-col justify-center relative overflow-hidden transition-all duration-1000 ease-in-out transform ${
+              isSignUp ? "lg:order-2" : "lg:order-1"
+            } ${
+              isTransitioning ? "opacity-50 scale-95" : "opacity-100 scale-100"
+            }`}
           >
-
             <div
-              className={`absolute top-8 ${isSignUp ? "right-8" : "left-8"
-                } w-24 h-24 ${isSignUp ? "bg-teal-300" : "bg-purple-300"
-                } rounded-full opacity-30 transition-all duration-1000 ease-in-out transform hover:scale-110 ${isTransitioning ? "rotate-180 scale-50" : "rotate-0 scale-100"
-                }`}
+              className={`absolute top-8 ${
+                isSignUp ? "right-8" : "left-8"
+              } w-24 h-24 ${
+                isSignUp ? "bg-teal-300" : "bg-purple-300"
+              } rounded-full opacity-30 transition-all duration-1000 ease-in-out transform hover:scale-110 ${
+                isTransitioning ? "rotate-180 scale-50" : "rotate-0 scale-100"
+              }`}
             ></div>
             <div
-              className={`absolute top-16 ${isSignUp ? "right-16" : "left-16"
-                } w-16 h-16 ${isSignUp ? "bg-blue-300" : "bg-pink-300"
-                } rounded-lg opacity-40 transition-all duration-1000 ease-in-out transform hover:scale-110 ${isTransitioning
+              className={`absolute top-16 ${
+                isSignUp ? "right-16" : "left-16"
+              } w-16 h-16 ${
+                isSignUp ? "bg-blue-300" : "bg-pink-300"
+              } rounded-lg opacity-40 transition-all duration-1000 ease-in-out transform hover:scale-110 ${
+                isTransitioning
                   ? "rotate-[270deg] scale-50"
                   : "rotate-45 scale-100"
-                }`}
+              }`}
             ></div>
             <div
-              className={`absolute bottom-8 ${isSignUp ? "left-8" : "right-8"
-                } w-32 h-32 ${isSignUp ? "bg-cyan-300" : "bg-indigo-300"
-                } rounded-full opacity-20 transition-all duration-1000 ease-in-out transform hover:scale-110 ${isTransitioning ? "rotate-180 scale-50" : "rotate-0 scale-100"
-                }`}
+              className={`absolute bottom-8 ${
+                isSignUp ? "left-8" : "right-8"
+              } w-32 h-32 ${
+                isSignUp ? "bg-cyan-300" : "bg-indigo-300"
+              } rounded-full opacity-20 transition-all duration-1000 ease-in-out transform hover:scale-110 ${
+                isTransitioning ? "rotate-180 scale-50" : "rotate-0 scale-100"
+              }`}
             ></div>
 
             <div className="relative z-10">
               <h2
-                className={`text-3xl font-bold text-white mb-6 transition-all duration-800 delay-300 transform ${isTransitioning
+                className={`text-3xl font-bold text-white mb-6 transition-all duration-800 delay-300 transform ${
+                  isTransitioning
                     ? "translate-x-12 opacity-0"
                     : "translate-x-0 opacity-100"
-                  }`}
+                }`}
               >
                 {isSignUp ? "Welcome to LearnHub" : "Welcome Back to LearnHub"}
               </h2>
               <p
-                className={`${isSignUp ? "text-blue-100" : "text-purple-100"
-                  } text-lg mb-8 leading-relaxed transition-all duration-800 delay-400 transform ${isTransitioning
+                className={`${
+                  isSignUp ? "text-blue-100" : "text-purple-100"
+                } text-lg mb-8 leading-relaxed transition-all duration-800 delay-400 transform ${
+                  isTransitioning
                     ? "translate-x-12 opacity-0"
                     : "translate-x-0 opacity-100"
-                  }`}
+                }`}
               >
                 {isSignUp
                   ? "Connect with expert mentors and unlock your learning potential. Join thousands of students transforming their future."
@@ -310,31 +385,34 @@ export default function SignUpPage() {
                 {[0, 1, 2].map((index) => (
                   <div
                     key={index}
-                    className={`flex items-center space-x-3 transition-all duration-800 transform ${isTransitioning
+                    className={`flex items-center space-x-3 transition-all duration-800 transform ${
+                      isTransitioning
                         ? "translate-x-12 opacity-0"
                         : "translate-x-0 opacity-100"
-                      }`}
+                    }`}
                     style={{ transitionDelay: `${500 + index * 150}ms` }}
                   >
                     <div
-                      className={`w-2 h-2 ${isSignUp ? "bg-teal-300" : "bg-purple-300"
-                        } rounded-full transition-all duration-500 transform hover:scale-150`}
+                      className={`w-2 h-2 ${
+                        isSignUp ? "bg-teal-300" : "bg-purple-300"
+                      } rounded-full transition-all duration-500 transform hover:scale-150`}
                     ></div>
                     <span
-                      className={`${isSignUp ? "text-blue-100" : "text-purple-100"
-                        } transition-all duration-500`}
+                      className={`${
+                        isSignUp ? "text-blue-100" : "text-purple-100"
+                      } transition-all duration-500`}
                     >
                       {isSignUp
                         ? index === 0
                           ? "Expert mentors from top companies"
                           : index === 1
-                            ? "Personalized learning paths"
-                            : "24/7 community support"
+                          ? "Personalized learning paths"
+                          : "24/7 community support"
                         : index === 0
-                          ? "Continue where you left off"
-                          : index === 1
-                            ? "Track your progress"
-                            : "Access premium content"}
+                        ? "Continue where you left off"
+                        : index === 1
+                        ? "Track your progress"
+                        : "Access premium content"}
                     </span>
                   </div>
                 ))}
@@ -343,6 +421,140 @@ export default function SignUpPage() {
           </div>
         </div>
       </div>
+
+      {/* Role Selection Modal */}
+      {showRoleModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-2xl p-8 max-w-md w-full transform transition-all duration-300 scale-100">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-2xl font-bold text-gray-900">
+                Choose Your Role
+              </h3>
+              <button
+                onClick={() => setShowRoleModal(false)}
+                className="text-gray-500 hover:text-gray-700 transition-colors"
+              >
+                <X size={24} />
+              </button>
+            </div>
+
+            <p className="text-gray-600 mb-8 text-center">
+              Select how you&apos;d like to join our learning community
+            </p>
+
+            <div className="space-y-4">
+              <button
+                onClick={() => handleRoleSelect("Student")}
+                className="w-full p-6 border-2 border-gray-200 rounded-xl hover:border-blue-500 hover:bg-blue-50 transition-all duration-300 group"
+              >
+                <div className="flex items-center space-x-4">
+                  <div className="bg-blue-100 p-3 rounded-full group-hover:bg-blue-200 transition-colors">
+                    <BookOpen className="w-6 h-6 text-blue-600" />
+                  </div>
+                  <div className="text-left">
+                    <h4 className="font-bold text-gray-900">Student</h4>
+                    <p className="text-sm text-gray-600">
+                      Learn from expert mentors
+                    </p>
+                  </div>
+                </div>
+              </button>
+
+              <button
+                onClick={() => handleRoleSelect("Mentor")}
+                className="w-full p-6 border-2 border-gray-200 rounded-xl hover:border-green-500 hover:bg-green-50 transition-all duration-300 group"
+              >
+                <div className="flex items-center space-x-4">
+                  <div className="bg-green-100 p-3 rounded-full group-hover:bg-green-200 transition-colors">
+                    <User className="w-6 h-6 text-green-600" />
+                  </div>
+                  <div className="text-left">
+                    <h4 className="font-bold text-gray-900">Mentor</h4>
+                    <p className="text-sm text-gray-600">
+                      Share your expertise
+                    </p>
+                  </div>
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      
+      {showOTPModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-2xl p-8 max-w-md w-full transform transition-all duration-300 scale-100">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-2xl font-bold text-gray-900">
+                Verify Your Email
+              </h3>
+              <button
+                onClick={() => setShowOTPModal(false)}
+                className="text-gray-500 hover:text-gray-700 transition-colors"
+              >
+                <X size={24} />
+              </button>
+            </div>
+
+            <div className="text-center mb-8">
+              <div className="bg-blue-100 p-4 rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                <Mail className="w-8 h-8 text-blue-600" />
+              </div>
+              <p className="text-gray-600">
+                We&apos;ve sent a 6-digit verification code to
+              </p>
+              <p className="font-semibold text-gray-900">{email}</p>
+            </div>
+
+            <div className="mb-6">
+              <div className="flex justify-center space-x-2">
+                {otp.map((digit, index) => (
+                  <input
+                    key={index}
+                    id={`otp-${index}`}
+                    type="text"
+                    maxLength={1}
+                    value={digit}
+                    onChange={(e) => handleOtpChange(index, e.target.value)}
+                    onKeyDown={(e) => handleKeyDown(index, e)}
+                    className="w-12 h-12 text-center text-xl font-bold border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none transition-colors"
+                  />
+                ))}
+              </div>
+            </div>
+
+            {isVerified && (
+              <div className="flex items-center justify-center mb-4">
+                <CheckCircle className="w-6 h-6 text-green-500 mr-2" />
+                <span className="text-green-600 font-semibold">
+                  Email verified successfully!
+                </span>
+              </div>
+            )}
+
+            <button
+              onClick={handleVerifyOTP}
+              disabled={otp.join("").length < 6 || isVerified}
+              className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-bold py-3 px-6 rounded-xl transition-all duration-300"
+            >
+              {isVerified ? "Email Verified!" : "Verify Email"}
+            </button>
+
+            <div className="text-center mt-4">
+              <p className="text-gray-600 text-sm">
+                Didn&apos;t receive the code?{" "}
+                <button
+                  onClick={handleResendOTP}
+                  className="text-blue-600 hover:text-blue-700 font-semibold"
+                >
+                  Resend
+                </button>
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
