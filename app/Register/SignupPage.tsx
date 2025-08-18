@@ -422,7 +422,7 @@ export default function SignUpPage() {
         </div>
       </div>
 
-      {/* Role Selection Modal */}
+
       {showRoleModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-2xl p-8 max-w-md w-full transform transition-all duration-300 scale-100">
