@@ -1,6 +1,7 @@
 import { X, MapPin, Star, DollarSign, Award, Clock, Calendar } from 'lucide-react';
 import { Mentor } from './types';
-// import Image from 'next/image';
+import Image from 'next/image';
+
 
 interface ProfileModalProps {
     mentor: Mentor | null;
@@ -25,10 +26,10 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ mentor, isOpen, onClose, on
                     </button>
                     <div className="px-6 pb-6">
                         <div className="flex flex-col sm:flex-row items-start sm:items-end gap-6 -mt-16">
-                            <img
+                            <Image
                                 src={mentor.image}
                                 alt={mentor.name}
-                                // fill
+                                fill
                                 className="w-32 h-32 rounded-full border-4 border-white object-cover shadow-lg"
                             />
                             <div className="flex-1">

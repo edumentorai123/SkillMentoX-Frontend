@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import { Calendar, X, Video, Phone } from 'lucide-react';
 import { Mentor, BookingData } from './types';
-// import img from 'next/img';
+import Image from 'next/image';
+
 
 interface BookingModalProps {
     mentor: Mentor | null;
@@ -49,12 +50,15 @@ const BookingModal: React.FC<BookingModalProps> = ({ mentor, isOpen, onClose, on
                         </button>
                     </div>
                     <div className="flex items-center gap-4 mt-4">
-                        <img
-                            src={mentor.img}
-                            alt={mentor.name}
-                            // fill
-                            className="w-16 h-16 rounded-full object-cover"
-                        />
+                        <div className="relative w-16 h-16">
+                            <Image
+                                src={mentor.image}
+                                alt={mentor.name}
+                                fill
+                                className="rounded-full object-cover"
+                            />
+                        </div>
+
                         <div>
                             <h3 className="text-xl font-semibold">{mentor.name}</h3>
                             <p className="text-[#1887A1] font-medium">{mentor.expertise}</p>
