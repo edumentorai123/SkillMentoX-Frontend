@@ -361,14 +361,14 @@ const Dashboard = () => {
               </div>
             </div>
 
-            {/* Bottom Row - Your Progress Card */}
+            
             <div className="bg-white rounded-xl sm:rounded-2xl p-3 sm:p-4 lg:p-5 shadow-xl hover:shadow-2xl transition-all duration-300">
               <h3 className="text-base sm:text-lg font-bold text-gray-800 mb-3 sm:mb-4">
                 Your Progress
               </h3>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
-                {/* XP Progress Bar */}
+               
                 <div className="sm:col-span-2 lg:col-span-1">
                   <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-2 sm:mb-3">
                     <span className="font-bold text-lg sm:text-xl bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent">
@@ -386,7 +386,7 @@ const Dashboard = () => {
                   </div>
                 </div>
 
-                {/* Badges Earned */}
+              
                 <div className="lg:col-span-1">
                   <h4 className="font-semibold text-sm sm:text-base text-gray-800 mb-2 sm:mb-3">
                     Badges Earned

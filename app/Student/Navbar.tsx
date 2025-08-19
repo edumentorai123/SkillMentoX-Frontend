@@ -1,23 +1,41 @@
 "use client";
 import React, { useState } from "react";
-import { 
-  LayoutDashboard, 
-  HelpCircle, 
-  MessageCircle, 
-  FileQuestion, 
-  BookOpen, 
-  TrendingUp, 
-  X 
+import {
+  LayoutDashboard,
+  HelpCircle,
+  MessageCircle,
+  FileQuestion,
+  BookOpen,
+  TrendingUp,
+  X,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
+
 
 function Navbar() {
   const [activeMenu, setActiveMenu] = useState("DashBoard");
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const router=useRouter()
 
-  const handleMenuClick = (menu:string) => {
+  // const handleMenuClick = (menu: string) => {
+  //   setActiveMenu(menu);
+  const handleMenuClick = (menu: string) => {
     setActiveMenu(menu);
+  
+    if (menu === "DashBoard") {
+      router.push("/Student/DashBord");   // ✅ matches folder
+    } else if (menu === "My Doubts") {
+      router.push("/Student/MyDouts");    // ✅ matches folder
+    } else if (menu === "Chats") {
+      router.push("/Student/Chart");      // ✅ your file is Chart.tsx
+    } else if (menu === "Quizzes") {
+      router.push("/Student/Quiezz");     // ✅ folder/file is Quiezz.tsx
+    } else if (menu === "Course") {
+      router.push("/Student/Course");     // ✅ Course.tsx
+    } else if (menu === "Progress") {
+      router.push("/Student/ProgressHeader"); // ✅ your file is ProgressHeader.tsx
+    }
   };
-
   return (
     <>
       {/* Header */}
@@ -36,11 +54,10 @@ function Navbar() {
         <div className="w-full h-px bg-gray-200 mt-4"></div>
       </div>
 
-      {/* Sidebar Navigation */}
+      
       {sidebarOpen && (
         <nav className="px-4 mt-2">
           <ul className="space-y-2">
-            {/* DashBoard Button */}
             <li>
               <button
                 className={`text-left px-4 py-2.5 rounded-lg font-medium transition-all duration-200 text-sm sm:text-base flex items-center space-x-3 ${
