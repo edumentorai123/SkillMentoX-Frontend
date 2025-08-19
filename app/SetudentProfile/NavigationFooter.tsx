@@ -1,4 +1,3 @@
-// app/SetupProfile/NavigationFooter.tsx
 'use client'
 
 import React from 'react'

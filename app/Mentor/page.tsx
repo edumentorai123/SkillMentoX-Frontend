@@ -11,7 +11,7 @@ const SkillMentroXDashboard = () => {
           <div className="flex justify-between items-center">
             <div>
               <h1 className="text-2xl font-bold text-blue-600 mb-1">SkillMentroX</h1>
-              <p className="text-sm text-blue-400">Welcome back Thomas Shelby! Here's your mentoring overview</p>
+              <p className="text-sm text-blue-400">Welcome back Thomas Shelby! Here&apos;s your mentoring overview</p>
             </div>
             <div className="flex items-center space-x-4">
               <button className="p-2 text-gray-500 hover:text-gray-700 transition-colors">
