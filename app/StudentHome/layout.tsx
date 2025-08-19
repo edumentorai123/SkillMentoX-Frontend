@@ -16,15 +16,12 @@ export const metadata = {
 
 export default function StudentLayout({ children }: { children: React.ReactNode }) {
     return (
-            <html lang="en">
-                <body className={`bg-white text-gray-800 ${outfit.className}`}>
+                <div className={`bg-white text-gray-800 ${outfit.className}`}>
                     <Providers>
                     <StudentHomeNavFooterWrapper>
                         {children}
                     </StudentHomeNavFooterWrapper>
                 </Providers>
-                </body>
-                
-            </html>
+                </div>
     );
 }

@@ -2,7 +2,6 @@
 import React from 'react'
 import Dashboard from './DashBord'
 
-
 const page = () => {
   return (
     <div>
