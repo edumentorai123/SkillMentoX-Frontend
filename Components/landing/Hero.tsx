@@ -128,7 +128,7 @@ const Hero: React.FC<HeroProps> = ({ _heroRef, _rightSideRef }) => {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4">
-              <Link href="/Register">
+              <Link href="/registerForm">
                 <button className="bg-gradient-to-r from-[#1887A1] to-[#0D4C5B] text-white px-8 py-4 rounded-2xl hover:shadow-xl transition-all duration-300 transform hover:scale-105 flex items-center justify-center space-x-2 font-semibold cursor-pointer">
                   <span>Start Learning</span>
                   <ChevronRight className="w-5 h-5" />
