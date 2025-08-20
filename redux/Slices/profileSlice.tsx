@@ -2,22 +2,19 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 export interface ProfileState {
   currentStep: 2 | 3 | 4
-  role: '' | 'student' | 'mentor'
+  role: 'student' | 'mentor' | null  // Changed from '' to null
   
-  // Basic Info (Step 2)
   name: string
   email: string
   location: string
   phone: string
   avatarPreview?: string | null
   
-  // Student Fields (Step 3)
   educationLevel: string
   selectedCourse: string
   goals: string[]
   learningStyle: string
   
-  // Mentor Fields (Step 3)
   title: string
   experience: string
   expertise: string[]
@@ -25,10 +22,9 @@ export interface ProfileState {
 }
 
 const initialState: ProfileState = {
-  currentStep: 2, // Start at Basic Info since role comes from auth
-  role: '',
+  currentStep: 2,
+  role: null,  // Changed from '' to null
   
-  // Basic Info
   name: '',
   email: '',
   location: '',
@@ -78,12 +74,11 @@ const profileSlice = createSlice({
     },
     
     updateField: <K extends keyof Omit<ProfileState, 'currentStep'>>(
-  state: ProfileState,
-  action: PayloadAction<{ field: K; value: ProfileState[K] }>
-) => {
-  state[action.payload.field] = action.payload.value
-},
-
+      state: ProfileState,
+      action: PayloadAction<{ field: K; value: ProfileState[K] }>
+    ) => {
+      state[action.payload.field] = action.payload.value
+    },
     
     toggleArrayItem: (state, action: PayloadAction<ToggleArrayItemPayload>) => {
       const { field, value } = action.payload
