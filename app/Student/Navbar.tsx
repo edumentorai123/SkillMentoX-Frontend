@@ -1,38 +1,66 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState,  } from "react";
 import {
   LayoutDashboard,
   HelpCircle,
   MessageCircle,
   FileQuestion,
   BookOpen,
-  TrendingUp,
   X,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
+import {  usePathname } from "next/navigation";
 import Link from "next/link";
 
 function Navbar() {
-  const [activeMenu, setActiveMenu] = useState("DashBoard");
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const router = useRouter();
+  const pathname = usePathname();
 
-  const handleMenuClick = (menu: string) => {
-    setActiveMenu(menu);
-    if (menu === "DashBoard") {
-      router.push("/Student/DashBord");
-    } else if (menu === "My Doubts") {
-      router.push("/Student/MyDouts");
-    } else if (menu === "Chats") {
-      router.push("/Student/Chart");
-    } else if (menu === "Quizzes") {
-      router.push("/Student/Quiezz");
-    } else if (menu === "Course") {
-      router.push("/Student/Course");
-    } else if (menu === "Progress") {
-      router.push("/Student/ProgressHeader");
+  const getActiveMenu = (currentPath: string) => {
+    if (currentPath === "/Student" || currentPath === "/Student/DashBord") {
+      return "DashBoard";
+    } else if (currentPath === "/Student/MyDouts") {
+      return "My Doubts";
+    } else if (currentPath === "/Student/Chat") {
+      return "Chats";
+    } else if (currentPath === "/Student/Quiezz") {
+      return "Quizzes";
+    } else if (currentPath === "/Student/Course") {
+      return "Course";
+    } else if (currentPath === "/Student/ProgressHeader") {
+      return "Progress";
     }
+    return "DashBoard"; // default
   };
+
+  const activeMenu = getActiveMenu(pathname);
+
+  const menuItems = [
+    {
+      name: "DashBoard",
+      icon: LayoutDashboard,
+      href: "/Student",
+    },
+    {
+      name: "My Doubts",
+      icon: HelpCircle,
+      href: "/Student/MyDouts",
+    },
+    {
+      name: "Chats",
+      icon: MessageCircle,
+      href: "/Student/Chat",
+    },
+    {
+      name: "Quizzes",
+      icon: FileQuestion,
+      href: "/Student/Quiezz",
+    },
+    {
+      name: "Course",
+      icon: BookOpen,
+      href: "/Student/Course",
+    },
+  ];
 
   return (
     <>
@@ -54,84 +82,27 @@ function Navbar() {
       {sidebarOpen && (
         <nav className="px-4 mt-2">
           <ul className="space-y-2">
-            <li>
-              <Link href={"/Student"}>
-                <button
-                  className={`text-left px-4 py-2.5 rounded-lg font-medium transition-all duration-200 text-sm sm:text-base flex items-center space-x-3 ${
-                    activeMenu === "DashBoard"
-                      ? "bg-teal-600 text-white font-semibold shadow-lg hover:bg-teal-700"
-                      : "text-teal-700 hover:bg-teal-50 hover:text-teal-800"
-                  }`}
-                  onClick={() => handleMenuClick("DashBoard")}
-                >
-                  <LayoutDashboard className="w-5 h-5 flex-shrink-0" />
-                  <span>DashBoard</span>
-                </button>
-              </Link>
-            </li>
-
-            {/* My Doubts */}
-            <li>
-              <Link href={"/MyDouts"}>
-                <button
-                  className={` text-left px-4 py-2.5 rounded-lg font-medium transition-all duration-200 text-sm sm:text-base flex items-center space-x-3 ${
-                    activeMenu === "My Doubts"
-                      ? "bg-teal-600 text-white font-semibold shadow-lg hover:bg-teal-700"
-                      : "text-teal-700 hover:bg-teal-50 hover:text-teal-800"
-                  }`}
-                  onClick={() => handleMenuClick("My Doubts")}
-                >
-                  <HelpCircle className="w-5 h-5 flex-shrink-0" />
-                  <span>My Doubts</span>
-                </button>
-              </Link>
-            </li>
-
-            {/* Chats */}
-            <li>
-              <button
-                className={` text-left px-4 py-2.5 rounded-lg font-medium transition-all duration-200 text-sm sm:text-base flex items-center space-x-3 ${
-                  activeMenu === "Chats"
-                    ? "bg-teal-600 text-white font-semibold shadow-lg hover:bg-teal-700"
-                    : "text-teal-700 hover:bg-teal-50 hover:text-teal-800"
-                }`}
-                onClick={() => handleMenuClick("Chats")}
-              >
-                <MessageCircle className="w-5 h-5 flex-shrink-0" />
-                <span>Chats</span>
-              </button>
-            </li>
-
-            {/* Quizzes */}
-            <li>
-              <button
-                className={` text-left px-4 py-2.5 rounded-lg font-medium transition-all duration-200 text-sm sm:text-base flex items-center space-x-3 ${
-                  activeMenu === "Quizzes"
-                    ? "bg-teal-600 text-white font-semibold shadow-lg hover:bg-teal-700"
-                    : "text-teal-700 hover:bg-teal-50 hover:text-teal-800"
-                }`}
-                onClick={() => handleMenuClick("Quizzes")}
-              >
-                <FileQuestion className="w-5 h-5 flex-shrink-0" />
-                <span>Quizzes</span>
-              </button>
-            </li>
-
-          
-            <li>
-              <button
-                className={` text-left px-4 py-2.5 rounded-lg font-medium transition-all duration-200 text-sm sm:text-base flex items-center space-x-3 ${
-                  activeMenu === "Course"
-                    ? "bg-teal-600 text-white font-semibold shadow-lg hover:bg-teal-700"
-                    : "text-teal-700 hover:bg-teal-50 hover:text-teal-800"
-                }`}
-                onClick={() => handleMenuClick("Course")}
-              >
-                <BookOpen className="w-5 h-5 flex-shrink-0" />
-                <span>Course</span>
-              </button>
-            </li>
-
+            {menuItems.map((item) => {
+              const IconComponent = item.icon;
+              const isActive = activeMenu === item.name;
+              
+              return (
+                <li key={item.name}>
+                  <Link href={item.href}>
+                    <button
+                      className={`w-full text-left px-4 py-2.5 rounded-lg font-medium transition-all duration-200 text-sm sm:text-base flex items-center space-x-3 ${
+                        isActive
+                          ? "bg-teal-600 text-white font-semibold shadow-lg hover:bg-teal-700"
+                          : "text-teal-700 hover:bg-teal-50 hover:text-teal-800"
+                      }`}
+                    >
+                      <IconComponent className="w-5 h-5 flex-shrink-0" />
+                      <span>{item.name}</span>
+                    </button>
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
         </nav>
       )}
@@ -139,4 +110,5 @@ function Navbar() {
   );
 }
 
-export default Navbar;
+
+export default Navbar

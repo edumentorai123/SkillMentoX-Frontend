@@ -127,7 +127,6 @@ const authSlice = createSlice({
                 loginUser.fulfilled,
                 (state, action: PayloadAction<{ token: string; user: User }>) => {
                     state.loading = false;
-                    // Ensure proper user structure
                     const userData: User = {
                         ...action.payload.user,
                         lastName: action.payload.user.lastName || null,

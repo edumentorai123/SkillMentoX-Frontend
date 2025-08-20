@@ -2,157 +2,31 @@
 import React, { useState } from "react";
 import {
   Bell,
-  User,
   Menu,
-  X,
-  LayoutDashboard,
-  HelpCircle,
-  MessageCircle,
-  FileQuestion,
-  BookOpen,
-  TrendingUp,
 } from "lucide-react";
+import Navbar from "./Navbar";
 
 const Dashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [activeMenu, setActiveMenu] = useState("DashBoard");
-
-  const handleMenuClick = (menuName: string) => {
-    setActiveMenu(menuName);
-    setSidebarOpen(false);
-  };
 
   return (
     <div className="flex h-screen bg-gradient-to-br from-slate-50 to-gray-100 font-sans overflow-hidden">
+      {/* Sidebar */}
+      <div
+        className={`${
+          sidebarOpen ? "block" : "hidden"
+        } lg:block w-64 bg-white shadow-md flex-shrink-0`}
+      >
+        <Navbar />
+      </div>
+
+      {/* Mobile sidebar overlay */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+          className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
           onClick={() => setSidebarOpen(false)}
-        ></div>
+        />
       )}
-      <div
-        className={`
-          w-64 bg-white shadow-xl rounded-tl-2xl flex-shrink-0 z-50
-          lg:static lg:translate-x-0
-          ${
-            sidebarOpen
-              ? "fixed translate-x-0"
-              : "fixed -translate-x-full lg:translate-x-0"
-          }
-          transition-transform duration-300 ease-in-out
-          `}
-      >
-        <div className="p-4 sm:p-6">
-          <div className="flex items-center justify-between">
-            <h1 className="text-xl sm:text-2xl font-bold text-teal-600 mb-2">
-              SkillMentorX
-            </h1>
-
-            <button
-              className="lg:hidden text-gray-500 hover:text-gray-700"
-              onClick={() => setSidebarOpen(false)}
-            >
-              <X className="w-5 h-5" />
-            </button>
-          </div>
-          <div className="w-full h-px bg-gray-200 mt-4"></div>
-        </div>
-
-        <nav className="px-4 mt-2">
-          <ul className="space-y-2">
-            {/* DashBoard Button */}
-            <li>
-              <button
-                className={`w-full text-left px-4 py-2.5 rounded-lg font-medium transition-all duration-200 text-sm sm:text-base flex items-center space-x-3 ${
-                  activeMenu === "DashBoard"
-                    ? "bg-teal-600 text-white font-semibold shadow-lg hover:bg-teal-700"
-                    : "text-teal-700 hover:bg-teal-50 hover:text-teal-800"
-                }`}
-                onClick={() => handleMenuClick("DashBoard")}
-              >
-                <LayoutDashboard className="w-5 h-5 flex-shrink-0" />
-                <span>DashBoard</span>
-              </button>
-            </li>
-
-            {/* My Doubts Button */}
-            <li>
-              <button
-                className={`w-full text-left px-4 py-2.5 rounded-lg font-medium transition-all duration-200 text-sm sm:text-base flex items-center space-x-3 ${
-                  activeMenu === "My Doubts"
-                    ? "bg-teal-600 text-white font-semibold shadow-lg hover:bg-teal-700"
-                    : "text-teal-700 hover:bg-teal-50 hover:text-teal-800"
-                }`}
-                onClick={() => handleMenuClick("My Doubts")}
-              >
-                <HelpCircle className="w-5 h-5 flex-shrink-0" />
-
-                <span>My Doubts</span>
-              </button>
-            </li>
-
-            {/* Chats Button */}
-            <li>
-              <button
-                className={`w-full text-left px-4 py-2.5 rounded-lg font-medium transition-all duration-200 text-sm sm:text-base flex items-center space-x-3 ${
-                  activeMenu === "Chats"
-                    ? "bg-teal-600 text-white font-semibold shadow-lg hover:bg-teal-700"
-                    : "text-teal-700 hover:bg-teal-50 hover:text-teal-800"
-                }`}
-                onClick={() => handleMenuClick("Chats")}
-              >
-                <MessageCircle className="w-5 h-5 flex-shrink-0" />
-                <span>Chats</span>
-              </button>
-            </li>
-
-            {/* Quizzes Button */}
-            <li>
-              <button
-                className={`w-full text-left px-4 py-2.5 rounded-lg font-medium transition-all duration-200 text-sm sm:text-base flex items-center space-x-3 ${
-                  activeMenu === "Quizzes"
-                    ? "bg-teal-600 text-white font-semibold shadow-lg hover:bg-teal-700"
-                    : "text-teal-700 hover:bg-teal-50 hover:text-teal-800"
-                }`}
-                onClick={() => handleMenuClick("Quizzes")}
-              >
-                <FileQuestion className="w-5 h-5 flex-shrink-0" />
-                <span>Quizzes</span>
-              </button>
-            </li>
-
-            {/* Course Button */}
-            <li>
-              <button
-                className={`w-full text-left px-4 py-2.5 rounded-lg font-medium transition-all duration-200 text-sm sm:text-base flex items-center space-x-3 ${
-                  activeMenu === "Course"
-                    ? "bg-teal-600 text-white font-semibold shadow-lg hover:bg-teal-700"
-                    : "text-teal-700 hover:bg-teal-50 hover:text-teal-800"
-                }`}
-                onClick={() => handleMenuClick("Course")}
-              >
-                <BookOpen className="w-5 h-5 flex-shrink-0" />
-                <span>Course</span>
-              </button>
-            </li>
-
-            {/* Progress Button */}
-            <li>
-              <button
-                className={`w-full text-left px-4 py-2.5 rounded-lg font-medium transition-all duration-200 text-sm sm:text-base flex items-center space-x-3 ${
-                  activeMenu === "Progress"
-                    ? "bg-teal-600 text-white font-semibold shadow-lg hover:bg-teal-700"
-                    : "text-teal-700 hover:bg-teal-50 hover:text-teal-800"
-                }`}
-                onClick={() => handleMenuClick("Progress")}
-              >
-                <TrendingUp className="w-5 h-5 flex-shrink-0" />
-                <span>Progress</span>
-              </button>
-            </li>
-          </ul>
-        </nav>
-      </div>
 
       {/* Main Content */}
       <div className="flex-1 bg-gradient-to-br from-teal-500 via-teal-600 to-cyan-700 h-screen overflow-auto lg:overflow-hidden">

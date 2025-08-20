@@ -4,20 +4,17 @@ export interface ProfileState {
   currentStep: 2 | 3 | 4
   role: '' | 'student' | 'mentor'
   
-  // Basic Info (Step 2)
   name: string
   email: string
   location: string
   phone: string
   avatarPreview?: string | null
   
-  // Student Fields (Step 3)
   educationLevel: string
   selectedCourse: string
   goals: string[]
   learningStyle: string
   
-  // Mentor Fields (Step 3)
   title: string
   experience: string
   expertise: string[]
@@ -25,23 +22,20 @@ export interface ProfileState {
 }
 
 const initialState: ProfileState = {
-  currentStep: 2, // Start at Basic Info since role comes from auth
+  currentStep: 2, 
   role: '',
   
-  // Basic Info
   name: '',
   email: '',
   location: '',
   phone: '',
   avatarPreview: null,
   
-  // Student Fields
   educationLevel: '',
   selectedCourse: '',
   goals: [],
   learningStyle: '',
   
-  // Mentor Fields
   title: '',
   experience: '',
   expertise: [],
@@ -105,7 +99,6 @@ const profileSlice = createSlice({
   }
 })
 
-// Helper function to calculate profile completion strength
 export const calcProfileStrength = (profile: ProfileState): number => {
   const basicFields = [
     profile.name,
@@ -135,7 +128,7 @@ export const calcProfileStrength = (profile: ProfileState): number => {
     ].filter(Boolean).length
   }
   
-  const totalFields = 4 + totalRoleFields // 4 basic + role-specific
+  const totalFields = 4 + totalRoleFields 
   const filledFields = basicFields + roleFields
   
   return Math.round((filledFields / totalFields) * 100)
