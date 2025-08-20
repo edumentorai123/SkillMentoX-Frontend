@@ -278,7 +278,6 @@ const ChatPage = () => {
             </div>
           </div>
 
-          {/* Search Bar */}
           {showSearch && (
             <div className="mb-4">
               <div className="relative">

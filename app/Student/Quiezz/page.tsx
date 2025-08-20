@@ -11,6 +11,7 @@ import {
   Home,
   CheckCircle,
 } from "lucide-react";
+import Navbar from "../Navbar";
 
 interface Question {
   question: string;
@@ -136,15 +137,9 @@ export default function QuizMaster() {
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [score, setScore] = useState(0);
   const [quizCompleted, setQuizCompleted] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
-  const sidebarItems = [
-    { name: "Dashboard", icon: Home, page: "dashboard" },
-    { name: "My Doubts", icon: MessageSquare, page: "doubts" },
-    { name: "Chats", icon: MessageSquare, page: "chats" },
-    { name: "Quizzes", icon: BookOpen, page: "quizzes" },
-    { name: "Course", icon: BookOpen, page: "course" },
-    { name: "Progress", icon: BarChart3, page: "progress" },
-  ];
+  
 
   const getDifficultyColor = (difficulty: string) => {
     const colors = {
@@ -338,7 +333,7 @@ export default function QuizMaster() {
               </button>
             ))}
           </div>
-
+          
           <div className="flex justify-between">
             <button
               onClick={resetQuiz}
@@ -482,44 +477,29 @@ export default function QuizMaster() {
   };
 
   return (
+    <>
     <div className="flex h-screen bg-gray-50">
-      <div className="w-64 bg-white shadow-sm border-r border-gray-200">
-        <div className="p-6">
-          <h1 className="text-xl font-bold text-teal-600">SkillMentorX</h1>
-        </div>
-
-        <nav className="mt-6">
-          {sidebarItems.map((item) => {
-            const Icon = item.icon;
-            return (
-              <button
-                key={item.name}
-                onClick={() => setCurrentPage(item.page)}
-                className={`w-full flex items-center px-6 py-3 text-left font-medium transition-colors ${
-                  currentPage === item.page
-                    ? "bg-teal-600 text-white"
-                    : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
-                }`}
-              >
-                <Icon className="w-5 h-5 mr-3" />
-                {item.name}
-              </button>
-            );
-          })}
-        </nav>
+    <div
+        className={`${
+          sidebarOpen ? "block" : "hidden"
+        } lg:block w-64 bg-white shadow-md flex-shrink-0`}
+      >
+        <Navbar />
       </div>
 
       <div className="flex-1 overflow-auto">
         <div
           className={`${
-            currentPage === "quiz-taking"
+              currentPage === "quiz-taking"
               ? "bg-gray-50"
               : "bg-gradient-to-br from-teal-600 to-teal-700"
-          } min-h-full`}
-        >
+            } min-h-full`}
+            >
           <div className="max-w-7xl mx-auto px-6 py-8">{renderContent()}</div>
         </div>
       </div>
     </div>
+                </>
   );
 }
+
