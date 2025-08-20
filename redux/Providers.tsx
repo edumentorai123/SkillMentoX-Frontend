@@ -3,6 +3,7 @@
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 import authReducer from "./Slices/authSlice";
+import profileReducer from "./Slices/profileSlice"
 
 interface User {
     id: string;
@@ -67,6 +68,7 @@ const createStore = () => {
     return configureStore({
         reducer: {
             auth: authReducer,
+            profile: profileReducer,
         },
         preloadedState,
     });

@@ -5,15 +5,19 @@ import { User, Mail, MapPin, Phone } from 'lucide-react'
 import { useAppSelector, useAppDispatch } from '@/redux/hooks'
 import { updateField } from '@/redux/Slices/profileSlice'
 import AvatarUploader from './AvatarUploader'
-import AOS from 'aos'
-import 'aos/dist/aos.css'
 
 const Step2BasicInfo: React.FC = () => {
-  const { name, email, location, phone } = useAppSelector((state) => state.profile)
+  const profile = useAppSelector((state) => state.profile)
   const dispatch = useAppDispatch()
 
+  // Safe destructuring with fallbacks
+  const { name = '', email = '', location = '', phone = '' } = profile || {}
+
   useEffect(() => {
-    AOS.refresh()
+    // Safely refresh AOS if it exists
+    if (typeof window !== 'undefined' && window.AOS) {
+      window.AOS.refresh()
+    }
   }, [])
 
   const handleInputChange = <
@@ -23,6 +27,26 @@ const Step2BasicInfo: React.FC = () => {
     value: string
   ) => {
     dispatch(updateField({ field, value }))
+  }
+
+  // Show loading state if profile is not ready
+  if (!profile) {
+    return (
+      <div className="bg-white rounded-2xl p-8 shadow-xl">
+        <div className="animate-pulse">
+          <div className="h-8 bg-gray-200 rounded mb-4"></div>
+          <div className="h-4 bg-gray-200 rounded mb-8"></div>
+          <div className="space-y-6">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i}>
+                <div className="h-4 bg-gray-200 rounded mb-2"></div>
+                <div className="h-12 bg-gray-200 rounded"></div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (

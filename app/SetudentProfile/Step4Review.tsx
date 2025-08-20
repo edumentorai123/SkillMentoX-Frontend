@@ -10,6 +10,24 @@ const Step4Review: React.FC = () => {
   const profile = useAppSelector((state) => state.profile)
   const dispatch = useAppDispatch()
 
+  // Safe destructuring with fallbacks
+  const {
+    role = null,
+    name = '',
+    email = '',
+    location = '',
+    phone = '',
+    avatarPreview = null,
+    educationLevel = '',
+    selectedCourse = '',
+    goals = [],
+    learningStyle = '',
+    title = '',
+    experience = '',
+    expertise = [],
+    availability = ''
+  } = profile || {}
+
   useEffect(() => {
     // Optional: Refresh AOS on component mount
     if (typeof window !== 'undefined' && window.AOS) {
@@ -46,6 +64,30 @@ const Step4Review: React.FC = () => {
     return colors[index]
   }
 
+  // Show loading state if profile is not ready
+  if (!profile || role === null) {
+    return (
+      <div className="bg-white rounded-2xl p-8 shadow-xl">
+        <div className="animate-pulse">
+          <div className="h-8 bg-gray-200 rounded mb-4"></div>
+          <div className="h-4 bg-gray-200 rounded mb-8"></div>
+          <div className="space-y-6">
+            {[1, 2].map((i) => (
+              <div key={i} className="bg-gray-50 rounded-xl p-6">
+                <div className="h-6 bg-gray-200 rounded mb-4"></div>
+                <div className="space-y-3">
+                  {[1, 2, 3].map((j) => (
+                    <div key={j} className="h-4 bg-gray-200 rounded"></div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="bg-white rounded-2xl p-8 shadow-xl" data-aos="zoom-in">
       <div className="text-center mb-8">
@@ -62,18 +104,20 @@ const Step4Review: React.FC = () => {
         {/* Avatar Section */}
         <div className="flex justify-center mb-8">
           <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-white shadow-lg">
-            {profile.avatarPreview ? (
+            {avatarPreview ? (
               <Image
-                src={profile.avatarPreview}
+                src={avatarPreview}
                 alt="Profile avatar"
+                width={96}
+                height={96}
                 className="w-full h-full object-cover"
               />
             ) : (
               <div
-                className={`w-full h-full bg-gradient-to-br ${getGradientColors(profile.name)} 
+                className={`w-full h-full bg-gradient-to-br ${getGradientColors(name)} 
                            flex items-center justify-center text-white text-xl font-bold`}
               >
-                {getInitials(profile.name)}
+                {getInitials(name)}
               </div>
             )}
           </div>
@@ -102,7 +146,7 @@ const Step4Review: React.FC = () => {
               <User className="w-4 h-4 text-gray-500" />
               <div>
                 <p className="text-sm font-medium text-gray-700">Full Name</p>
-                <p className="text-gray-900">{profile.name || 'Not provided'}</p>
+                <p className="text-gray-900">{name || 'Not provided'}</p>
               </div>
             </div>
             
@@ -110,7 +154,7 @@ const Step4Review: React.FC = () => {
               <Mail className="w-4 h-4 text-gray-500" />
               <div>
                 <p className="text-sm font-medium text-gray-700">Email</p>
-                <p className="text-gray-900">{profile.email || 'Not provided'}</p>
+                <p className="text-gray-900">{email || 'Not provided'}</p>
               </div>
             </div>
             
@@ -118,7 +162,7 @@ const Step4Review: React.FC = () => {
               <MapPin className="w-4 h-4 text-gray-500" />
               <div>
                 <p className="text-sm font-medium text-gray-700">Location</p>
-                <p className="text-gray-900">{profile.location || 'Not provided'}</p>
+                <p className="text-gray-900">{location || 'Not provided'}</p>
               </div>
             </div>
             
@@ -126,7 +170,7 @@ const Step4Review: React.FC = () => {
               <Phone className="w-4 h-4 text-gray-500" />
               <div>
                 <p className="text-sm font-medium text-gray-700">Phone</p>
-                <p className="text-gray-900">{profile.phone || 'Not provided'}</p>
+                <p className="text-gray-900">{phone || 'Not provided'}</p>
               </div>
             </div>
           </div>
@@ -136,7 +180,7 @@ const Step4Review: React.FC = () => {
         <div className="bg-gray-50 rounded-xl p-6 border border-gray-200">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-xl font-semibold text-[#0D4C5B] flex items-center">
-              {profile.role === 'student' ? (
+              {role === 'student' ? (
                 <>
                   <GraduationCap className="w-5 h-5 mr-2" />
                   Learning Details
@@ -159,13 +203,13 @@ const Step4Review: React.FC = () => {
             </button>
           </div>
           
-          {profile.role === 'student' ? (
+          {role === 'student' ? (
             <div className="space-y-4">
               <div className="flex items-start space-x-3">
                 <GraduationCap className="w-4 h-4 text-gray-500 mt-1" />
                 <div>
                   <p className="text-sm font-medium text-gray-700">Education Level</p>
-                  <p className="text-gray-900">{profile.educationLevel || 'Not provided'}</p>
+                  <p className="text-gray-900">{educationLevel || 'Not provided'}</p>
                 </div>
               </div>
               
@@ -173,7 +217,7 @@ const Step4Review: React.FC = () => {
                 <BookOpen className="w-4 h-4 text-gray-500 mt-1" />
                 <div>
                   <p className="text-sm font-medium text-gray-700">Course Interest</p>
-                  <p className="text-gray-900">{profile.selectedCourse || 'Not provided'}</p>
+                  <p className="text-gray-900">{selectedCourse || 'Not provided'}</p>
                 </div>
               </div>
               
@@ -181,9 +225,9 @@ const Step4Review: React.FC = () => {
                 <Target className="w-4 h-4 text-gray-500 mt-1" />
                 <div>
                   <p className="text-sm font-medium text-gray-700">Learning Goals</p>
-                  {profile.goals.length > 0 ? (
+                  {goals.length > 0 ? (
                     <div className="flex flex-wrap gap-2 mt-1">
-                      {profile.goals.map((goal) => (
+                      {goals.map((goal) => (
                         <span
                           key={goal}
                           className="px-3 py-1 bg-gradient-to-r from-[#1887A1] to-[#0D4C5B] 
@@ -203,7 +247,7 @@ const Step4Review: React.FC = () => {
                 <User className="w-4 h-4 text-gray-500 mt-1" />
                 <div>
                   <p className="text-sm font-medium text-gray-700">Learning Style</p>
-                  <p className="text-gray-900">{profile.learningStyle || 'Not provided'}</p>
+                  <p className="text-gray-900">{learningStyle || 'Not provided'}</p>
                 </div>
               </div>
             </div>
@@ -213,7 +257,7 @@ const Step4Review: React.FC = () => {
                 <User className="w-4 h-4 text-gray-500 mt-1" />
                 <div>
                   <p className="text-sm font-medium text-gray-700">Professional Title</p>
-                  <p className="text-gray-900">{profile.title || 'Not provided'}</p>
+                  <p className="text-gray-900">{title || 'Not provided'}</p>
                 </div>
               </div>
               
@@ -221,7 +265,7 @@ const Step4Review: React.FC = () => {
                 <Award className="w-4 h-4 text-gray-500 mt-1" />
                 <div>
                   <p className="text-sm font-medium text-gray-700">Years of Experience</p>
-                  <p className="text-gray-900">{profile.experience ? `${profile.experience} years` : 'Not provided'}</p>
+                  <p className="text-gray-900">{experience ? `${experience} years` : 'Not provided'}</p>
                 </div>
               </div>
               
@@ -229,9 +273,9 @@ const Step4Review: React.FC = () => {
                 <Target className="w-4 h-4 text-gray-500 mt-1" />
                 <div>
                   <p className="text-sm font-medium text-gray-700">Areas of Expertise</p>
-                  {profile.expertise.length > 0 ? (
+                  {expertise.length > 0 ? (
                     <div className="flex flex-wrap gap-2 mt-1">
-                      {profile.expertise.map((area) => (
+                      {expertise.map((area) => (
                         <span
                           key={area}
                           className="px-3 py-1 bg-gradient-to-r from-[#1887A1] to-[#0D4C5B] 
@@ -251,7 +295,7 @@ const Step4Review: React.FC = () => {
                 <Clock className="w-4 h-4 text-gray-500 mt-1" />
                 <div>
                   <p className="text-sm font-medium text-gray-700">Availability</p>
-                  <p className="text-gray-900">{profile.availability || 'Not provided'}</p>
+                  <p className="text-gray-900">{availability || 'Not provided'}</p>
                 </div>
               </div>
             </div>
@@ -267,7 +311,7 @@ const Step4Review: React.FC = () => {
             <div>
               <h4 className="font-semibold text-green-800">Ready to get started!</h4>
               <p className="text-sm text-green-700 mt-1">
-                {profile.role === 'student' 
+                {role === 'student' 
                   ? 'Once you submit, we\'ll match you with the perfect mentors for your learning journey.'
                   : 'Once you submit, students looking for your expertise will be able to connect with you.'
                 }

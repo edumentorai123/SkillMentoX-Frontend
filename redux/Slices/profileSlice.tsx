@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 export interface ProfileState {
   currentStep: 2 | 3 | 4
-  role: '' | 'student' | 'mentor'
+  role: 'student' | 'mentor' | null 
   
   name: string
   email: string
@@ -23,8 +23,7 @@ export interface ProfileState {
 
 const initialState: ProfileState = {
   currentStep: 2, 
-  role: '',
-  
+  role: null,
   name: '',
   email: '',
   location: '',
@@ -72,12 +71,11 @@ const profileSlice = createSlice({
     },
     
     updateField: <K extends keyof Omit<ProfileState, 'currentStep'>>(
-  state: ProfileState,
-  action: PayloadAction<{ field: K; value: ProfileState[K] }>
-) => {
-  state[action.payload.field] = action.payload.value
-},
-
+      state: ProfileState,
+      action: PayloadAction<{ field: K; value: ProfileState[K] }>
+    ) => {
+      state[action.payload.field] = action.payload.value
+    },
     
     toggleArrayItem: (state, action: PayloadAction<ToggleArrayItemPayload>) => {
       const { field, value } = action.payload

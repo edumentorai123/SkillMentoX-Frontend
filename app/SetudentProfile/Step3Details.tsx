@@ -5,8 +5,6 @@ import { GraduationCap, Target, BookOpen, User, Award, Clock } from 'lucide-reac
 import { useAppSelector, useAppDispatch } from '@/redux/hooks'
 import { updateField, toggleArrayItem } from '@/redux/Slices/profileSlice'
 import type { ProfileState } from '@/redux/Slices/profileSlice'
-import AOS from 'aos'
-import 'aos/dist/aos.css'
 
 // Mock data - will be replaced with PDF parsed data later
 const courses = [
@@ -49,6 +47,7 @@ const studentGoals = [
   'Freelancing'
 ]
 
+
 const mentorExpertise = [
   'Frontend Development',
   'Backend Development',
@@ -64,17 +63,31 @@ const mentorExpertise = [
   'Entrepreneurship'
 ]
 
-// Define the allowed fields for updateField
+
 type UpdateFieldKeys = keyof Omit<ProfileState, 'currentStep' | 'goals' | 'expertise'>
 
 const Step3Details: React.FC = () => {
   const profile = useAppSelector((state) => state.profile)
   const dispatch = useAppDispatch()
-  const { role } = profile
+
+  // Safe destructuring with proper null checks
+  const {
+    role = null,
+    educationLevel = '',
+    selectedCourse = '',
+    goals = [],
+    learningStyle = '',
+    title = '',
+    experience = '',
+    expertise = [],
+    availability = ''
+  } = profile || {}
 
   useEffect(() => {
-    // Refresh AOS animations
-    AOS.refresh()
+    // Safely refresh AOS animations
+    if (typeof window !== 'undefined' && window.AOS) {
+      window.AOS.refresh()
+    }
   }, [])
 
   // Use the specific type for field
@@ -84,6 +97,26 @@ const Step3Details: React.FC = () => {
 
   const handleToggleArrayItem = (field: 'goals' | 'expertise', value: string) => {
     dispatch(toggleArrayItem({ field, value }))
+  }
+
+  // Show loading state if profile is not ready or role is not set
+  if (!profile || role === null) {
+    return (
+      <div className="bg-white rounded-2xl p-8 shadow-xl">
+        <div className="animate-pulse">
+          <div className="h-8 bg-gray-200 rounded mb-4"></div>
+          <div className="h-4 bg-gray-200 rounded mb-8"></div>
+          <div className="space-y-6">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i}>
+                <div className="h-4 bg-gray-200 rounded mb-2"></div>
+                <div className="h-12 bg-gray-200 rounded"></div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    )
   }
 
   const renderStudentFields = () => (
@@ -96,7 +129,7 @@ const Step3Details: React.FC = () => {
         </label>
         <select
           id="educationLevel"
-          value={profile.educationLevel}
+          value={educationLevel}
           onChange={(e) => handleInputChange('educationLevel', e.target.value)}
           className="w-full px-4 py-3 border border-gray-300 rounded-xl
                    focus:outline-none focus:ring-2 focus:ring-[#1887A1] focus:border-transparent
@@ -118,7 +151,7 @@ const Step3Details: React.FC = () => {
         </label>
         <select
           id="selectedCourse"
-          value={profile.selectedCourse}
+          value={selectedCourse}
           onChange={(e) => handleInputChange('selectedCourse', e.target.value)}
           className="w-full px-4 py-3 border border-gray-300 rounded-xl
                    focus:outline-none focus:ring-2 focus:ring-[#1887A1] focus:border-transparent
@@ -146,7 +179,7 @@ const Step3Details: React.FC = () => {
               onClick={() => handleToggleArrayItem('goals', goal)}
               className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200
                        border-2 focus:outline-none focus:ring-2 focus:ring-offset-1
-                       ${profile.goals.includes(goal)
+                       ${goals.includes(goal)
                          ? 'border-[#1887A1] bg-gradient-to-r from-[#1887A1] to-[#0D4C5B] text-white focus:ring-[#1887A1]'
                          : 'border-gray-300 bg-white text-gray-700 hover:border-[#1887A1] focus:ring-[#1887A1]'
                        }`}
@@ -156,7 +189,7 @@ const Step3Details: React.FC = () => {
           ))}
         </div>
         <p className="mt-2 text-xs text-gray-500">
-          Selected: {profile.goals.length} goal{profile.goals.length !== 1 ? 's' : ''}
+          Selected: {goals.length} goal{goals.length !== 1 ? 's' : ''}
         </p>
       </div>
 
@@ -168,7 +201,7 @@ const Step3Details: React.FC = () => {
         </label>
         <select
           id="learningStyle"
-          value={profile.learningStyle}
+          value={learningStyle}
           onChange={(e) => handleInputChange('learningStyle', e.target.value)}
           className="w-full px-4 py-3 border border-gray-300 rounded-xl
                    focus:outline-none focus:ring-2 focus:ring-[#1887A1] focus:border-transparent
@@ -195,7 +228,7 @@ const Step3Details: React.FC = () => {
         <input
           id="title"
           type="text"
-          value={profile.title}
+          value={title}
           onChange={(e) => handleInputChange('title', e.target.value)}
           placeholder="e.g., Senior Software Engineer, UX Designer"
           className="w-full px-4 py-3 border border-gray-300 rounded-xl
@@ -216,7 +249,7 @@ const Step3Details: React.FC = () => {
           type="number"
           min="0"
           max="50"
-          value={profile.experience}
+          value={experience}
           onChange={(e) => handleInputChange('experience', e.target.value)}
           placeholder="Number of years in your field"
           className="w-full px-4 py-3 border border-gray-300 rounded-xl
@@ -240,7 +273,7 @@ const Step3Details: React.FC = () => {
               onClick={() => handleToggleArrayItem('expertise', area)}
               className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200
                        border-2 focus:outline-none focus:ring-2 focus:ring-offset-1
-                       ${profile.expertise.includes(area)
+                       ${expertise.includes(area)
                          ? 'border-[#1887A1] bg-gradient-to-r from-[#1887A1] to-[#0D4C5B] text-white focus:ring-[#1887A1]'
                          : 'border-gray-300 bg-white text-gray-700 hover:border-[#1887A1] focus:ring-[#1887A1]'
                        }`}
@@ -250,7 +283,7 @@ const Step3Details: React.FC = () => {
           ))}
         </div>
         <p className="mt-2 text-xs text-gray-500">
-          Selected: {profile.expertise.length} area{profile.expertise.length !== 1 ? 's' : ''}
+          Selected: {expertise.length} area{expertise.length !== 1 ? 's' : ''}
         </p>
       </div>
 
@@ -263,7 +296,7 @@ const Step3Details: React.FC = () => {
         <input
           id="availability"
           type="text"
-          value={profile.availability}
+          value={availability}
           onChange={(e) => handleInputChange('availability', e.target.value)}
           placeholder="e.g., Weekends, Evenings, 10-15 hours/week"
           className="w-full px-4 py-3 border border-gray-300 rounded-xl
