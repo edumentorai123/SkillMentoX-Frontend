@@ -11,20 +11,14 @@ import {
   Play,
   X
 } from 'lucide-react';
+import Navbar from '../Navbar';
 
 const Course = () => {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [activeNav, setActiveNav] = useState('Course');
+    const [sidebarOpen, setSidebarOpen] = useState(true);
+    const [activeNav, setActiveNav] = useState('Course');
 
-  const navItems = [
-    { id: 'dashboard', label: "Dashboard", icon: Home },
-    { id: 'doubts', label: "My Doubts", icon: HelpCircle },
-    { id: 'chats', label: "Chats", icon: MessageCircle },
-    { id: 'quizzes', label: "Quizzes", icon: BookOpen },
-    { id: 'course', label: "Course", icon: BookOpen },
-    { id: 'progress', label: "Progress", icon: BarChart3 },
-  ];
 
+ 
   const handleNavClick = (navId: string, label: string) => {
     setActiveNav(label);
     setSidebarOpen(false);
@@ -33,53 +27,13 @@ const Course = () => {
 
   return (
     <div className="flex h-screen bg-gray-50">
-      {/* Sidebar */}
-      <aside
-        className={`
-          fixed lg:static inset-y-0 left-0 z-50
-          w-64 sm:w-72 bg-white shadow-lg overflow-y-auto
-          transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
-          lg:translate-x-0 transition-transform duration-300 ease-in-out
-        `}
+     <div
+        className={`${
+          sidebarOpen ? "block" : "hidden"
+        } lg:block w-64 bg-white shadow-md flex-shrink-0`}
       >
-        {/* Close Button Mobile */}
-        <div className="lg:hidden absolute top-4 right-4">
-          <button
-            onClick={() => setSidebarOpen(false)}
-            className="p-2 rounded-md text-gray-600 hover:bg-gray-100"
-          >
-            <X size={20} />
-          </button>
-        </div>
-
-        {/* Logo */}
-        <div className="p-6 border-b border-gray-200">
-          <h1 className="text-2xl font-bold text-teal-600">SkillMentorX</h1>
-        </div>
-
-        {/* Nav Items */}
-        <nav className="mt-6 px-4 space-y-1">
-          {navItems.map((item) => {
-            const IconComponent = item.icon;
-            const isActive = activeNav === item.label;
-            return (
-              <div
-                key={item.id}
-                onClick={() => handleNavClick(item.id, item.label)}
-                className={`flex items-center py-3 px-4 rounded-lg cursor-pointer transition-colors ${
-                  isActive
-                    ? 'bg-teal-600 text-white'
-                    : 'text-gray-600 hover:bg-gray-100'
-                }`}
-              >
-                <IconComponent className="w-5 h-5 mr-3" />
-                <span className="font-medium">{item.label}</span>
-              </div>
-            );
-          })}
-        </nav>
-      </aside>
-
+        <Navbar />
+      </div>
       {/* Main Content */}
       <div className="flex-1 bg-gradient-to-br from-teal-600 to-teal-800 p-8">
         {/* Header */}
