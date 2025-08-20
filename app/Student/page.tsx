@@ -1,13 +1,14 @@
 
 import React from 'react'
-import Dashboard from './DashBord'
+import Dashboard from './Dashboard'
 
-const page = () => {
+
+const Page = () => {
   return (
     <div>
-      <Dashboard/>
+    <Dashboard/>
     </div>
   )
 }
 
-export default page
+export default Page
