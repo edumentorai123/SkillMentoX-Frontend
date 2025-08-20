@@ -59,7 +59,7 @@ const LoginForm: React.FC = () => {
       } else if (role === "student") {
         router.push("/StudentHome");
       } else if (role === "mentor") {
-        router.push("/SetupProfile");
+        router.push("/mentorProfile");
       } else if (role === "admin") {
         router.push("/adminDashboard");
       } else {

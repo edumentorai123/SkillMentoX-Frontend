@@ -79,7 +79,7 @@ const Nav = () => {
                   <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#1887A1] transition-all duration-200 group-hover:w-full"></span>
                 </Link>
               ))}
-              <Link href="/Register">
+              <Link href="/loginForm">
                 <button className="bg-[#1887A1] text-white px-6 py-2.5 rounded-2xl hover:bg-[#0D4C5B] cursor-pointer hover:shadow-lg transform hover:scale-105 transition-all duration-200 font-medium">
                   Signup Free
                 </button>
@@ -162,7 +162,7 @@ const Nav = () => {
           
           {/* CTA Section */}
           <div className="px-4 py-6 border-t border-gray-100 mt-auto">
-            <Link href="/Register" onClick={closeMobileMenu}>
+            <Link href="/loginForm" onClick={closeMobileMenu}>
               <button className="w-full bg-[#1887A1] text-white px-6 py-3 rounded-2xl hover:bg-[#0D4C5B] cursor-pointer transition-colors duration-200 font-medium text-center min-h-[48px] flex items-center justify-center">
                 Signup Free
               </button>
