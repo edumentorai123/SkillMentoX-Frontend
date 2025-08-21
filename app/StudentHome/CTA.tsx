@@ -17,7 +17,7 @@ const CTA = () => {
 
           {/* Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/SetupProfile">
+            <Link href="/SetudentProfile">
               <button className="bg-white text-[#1887A1] px-8 py-4 rounded-xl font-semibold cursor-pointer shadow-md hover:bg-gray-100 transition-transform duration-300 hover:scale-105">
                 Get Started Free
               </button>

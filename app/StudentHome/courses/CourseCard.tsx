@@ -290,7 +290,7 @@ const CourseCard: React.FC<CourseCardProps> = ({ category, index, hoveredCard, s
 
             {/* Start Learning button */}
             <div className="px-4 sm:px-6 pb-4 sm:pb-6" data-no-navigation="true">
-                <Link href="/SetupProfile">
+                <Link href="/SetudentProfile">
                     <button
                         onClick={(e) => {
                             e.stopPropagation();

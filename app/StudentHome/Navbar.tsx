@@ -4,19 +4,54 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import { Menu, X, Settings, LogOut, User } from "lucide-react";
+import { RootState } from "@/redux/store";
+import { useSelector } from "react-redux";
 
 interface NavbarProps {
   studentName?: string;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ studentName = "Student" }) => {
+const Navbar: React.FC<NavbarProps> = ({ studentName: propStudentName }) => {
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const profileRef = useRef<HTMLDivElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
+  const user = useSelector((state: RootState) => state.auth.user);
+  const isLoading = useSelector((state: RootState) => state.auth.loading);
 
-  const firstLetter = studentName.charAt(0).toUpperCase();
+  // Get the display name for the student
+  const getStudentName = () => {
+    // If a prop is provided, use it
+    if (propStudentName) {
+      return propStudentName;
+    }
+    
+    // If no user data, return default
+    if (!user) {
+      return "Guest";
+    }
+    
+    const firstName = user.firstName?.trim() || "";
+    const lastName = user.lastName?.trim() || "";
+    
+    // Construct full name if both parts exist
+    if (firstName && lastName) {
+      return `${firstName} ${lastName}`;
+    }
+    
+    // Return available name or fallback
+    return firstName || "Guest";
+  };
+
+  const studentName = getStudentName();
+  const displayName = isLoading ? "Loading..." : studentName;
+
+  // Ensure component is mounted on client to avoid hydration mismatch
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const navLinks = [
     { name: "Home", href: "/StudentHome" },
@@ -28,10 +63,9 @@ const Navbar: React.FC<NavbarProps> = ({ studentName = "Student" }) => {
   const profileMenuItems = [
     { name: "Profile", href: "/StudentHome/profile", icon: User },
     { name: "Settings", href: "/StudentHome/settings", icon: Settings },
-    { name: "Sign Out", href: "/login", icon: LogOut },
+    { name: "Sign Out", href: "/loginForm", icon: LogOut },
   ];
 
-  // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
@@ -43,26 +77,24 @@ const Navbar: React.FC<NavbarProps> = ({ studentName = "Student" }) => {
     };
 
     if (isProfileDropdownOpen || isMobileMenuOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-      return () => document.removeEventListener('mousedown', handleClickOutside);
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => document.removeEventListener("mousedown", handleClickOutside);
     }
   }, [isProfileDropdownOpen, isMobileMenuOpen]);
 
-  // Close mobile menu on route change
   useEffect(() => {
     setIsMobileMenuOpen(false);
     setIsProfileDropdownOpen(false);
   }, [pathname]);
 
-  // Prevent body scroll when mobile menu is open
   useEffect(() => {
     if (isMobileMenuOpen) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
     }
     return () => {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
     };
   }, [isMobileMenuOpen]);
 
@@ -85,7 +117,6 @@ const Navbar: React.FC<NavbarProps> = ({ studentName = "Student" }) => {
       <nav className="bg-white/95 backdrop-blur-sm shadow-lg sticky top-0 z-50 border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6">
           <div className="flex justify-between items-center h-16 sm:h-18">
-
             {/* Logo Section */}
             <Link href="/StudentHome" className="flex items-center group min-w-0 flex-shrink-0">
               <div className="relative w-16 h-10 sm:w-20 sm:h-12 lg:w-24 lg:h-14 transform group-hover:scale-105 transition-transform duration-200">
@@ -109,19 +140,14 @@ const Navbar: React.FC<NavbarProps> = ({ studentName = "Student" }) => {
                 <Link
                   key={link.name}
                   href={link.href}
-                  className={`px-3 xl:px-4 py-2 text-sm font-medium transition-all duration-300 whitespace-nowrap relative group ${pathname === link.href
-                      ? "text-[#1887A1]"
-                      : "text-gray-600 hover:text-[#1887A1]"
-                    }`}
+                  className={`px-3 xl:px-4 py-2 text-sm font-medium transition-all duration-300 whitespace-nowrap relative group ${
+                    pathname === link.href ? "text-[#1887A1]" : "text-gray-600 hover:text-[#1887A1]"
+                  }`}
                 >
                   {link.name}
-
-                  {/* Active state bottom indicator */}
                   {pathname === link.href && (
                     <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-8 h-0.5 bg-[#1887A1] rounded-full transition-all duration-300"></div>
                   )}
-
-                  {/* Hover state bottom line */}
                   {pathname !== link.href && (
                     <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-[#1887A1] rounded-full transition-all duration-300 group-hover:w-8"></div>
                   )}
@@ -139,17 +165,17 @@ const Navbar: React.FC<NavbarProps> = ({ studentName = "Student" }) => {
                   aria-label="Profile menu"
                   aria-expanded={isProfileDropdownOpen}
                 >
-                  {firstLetter}
+                  {isMounted ? displayName.charAt(0).toUpperCase() : "G"}
                 </button>
 
-                {/* Profile Dropdown Menu */}
                 {isProfileDropdownOpen && (
                   <div className="absolute right-0 mt-2 w-48 sm:w-56 bg-white rounded-xl shadow-xl border border-gray-100 py-2 z-50 animate-fadeIn">
                     <div className="px-3 sm:px-4 py-2 sm:py-3 border-b border-gray-100">
-                      <p className="text-sm font-medium text-gray-900 truncate">{studentName}</p>
+                      <p className="text-sm font-medium text-gray-900 truncate">
+                        {isMounted ? displayName : "Loading..."}
+                      </p>
                       <p className="text-xs text-gray-500">Student Account</p>
                     </div>
-
                     {profileMenuItems.map((item) => (
                       <Link
                         key={item.name}
@@ -165,25 +191,20 @@ const Navbar: React.FC<NavbarProps> = ({ studentName = "Student" }) => {
                 )}
               </div>
 
-              {/* Mobile Menu Button - Show on mobile and tablet */}
+              {/* Mobile Menu Button */}
               <button
                 onClick={toggleMobileMenu}
                 className="lg:hidden p-2 text-gray-500 hover:text-[#1887A1] hover:bg-gray-50 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#1887A1]/20 min-h-[44px] min-w-[44px] flex items-center justify-center"
                 aria-label="Toggle mobile menu"
                 aria-expanded={isMobileMenuOpen}
               >
-                {isMobileMenuOpen ? (
-                  <X className="w-5 h-5" />
-                ) : (
-                  <Menu className="w-5 h-5" />
-                )}
+                {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>
             </div>
           </div>
         </div>
       </nav>
 
-      {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && (
         <div
           className="fixed inset-0 z-40 bg-black/50 lg:hidden"
@@ -191,20 +212,19 @@ const Navbar: React.FC<NavbarProps> = ({ studentName = "Student" }) => {
         />
       )}
 
-      {/* Mobile Menu */}
       <div
         ref={mobileMenuRef}
-        className={`fixed top-0 right-0 w-80 max-w-[85vw] h-full bg-white z-50 transform transition-transform duration-300 ease-in-out lg:hidden shadow-2xl ${isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
-          }`}
+        className={`fixed top-0 right-0 w-80 max-w-[85vw] h-full bg-white z-50 transform transition-transform duration-300 ease-in-out lg:hidden shadow-2xl ${
+          isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
+        }`}
       >
-        {/* Mobile Menu Header */}
         <div className="flex items-center justify-between p-4 border-b border-gray-100 bg-gray-50">
           <div className="flex items-center">
             <div className="w-8 h-8 bg-gradient-to-r from-[#1887A1] to-[#0D4C5B] rounded-full flex items-center justify-center text-white text-sm font-semibold mr-3">
-              {firstLetter}
+              {isMounted ? displayName.charAt(0).toUpperCase() : "G"}
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-900">{studentName}</p>
+              <p className="text-sm font-medium text-gray-900">{isMounted ? displayName : "Loading..."}</p>
               <p className="text-xs text-gray-500">Student Account</p>
             </div>
           </div>
@@ -217,9 +237,7 @@ const Navbar: React.FC<NavbarProps> = ({ studentName = "Student" }) => {
           </button>
         </div>
 
-        {/* Mobile Menu Content */}
         <div className="flex flex-col h-full overflow-y-auto">
-          {/* Navigation Links */}
           <div className="px-4 py-6 space-y-1">
             <div className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-4 px-2">
               Navigation
@@ -228,10 +246,11 @@ const Navbar: React.FC<NavbarProps> = ({ studentName = "Student" }) => {
               <Link
                 key={link.name}
                 href={link.href}
-                className={`px-4 py-3 rounded-lg text-base font-medium transition-colors duration-200 min-h-[48px] flex items-center ${pathname === link.href
-                  ? "text-[#1887A1] bg-[#1887A1]/10 border-l-4 border-[#1887A1]"
-                  : "text-gray-700 hover:text-[#1887A1] hover:bg-gray-50"
-                  }`}
+                className={`px-4 py-3 rounded-lg text-base font-medium transition-colors duration-200 min-h-[48px] flex items-center ${
+                  pathname === link.href
+                    ? "text-[#1887A1] bg-[#1887A1]/10 border-l-4 border-[#1887A1]"
+                    : "text-gray-700 hover:text-[#1887A1] hover:bg-gray-50"
+                }`}
                 onClick={closeMobileMenu}
               >
                 {link.name}
@@ -239,7 +258,6 @@ const Navbar: React.FC<NavbarProps> = ({ studentName = "Student" }) => {
             ))}
           </div>
 
-          {/* Profile Menu Items */}
           <div className="px-4 py-6 border-t border-gray-100 mt-auto">
             <div className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-4 px-2">
               Account
@@ -259,7 +277,6 @@ const Navbar: React.FC<NavbarProps> = ({ studentName = "Student" }) => {
         </div>
       </div>
 
-      {/* Custom Styles */}
       <style jsx>{`
         @keyframes fadeIn {
           from {
@@ -276,12 +293,10 @@ const Navbar: React.FC<NavbarProps> = ({ studentName = "Student" }) => {
           animation: fadeIn 0.2s ease-out;
         }
 
-        /* Better focus styles */
         button:focus {
           outline: none;
         }
 
-        /* Prevent text selection on buttons */
         button {
           -webkit-user-select: none;
           -moz-user-select: none;
@@ -289,14 +304,13 @@ const Navbar: React.FC<NavbarProps> = ({ studentName = "Student" }) => {
           user-select: none;
         }
 
-        /* Ensure proper touch targets */
         @media (max-width: 1024px) {
-          button, a {
+          button,
+          a {
             min-height: 44px;
           }
         }
 
-        /* Smooth scrolling for mobile menu */
         .overflow-y-auto {
           -webkit-overflow-scrolling: touch;
         }

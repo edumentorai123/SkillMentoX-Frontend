@@ -81,7 +81,7 @@ const CourseCategories: React.FC = () => {
                   animationFillMode: 'forwards'
                 }}
               >
-                <Link href="/SetupProfile">
+                <Link href="/SetudentProfile">
                   <button
                     onClick={handleJourneyClick}
                     className="inline-flex items-center space-x-2 sm:space-x-3 cursor-pointer px-6 sm:px-8 md:px-12 py-3 sm:py-4 bg-white text-[#1887A1] font-bold text-base sm:text-lg rounded-xl sm:rounded-2xl shadow-2xl hover:shadow-3xl transition-all duration-300 group transform hover:scale-105 active:scale-95"
