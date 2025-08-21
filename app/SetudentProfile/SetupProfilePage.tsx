@@ -40,7 +40,7 @@ const SetupProfilePage: React.FC = () => {
         }
       }
 
-      // Set role from URL if not already set
+   
       if (profile?.role === null) {
         const urlParams = new URLSearchParams(window.location.search)
         const roleFromUrl = urlParams.get('role') as 'student' | 'mentor' | null
