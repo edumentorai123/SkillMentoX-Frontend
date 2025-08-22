@@ -57,7 +57,7 @@ const ProgressHeader: React.FC = () => {
         <div className="w-full bg-gray-200 rounded-full h-2">
           <div 
             className="bg-gradient-to-r from-[#1887A1] to-[#0D4C5B] h-2 rounded-full 
-                     transition-all duration-500 ease-out"
+                      transition-all duration-500 ease-out"
             style={{ width: `${stepProgress}%` }}
           />
         </div>

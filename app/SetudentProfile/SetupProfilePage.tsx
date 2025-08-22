@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from 'react'
 import { useAppSelector, useAppDispatch } from '@/redux/hooks'
-import { setRole } from '@/redux/Slices/profileSlice'
 import ProgressHeader from './ProgressHeader'
 import Step2BasicInfo from './Step2BasicInfo'
 import Step3Details from './Step3Details'
@@ -11,6 +10,7 @@ import NavigationFooter from './NavigationFooter'
 import 'aos/dist/aos.css'
 import type { Aos } from 'aos'
 import axios from 'axios'
+import { setRole } from '@/redux/Slices/profileSlice'
 
 declare global {
   interface Window {
@@ -41,6 +41,7 @@ const SetupProfilePage: React.FC = () => {
         }
       }
 
+
       if (profile?.role === null) {
         dispatch(setRole('student'))
       }
@@ -51,24 +52,24 @@ const SetupProfilePage: React.FC = () => {
     initializeComponent()
   }, [profile?.role, dispatch])
 
- 
+
   const getStepValidation = (): boolean => {
     if (!profile) return false
-    
+
     switch (profile.currentStep) {
-      case 2: 
+      case 2:
         return !!(profile.name && profile.email && profile.location && profile.phone)
-      
-      case 3: 
+
+      case 3:
         return !!(
           profile.educationLevel &&
           profile.selectedCourse &&
           profile.selectedStack
         )
-      
+
       case 4:
         return true
-      
+
       default:
         return false
     }
@@ -79,7 +80,7 @@ const SetupProfilePage: React.FC = () => {
   // Handle final profile submission (student only)
   const handleProfileSubmit = async () => {
     if (!profile) return
-  
+
     try {
       const response = await axios.post(
         `${API_URL}/api/students/createprofile`,
@@ -96,7 +97,7 @@ const SetupProfilePage: React.FC = () => {
   // Render step content
   const renderStepContent = () => {
     if (!profile) return null
-    
+
     switch (profile.currentStep) {
       case 2:
         return <Step2BasicInfo />
@@ -140,7 +141,7 @@ const SetupProfilePage: React.FC = () => {
         </div>
 
         {/* Navigation Footer */}
-        <NavigationFooter 
+        <NavigationFooter
           isStepValid={isStepValid}
           onSubmit={handleProfileSubmit}
         />

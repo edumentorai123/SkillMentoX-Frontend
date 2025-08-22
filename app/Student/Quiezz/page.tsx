@@ -1,23 +1,19 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, } from "react";
 import {
   ChevronDown,
   Trophy,
   Clock,
   BookOpen,
-  BarChart3,
-  MessageSquare,
-  User,
-  Home,
   CheckCircle,
 } from "lucide-react";
-import Navbar from "../Navbar";
 
 interface Question {
   question: string;
   options: string[];
   correct: number;
 }
+
 
 interface Quiz {
   id: number;
@@ -106,6 +102,7 @@ const initialQuizzes: Quiz[] = [
     completed: true,
     questions_data: [],
   },
+
   {
     id: 4,
     title: "JavaScript Basics",
@@ -139,7 +136,7 @@ export default function QuizMaster() {
   const [quizCompleted, setQuizCompleted] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
-  
+
 
   const getDifficultyColor = (difficulty: string) => {
     const colors = {
@@ -302,11 +299,10 @@ export default function QuizMaster() {
             <div
               className="bg-teal-600 h-2 rounded-full transition-all duration-300"
               style={{
-                width: `${
-                  ((currentQuestionIndex + 1) /
-                    currentQuiz.questions_data.length) *
+                width: `${((currentQuestionIndex + 1) /
+                  currentQuiz.questions_data.length) *
                   100
-                }%`,
+                  }%`,
               }}
             ></div>
           </div>
@@ -320,11 +316,10 @@ export default function QuizMaster() {
               <button
                 key={index}
                 onClick={() => handleAnswerSelect(index)}
-                className={`w-full p-4 text-left border-2 rounded-lg transition-colors ${
-                  selectedAnswer === index
-                    ? "border-teal-600 bg-teal-50 text-teal-900"
-                    : "border-gray-200 hover:border-gray-300 text-gray-700"
-                }`}
+                className={`w-full p-4 text-left border-2 rounded-lg transition-colors ${selectedAnswer === index
+                  ? "border-teal-600 bg-teal-50 text-teal-900"
+                  : "border-gray-200 hover:border-gray-300 text-gray-700"
+                  }`}
               >
                 <span className="font-medium mr-3">
                   {String.fromCharCode(65 + index)}.
@@ -333,7 +328,7 @@ export default function QuizMaster() {
               </button>
             ))}
           </div>
-          
+
           <div className="flex justify-between">
             <button
               onClick={resetQuiz}
@@ -397,21 +392,19 @@ export default function QuizMaster() {
       <div className="flex gap-1 bg-white bg-opacity-10 rounded-lg p-1">
         <button
           onClick={() => setActiveTab("My Quizzes")}
-          className={`flex-1 py-2 px-4 rounded-md font-medium transition-colors ${
-            activeTab === "My Quizzes"
-              ? "bg-teal-700 text-white"
-              : "text-teal-100 hover:text-white"
-          }`}
+          className={`flex-1 py-2 px-4 rounded-md font-medium transition-colors ${activeTab === "My Quizzes"
+            ? "bg-teal-700 text-white"
+            : "text-teal-100 hover:text-white"
+            }`}
         >
           My Quizzes
         </button>
         <button
           onClick={() => setActiveTab("Completed")}
-          className={`flex-1 py-2 px-4 rounded-md font-medium transition-colors ${
-            activeTab === "Completed"
-              ? "bg-teal-700 text-white"
-              : "text-teal-100 hover:text-white"
-          }`}
+          className={`flex-1 py-2 px-4 rounded-md font-medium transition-colors ${activeTab === "Completed"
+            ? "bg-teal-700 text-white"
+            : "text-teal-100 hover:text-white"
+            }`}
         >
           Completed
         </button>
@@ -478,28 +471,20 @@ export default function QuizMaster() {
 
   return (
     <>
-    <div className="flex h-screen bg-gray-50">
-    <div
-        className={`${
-          sidebarOpen ? "block" : "hidden"
-        } lg:block w-64 bg-white shadow-md flex-shrink-0`}
-      >
-        <Navbar />
-      </div>
+      <div className="flex h-screen bg-gray-50">
 
-      <div className="flex-1 overflow-auto">
-        <div
-          className={`${
-              currentPage === "quiz-taking"
+        <div className="flex-1 overflow-auto">
+          <div
+            className={`${currentPage === "quiz-taking"
               ? "bg-gray-50"
               : "bg-gradient-to-br from-teal-600 to-teal-700"
-            } min-h-full`}
-            >
-          <div className="max-w-7xl mx-auto px-6 py-8">{renderContent()}</div>
+              } min-h-full`}
+          >
+            <div className="max-w-7xl mx-auto px-6 py-8">{renderContent()}</div>
+          </div>
         </div>
       </div>
-    </div>
-                </>
+    </>
   );
 }
 
