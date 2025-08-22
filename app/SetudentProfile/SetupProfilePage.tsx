@@ -1,8 +1,7 @@
 'use client'
 
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useAppSelector, useAppDispatch } from '@/redux/hooks'
-import { setRole } from '@/redux/Slices/profileSlice'
 import ProgressHeader from './ProgressHeader'
 import Step2BasicInfo from './Step2BasicInfo'
 import Step3Details from './Step3Details'
@@ -10,6 +9,8 @@ import Step4Review from './Step4Review'
 import NavigationFooter from './NavigationFooter'
 import 'aos/dist/aos.css'
 import type { Aos } from 'aos'
+import axios from 'axios'
+import { setRole } from '@/redux/Slices/profileSlice'
 
 declare global {
   interface Window {
@@ -20,104 +21,84 @@ declare global {
 const SetupProfilePage: React.FC = () => {
   const profile = useAppSelector((state) => state.profile)
   const dispatch = useAppDispatch()
-  const { currentStep, role } = profile
+  const [isInitializing, setIsInitializing] = useState(true)
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      import('aos').then((AOSModule) => {
-        AOSModule.default.init({
-          duration: 800,
-          once: true,
-          offset: 40,
-          easing: 'ease-out-cubic'
-        })
-        window.AOS = AOSModule.default
-      })
-    }
+    const initializeComponent = async () => {
+      // Initialize AOS
+      if (typeof window !== 'undefined') {
+        try {
+          const AOSModule = await import('aos')
+          AOSModule.default.init({
+            duration: 800,
+            once: true,
+            offset: 40,
+            easing: 'ease-out-cubic'
+          })
+          window.AOS = AOSModule.default
+        } catch (error) {
+          console.warn('Failed to load AOS:', error)
+        }
+      }
 
-    if (!role) {
-      const urlParams = new URLSearchParams(window.location.search)
-      const roleFromUrl = urlParams.get('role') as 'student' | 'mentor' | null
-      
-      if (roleFromUrl && (roleFromUrl === 'student' || roleFromUrl === 'mentor')) {
-        dispatch(setRole(roleFromUrl))
-      } else {
+
+      if (profile?.role === null) {
         dispatch(setRole('student'))
       }
-    }
-  }, [role, dispatch])
 
-  // Step validation logic
+      setIsInitializing(false)
+    }
+
+    initializeComponent()
+  }, [profile?.role, dispatch])
+
+
   const getStepValidation = (): boolean => {
-    switch (currentStep) {
-      case 2: 
+    if (!profile) return false
+
+    switch (profile.currentStep) {
+      case 2:
         return !!(profile.name && profile.email && profile.location && profile.phone)
-      
-      case 3: 
-        if (role === 'student') {
-          return !!(
-            profile.educationLevel &&
-            profile.selectedCourse &&
-            profile.goals.length > 0 &&
-            profile.learningStyle
-          )
-        } else if (role === 'mentor') {
-          return !!(
-            profile.title &&
-            profile.experience &&
-            profile.expertise.length > 0 &&
-            profile.availability
-          )
-        }
-        return false
-      
+
+      case 3:
+        return !!(
+          profile.educationLevel &&
+          profile.selectedCourse &&
+          profile.selectedStack
+        )
+
       case 4:
         return true
-      
+
       default:
         return false
     }
   }
 
-  const isStepValid = getStepValidation()
+  const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL as string;
 
-  // Handle final profile submission
-  const handleProfileSubmit = () => {
-    console.log('=== PROFILE SUBMISSION ===')
-    console.log('Full Profile Object:', profile)
-    console.log('Role:', profile.role)
-    console.log('Basic Info:', {
-      name: profile.name,
-      email: profile.email,
-      location: profile.location,
-      phone: profile.phone,
-      avatar: profile.avatarPreview ? 'Has avatar' : 'No avatar'
-    })
-    
-    if (profile.role === 'student') {
-      console.log('Student Details:', {
-        educationLevel: profile.educationLevel,
-        selectedCourse: profile.selectedCourse,
-        goals: profile.goals,
-        learningStyle: profile.learningStyle
-      })
-    } else {
-      console.log('Mentor Details:', {
-        title: profile.title,
-        experience: profile.experience,
-        expertise: profile.expertise,
-        availability: profile.availability
-      })
+  // Handle final profile submission (student only)
+  const handleProfileSubmit = async () => {
+    if (!profile) return
+
+    try {
+      const response = await axios.post(
+        `${API_URL}/api/students/createprofile`,
+        profile
+      )
+      console.log('Profile saved to DB:', response.data)
+      alert(`Profile submitted successfully!\nName: ${profile.name}`)
+    } catch (error) {
+      console.error('Failed to submit profile:', error)
+      alert('Failed to submit profile. Please try again.')
     }
-    
-    console.log('========================')
-    
-    alert(` Profile submitted successfully!\n\nRole: ${profile.role}\nName: ${profile.name}\n\nCheck console for full details.`)
   }
 
-  // Render current step content
+  // Render step content
   const renderStepContent = () => {
-    switch (currentStep) {
+    if (!profile) return null
+
+    switch (profile.currentStep) {
       case 2:
         return <Step2BasicInfo />
       case 3:
@@ -129,15 +110,14 @@ const SetupProfilePage: React.FC = () => {
     }
   }
 
-  // Loading state while role is being determined
-  if (!role) {
+  // Loading state
+  if (isInitializing || !profile || profile.role === null) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[#1887A1] to-[#0D4C5B] 
-                    flex items-center justify-center p-4">
+      <div className="min-h-screen bg-white flex items-center justify-center p-4">
         <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#1887A1] mx-auto mb-4"></div>
           <h2 className="text-xl font-semibold text-[#0D4C5B] mb-2">
-            Setting up your profile...
+            {isInitializing ? 'Setting up your profile...' : 'Loading profile...'}
           </h2>
           <p className="text-gray-600">
             Please wait while we prepare your personalized experience
@@ -147,9 +127,10 @@ const SetupProfilePage: React.FC = () => {
     )
   }
 
+  const isStepValid = getStepValidation()
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#1887A1] to-[#0D4C5B] 
-                  flex items-center justify-center p-4">
+    <div className="min-h-screen bg-white flex items-center justify-center p-4">
       <div className="w-full max-w-2xl space-y-6">
         {/* Progress Header */}
         <ProgressHeader />
@@ -160,7 +141,7 @@ const SetupProfilePage: React.FC = () => {
         </div>
 
         {/* Navigation Footer */}
-        <NavigationFooter 
+        <NavigationFooter
           isStepValid={isStepValid}
           onSubmit={handleProfileSubmit}
         />
