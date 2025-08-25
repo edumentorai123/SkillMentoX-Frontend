@@ -25,7 +25,7 @@ import {
 import Link from "next/link";
 import { useDispatch } from "react-redux";
 import { logout } from "@/redux/Slices/authSlice";
-
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 const MentorHomePage: React.FC = () => {
@@ -34,31 +34,26 @@ const MentorHomePage: React.FC = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [userName, setUserName] = useState<string | null>(null);
   const router = useRouter();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const storedName = localStorage.getItem("userName");
     setUserName(storedName);
   }, []);
 
-
-
   useEffect(() => {
-  const storedName = localStorage.getItem("userName");
-  if (!storedName) {
-    router.push("/loginForm"); // not logged in → redirect
-  } else {
-    setUserName(storedName);
-  }
-}, [router]);
+    const storedName = localStorage.getItem("userName");
+    if (!storedName) {
+      router.push("/loginForm"); // not logged in → redirect
+    } else {
+      setUserName(storedName);
+    }
+  }, [router]);
 
-
-const handleLogout = () => {
-  dispatch(logout());       // ✅ redux + localStorage clear
-  router.replace("/loginForm"); // ✅ replace instead of push
-};
-
-
+  const handleLogout = () => {
+    dispatch(logout()); // ✅ redux + localStorage clear
+    router.replace("/loginForm"); // ✅ replace instead of push
+  };
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -86,7 +81,7 @@ const handleLogout = () => {
       title: "Weekly Progress Reviews",
       description:
         "Conduct comprehensive weekend reviews for each student analyzing weekly progress, assigning scores, providing detailed feedback, and identifying improvement areas.",
-      gradient: "from-purple-400 to-purple-600",
+      gradient: "from-[#1887A1] to-[#0D4C5B]",
       priority: "High",
       timeframe: "Every Weekend",
     },
@@ -104,7 +99,7 @@ const handleLogout = () => {
       title: "Real-Time Question Support",
       description:
         "Provide instant responses to student queries during active hours, maintain live chat sessions, and offer immediate clarification on academic doubts.",
-      gradient: "from-blue-400 to-blue-600",
+      gradient: "from-[#1887A1] to-[#0D4C5B]",
       priority: "Critical",
       timeframe: "10 AM - 3 PM",
     },
@@ -122,7 +117,7 @@ const handleLogout = () => {
       title: "Performance Analytics",
       description:
         "Monitor and analyze student performance metrics, track learning patterns, identify strengths and weaknesses, and provide data-driven insights for improvement.",
-      gradient: "from-indigo-400 to-indigo-600",
+      gradient: "from-[#1887A1] to-[#0D4C5B]",
       priority: "Medium",
       timeframe: "Continuous",
     },
@@ -149,7 +144,7 @@ const handleLogout = () => {
       title: "Personalized Learning Strategies",
       description:
         "Develop customized learning approaches for each student based on their learning style, pace, and preferences to maximize educational outcomes.",
-      gradient: "from-violet-400 to-violet-600",
+      gradient: "from-[#1887A1] to-[#0D4C5B]",
       priority: "High",
       timeframe: "Adaptive",
     },
@@ -207,30 +202,36 @@ const handleLogout = () => {
       case "High":
         return "bg-orange-100 text-orange-800 border-orange-200";
       case "Medium":
-        return "bg-blue-100 text-blue-800 border-blue-200";
+        return "bg-[#1887A1]/10 text-[#0D4C5B] border-[#1887A1]/20";
       default:
         return "bg-gray-100 text-gray-800 border-gray-200";
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50">
+    <div className="min-h-screen bg-white">
       {/* Navigation Bar */}
-      <nav className="bg-white/80 backdrop-blur-md border-b border-gray-100 sticky top-0 z-50">
+      <nav className="bg-white/80 backdrop-blur-md border-b border-gray-100 sticky top-0 z-50 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-8">
               <div className="flex items-center">
-                <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">M</span>
+                <div>
+                  <Image
+                    src="/skillmentorX.tm.png" 
+                    alt="Skill MentorX"
+                    width={50}
+                    height={50}
+                  />
                 </div>
-                <span className="ml-2 text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+
+                <span className="ml-2 text-xl font-bold bg-gradient-to-r from-[#1887A1] to-[#0D4C5B] bg-clip-text text-transparent">
                   MentorHub
                 </span>
               </div>
               <a
                 href="#dashboard"
-                className="text-gray-600 hover:text-blue-600 transition-colors duration-200 font-medium"
+                className="text-gray-600 hover:text-[#1887A1] transition-colors duration-200 font-medium"
               >
                 Dashboard
               </a>
@@ -239,26 +240,26 @@ const handleLogout = () => {
             {/* User Dropdown */}
             <div className="relative">
               <div
-                className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center cursor-pointer hover:scale-105 transition-transform duration-200"
+                className="w-8 h-8 bg-gradient-to-r from-[#1887A1] to-[#0D4C5B] rounded-full flex items-center justify-center cursor-pointer hover:scale-105 transition-transform duration-200 shadow-md"
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               >
                 <User className="w-4 h-4 text-white" />
               </div>
 
               {isDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 py-2 z-50">
-                  <div className="px-4 py-2 text-gray-700 font-semibold border-b border-gray-100">
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 py-2 z-50 animate-dropdown">
+                  <div className="px-4 py-2 text-[#0D4C5B] font-semibold border-b border-gray-100">
                     {userName ? `Welcome, ${userName}` : "Loading..."}
                   </div>
                   <Link
                     href="/mentorProfile"
-                    className="block px-4 py-2 text-gray-600 hover:bg-gray-100 hover:text-blue-600"
+                    className="block px-4 py-2 text-gray-600 hover:bg-[#1887A1]/10 hover:text-[#1887A1] transition-colors duration-200"
                   >
                     Profile
                   </Link>
                   <button
                     onClick={handleLogout}
-                    className="w-full text-left px-4 py-2 text-gray-600 hover:bg-gray-100 hover:text-red-600 flex items-center space-x-2"
+                    className="w-full text-left px-4 py-2 text-gray-600 hover:bg-red-50 hover:text-red-600 flex items-center space-x-2 transition-colors duration-200"
                   >
                     <LogOut className="w-4 h-4" />
                     <span>Logout</span>
@@ -271,34 +272,40 @@ const handleLogout = () => {
       </nav>
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-700 text-white">
+      <section className="relative overflow-hidden bg-gradient-to-r from-[#1887A1] to-[#0D4C5B] text-white">
         <div className="absolute inset-0 bg-black/10"></div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
           <div className="text-center">
-            <h1 className="text-5xl md:text-6xl font-bold mb-6 animate-fade-in">
-              Mentor
-              <span className="block bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
-                Responsibilities
+            <h1 className="text-5xl md:text-6xl font-bold mb-6 animate-fade-in-up">
+              Hello{" "}
+              <span className="bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
+                {userName ? userName : "Mentor"}
               </span>
             </h1>
-            <p className="text-xl md:text-2xl text-blue-100 mb-8 max-w-4xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-semibold mb-6 animate-fade-in-delay text-white/90">
+              Your Mentor
+              <span className="block bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent animate-pulse">
+                Responsibilities
+              </span>
+            </h2>
+            <p className="text-xl md:text-2xl text-blue-100 mb-8 max-w-4xl mx-auto animate-fade-in-delay">
               Comprehensive overview of your duties and commitments as a mentor
               in our educational platform
             </p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto mt-12">
-              <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 text-center">
+              <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 text-center transform hover:scale-105 transition-all duration-300 animate-bounce-gentle">
                 <div className="text-2xl font-bold text-yellow-400">
                   10 AM - 3 PM
                 </div>
                 <div className="text-sm text-blue-100">Active Hours Daily</div>
               </div>
-              <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 text-center">
+              <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 text-center transform hover:scale-105 transition-all duration-300 animate-bounce-gentle-delay">
                 <div className="text-2xl font-bold text-yellow-400">
                   Weekend
                 </div>
                 <div className="text-sm text-blue-100">Weekly Reviews</div>
               </div>
-              <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 text-center">
+              <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 text-center transform hover:scale-105 transition-all duration-300 animate-bounce-gentle-delay-2">
                 <div className="text-2xl font-bold text-yellow-400">24/7</div>
                 <div className="text-sm text-blue-100">Commitment</div>
               </div>
@@ -312,14 +319,14 @@ const handleLogout = () => {
       <section className="py-20 -mt-10 relative z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 animate-fade-in-up">
               Your{" "}
-              <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-[#1887A1] to-[#0D4C5B] bg-clip-text text-transparent">
                 Core
               </span>{" "}
               Responsibilities
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto animate-fade-in-delay">
               Every responsibility is designed to ensure exceptional student
               outcomes and educational excellence
             </p>
@@ -329,11 +336,14 @@ const handleLogout = () => {
             {mentorResponsibilities.map((item, index) => (
               <div
                 key={index}
-                className="group bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 hover:scale-105 cursor-pointer border border-gray-100"
+                className="group bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 hover:scale-105 cursor-pointer border border-gray-100 animate-stagger"
+                style={{
+                  animationDelay: `${index * 0.1}s`
+                }}
               >
                 <div className="flex items-center justify-between mb-6">
                   <div
-                    className={`w-16 h-16 bg-gradient-to-r ${item.gradient} rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}
+                    className={`w-16 h-16 bg-gradient-to-r ${item.gradient} rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-md`}
                   >
                     <item.icon className="w-8 h-8 text-white" />
                   </div>
@@ -346,7 +356,7 @@ const handleLogout = () => {
                   </div>
                 </div>
 
-                <h3 className="text-xl font-bold text-gray-900 mb-4 group-hover:text-blue-600 transition-colors duration-200">
+                <h3 className="text-xl font-bold text-gray-900 mb-4 group-hover:text-[#1887A1] transition-colors duration-200">
                   {item.title}
                 </h3>
 
@@ -361,7 +371,7 @@ const handleLogout = () => {
                       {item.timeframe}
                     </span>
                   </div>
-                  <div className="flex items-center text-blue-600 font-medium group-hover:text-blue-700 transition-colors duration-200">
+                  <div className="flex items-center text-[#1887A1] font-medium group-hover:text-[#0D4C5B] transition-colors duration-200">
                     <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" />
                   </div>
                 </div>
@@ -372,10 +382,10 @@ const handleLogout = () => {
       </section>
 
       {/* Active Hours Highlight */}
-      <section className="py-20 bg-gradient-to-r from-blue-600 to-purple-700">
+      <section className="py-20 bg-gradient-to-r from-[#1887A1] to-[#0D4C5B]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="bg-white/10 backdrop-blur-md rounded-3xl p-12">
-            <div className="inline-flex items-center justify-center w-20 h-20 bg-white/20 rounded-full mb-8">
+          <div className="bg-white/10 backdrop-blur-md rounded-3xl p-12 animate-float">
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-white/20 rounded-full mb-8 animate-pulse-slow">
               <Timer className="w-10 h-10 text-white" />
             </div>
             <h2 className="text-4xl font-bold text-white mb-6">
@@ -388,8 +398,8 @@ const handleLogout = () => {
               resolution.
             </p>
             <div
-              className={`inline-flex items-center px-6 py-3 rounded-full font-semibold text-lg ${
-                isActive ? "bg-green-500 text-white" : "bg-red-500 text-white"
+              className={`inline-flex items-center px-6 py-3 rounded-full font-semibold text-lg transition-all duration-500 ${
+                isActive ? "bg-green-500 text-white animate-pulse-success" : "bg-red-500 text-white animate-pulse-warning"
               }`}
             >
               <div
@@ -410,7 +420,7 @@ const handleLogout = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <div className="flex items-center justify-center mb-4">
-              <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
+              <div className="w-10 h-10 bg-gradient-to-r from-[#1887A1] to-[#0D4C5B] rounded-xl flex items-center justify-center">
                 <span className="text-white font-bold">M</span>
               </div>
               <span className="ml-3 text-2xl font-bold">MentorHub</span>
@@ -430,7 +440,74 @@ const handleLogout = () => {
       </footer>
 
       <style jsx>{`
-        @keyframes fade-in {
+        @keyframes fade-in-up {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        
+        @keyframes fade-in-delay {
+          0% {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          100% {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        
+        @keyframes bounce-gentle {
+          0%, 100% {
+            transform: translateY(0);
+          }
+          50% {
+            transform: translateY(-5px);
+          }
+        }
+        
+        @keyframes float {
+          0%, 100% {
+            transform: translateY(0px);
+          }
+          50% {
+            transform: translateY(-10px);
+          }
+        }
+        
+        @keyframes pulse-slow {
+          0%, 100% {
+            opacity: 1;
+          }
+          50% {
+            opacity: 0.8;
+          }
+        }
+        
+        @keyframes pulse-success {
+          0%, 100% {
+            box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4);
+          }
+          50% {
+            box-shadow: 0 0 0 10px rgba(34, 197, 94, 0);
+          }
+        }
+        
+        @keyframes pulse-warning {
+          0%, 100% {
+            box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
+          }
+          50% {
+            box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+          }
+        }
+        
+        @keyframes stagger {
           from {
             opacity: 0;
             transform: translateY(20px);
@@ -440,8 +517,60 @@ const handleLogout = () => {
             transform: translateY(0);
           }
         }
-        .animate-fade-in {
-          animation: fade-in 0.6s ease-out;
+        
+        @keyframes dropdown {
+          from {
+            opacity: 0;
+            transform: translateY(-10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        
+        .animate-fade-in-up {
+          animation: fade-in-up 0.8s ease-out;
+        }
+        
+        .animate-fade-in-delay {
+          animation: fade-in-delay 0.8s ease-out 0.3s both;
+        }
+        
+        .animate-bounce-gentle {
+          animation: bounce-gentle 2s ease-in-out infinite;
+        }
+        
+        .animate-bounce-gentle-delay {
+          animation: bounce-gentle 2s ease-in-out infinite 0.2s;
+        }
+        
+        .animate-bounce-gentle-delay-2 {
+          animation: bounce-gentle 2s ease-in-out infinite 0.4s;
+        }
+        
+        .animate-float {
+          animation: float 3s ease-in-out infinite;
+        }
+        
+        .animate-pulse-slow {
+          animation: pulse-slow 2s ease-in-out infinite;
+        }
+        
+        .animate-pulse-success {
+          animation: pulse-success 2s infinite;
+        }
+        
+        .animate-pulse-warning {
+          animation: pulse-warning 2s infinite;
+        }
+        
+        .animate-stagger {
+          animation: stagger 0.6s ease-out both;
+        }
+        
+        .animate-dropdown {
+          animation: dropdown 0.2s ease-out;
         }
       `}</style>
     </div>
