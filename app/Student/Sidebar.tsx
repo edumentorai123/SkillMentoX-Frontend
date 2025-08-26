@@ -26,7 +26,7 @@ function Sidebar() {
     } else if (currentPath === "/Student/ProgressHeader") {
       return "Progress";
     }
-    return "DashBoard"; // default
+    return "DashBoard";
   };
 
   const activeMenu = getActiveMenu(pathname);
@@ -55,17 +55,16 @@ function Sidebar() {
 
             return (
               <li key={item.name}>
-                <Link href={item.href}>
-                  <button
-                    className={`w-full text-left px-4 py-2.5 rounded-lg font-medium transition-all duration-200 flex items-center space-x-3 ${
-                      isActive
-                        ? "bg-teal-600 text-white shadow-md"
-                        : "text-teal-700 hover:bg-teal-50 hover:text-teal-800"
-                    }`}
-                  >
-                    <IconComponent className="w-5 h-5 flex-shrink-0" />
-                    <span>{item.name}</span>
-                  </button>
+                <Link
+                  href={item.href}
+                  className={`w-full  px-4 py-2.5 rounded-lg font-medium transition-all duration-200 flex items-center space-x-3 ${
+                    isActive
+                      ? "bg-teal-600 text-white shadow-md"
+                      : "text-teal-700 hover:bg-teal-50 hover:text-teal-800"
+                  }`}
+                >
+                  <IconComponent className="w-5 h-5 flex-shrink-0" />
+                  <span>{item.name}</span>
                 </Link>
               </li>
             );

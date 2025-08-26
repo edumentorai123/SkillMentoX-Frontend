@@ -2,14 +2,13 @@
 
 import React, { useEffect, useState } from 'react'
 import { useAppSelector, useAppDispatch } from '@/redux/hooks'
-import ProgressHeader from './ProgressHeader'
 import Step2BasicInfo from './Step2BasicInfo'
 import Step3Details from './Step3Details'
 import Step4Review from './Step4Review'
+import ProgressHeader from './ProgressHeader'
 import NavigationFooter from './NavigationFooter'
 import 'aos/dist/aos.css'
 import type { Aos } from 'aos'
-import axios from 'axios'
 import { setRole } from '@/redux/Slices/profileSlice'
 
 declare global {
@@ -25,7 +24,6 @@ const SetupProfilePage: React.FC = () => {
 
   useEffect(() => {
     const initializeComponent = async () => {
-      // Initialize AOS
       if (typeof window !== 'undefined') {
         try {
           const AOSModule = await import('aos')
@@ -41,7 +39,6 @@ const SetupProfilePage: React.FC = () => {
         }
       }
 
-
       if (profile?.role === null) {
         dispatch(setRole('student'))
       }
@@ -52,49 +49,27 @@ const SetupProfilePage: React.FC = () => {
     initializeComponent()
   }, [profile?.role, dispatch])
 
-
+  // validation
   const getStepValidation = (): boolean => {
     if (!profile) return false
 
     switch (profile.currentStep) {
       case 2:
         return !!(profile.name && profile.email && profile.location && profile.phone)
-
       case 3:
         return !!(
           profile.educationLevel &&
-          profile.selectedCourse &&
+          profile.selectedCategory &&
           profile.selectedStack
         )
-
       case 4:
         return true
-
       default:
         return false
     }
   }
 
-  const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL as string;
-
-  // Handle final profile submission (student only)
-  const handleProfileSubmit = async () => {
-    if (!profile) return
-
-    try {
-      const response = await axios.post(
-        `${API_URL}/api/students/createprofile`,
-        profile
-      )
-      console.log('Profile saved to DB:', response.data)
-      alert(`Profile submitted successfully!\nName: ${profile.name}`)
-    } catch (error) {
-      console.error('Failed to submit profile:', error)
-      alert('Failed to submit profile. Please try again.')
-    }
-  }
-
-  // Render step content
+  // render step content
   const renderStepContent = () => {
     if (!profile) return null
 
@@ -110,7 +85,7 @@ const SetupProfilePage: React.FC = () => {
     }
   }
 
-  // Loading state
+  // loading
   if (isInitializing || !profile || profile.role === null) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center p-4">
@@ -132,19 +107,18 @@ const SetupProfilePage: React.FC = () => {
   return (
     <div className="min-h-screen bg-white flex items-center justify-center p-4">
       <div className="w-full max-w-2xl space-y-6">
-        {/* Progress Header */}
+        
+        {/* ✅ Progress Header always at the top */}
         <ProgressHeader />
 
-        {/* Step Content */}
+        {/* ✅ Step Content */}
         <div className="transition-all duration-500 ease-in-out">
           {renderStepContent()}
         </div>
 
-        {/* Navigation Footer */}
-        <NavigationFooter
-          isStepValid={isStepValid}
-          onSubmit={handleProfileSubmit}
-        />
+        {/* ✅ Navigation Footer always at the bottom */}
+        <NavigationFooter isStepValid={isStepValid} />
+
       </div>
     </div>
   )

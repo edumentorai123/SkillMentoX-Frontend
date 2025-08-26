@@ -477,7 +477,7 @@ export default function QuizMaster() {
           <div
             className={`${currentPage === "quiz-taking"
               ? "bg-gray-50"
-              : "bg-gradient-to-br from-teal-600 to-teal-700"
+              : "bg-blue-500"
               } min-h-full`}
           >
             <div className="max-w-7xl mx-auto px-6 py-8">{renderContent()}</div>

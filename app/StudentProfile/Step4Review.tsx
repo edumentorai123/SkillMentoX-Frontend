@@ -7,19 +7,19 @@ import {
   MapPin,
   Phone,
   GraduationCap,
-  Target,
   BookOpen,
   Users,
 } from "lucide-react";
 import { useAppSelector, useAppDispatch } from "@/redux/hooks";
 import { setStep } from "@/redux/Slices/profileSlice";
 import Image from "next/image";
+import ProgressHeader from "./ProgressHeader";
 
 const Step4Review: React.FC = () => {
   const profile = useAppSelector((state) => state.profile);
   const dispatch = useAppDispatch();
 
-  
+
   const {
     name = "",
     email = "",
@@ -27,7 +27,8 @@ const Step4Review: React.FC = () => {
     phone = "",
     avatarPreview = null,
     educationLevel = "",
-    selectedCourse = "",
+    selectedCategory = "",
+    selectedStack = "",
   } = profile || {};
 
   useEffect(() => {
@@ -44,7 +45,6 @@ const Step4Review: React.FC = () => {
     dispatch(setStep(3));
   };
 
-  // Generate initials for avatar fallback
   const getInitials = (fullName: string): string => {
     if (!fullName.trim()) return "U";
     const names = fullName.trim().split(" ");
@@ -67,10 +67,11 @@ const Step4Review: React.FC = () => {
     return colors[index];
   };
 
-  
+
   if (!profile) {
     return (
       <div className="bg-white rounded-2xl p-8 shadow-xl">
+        <ProgressHeader />
         <div className="animate-pulse">
           <div className="h-8 bg-gray-200 rounded mb-4"></div>
           <div className="h-4 bg-gray-200 rounded mb-8"></div>
@@ -119,7 +120,7 @@ const Step4Review: React.FC = () => {
                 className={`w-full h-full bg-gradient-to-br ${getGradientColors(
                   name
                 )} 
-                           flex items-center justify-center text-white text-xl font-bold`}
+                    flex items-center justify-center text-white text-xl font-bold`}
               >
                 {getInitials(name)}
               </div>
@@ -137,8 +138,8 @@ const Step4Review: React.FC = () => {
             <button
               onClick={handleEditBasicInfo}
               className="flex items-center space-x-1 text-[#1887A1] hover:text-[#0D4C5B] 
-                       font-medium transition-colors duration-200 focus:outline-none 
-                       focus:ring-2 focus:ring-[#1887A1] focus:ring-offset-2 rounded-lg px-2 py-1"
+                        font-medium transition-colors duration-200 focus:outline-none 
+                        focus:ring-2 focus:ring-[#1887A1] focus:ring-offset-2 rounded-lg px-2 py-1"
             >
               <Edit size={16} />
               <span>Edit</span>
@@ -190,8 +191,8 @@ const Step4Review: React.FC = () => {
             <button
               onClick={handleEditDetails}
               className="flex items-center space-x-1 text-[#1887A1] hover:text-[#0D4C5B] 
-                       font-medium transition-colors duration-200 focus:outline-none 
-                       focus:ring-2 focus:ring-[#1887A1] focus:ring-offset-2 rounded-lg px-2 py-1"
+                        font-medium transition-colors duration-200 focus:outline-none 
+                        focus:ring-2 focus:ring-[#1887A1] focus:ring-offset-2 rounded-lg px-2 py-1"
             >
               <Edit size={16} />
               <span>Edit</span>
@@ -218,8 +219,9 @@ const Step4Review: React.FC = () => {
                   Course Interest
                 </p>
                 <p className="text-gray-900">
-                  {selectedCourse || "Not provided"}
+                  {selectedCategory || "Not provided"} - {selectedStack || ""}
                 </p>
+
               </div>
             </div>
           </div>
@@ -236,7 +238,7 @@ const Step4Review: React.FC = () => {
                 Ready to get started!
               </h4>
               <p className="text-sm text-green-700 mt-1">
-                Once you submit, we'll match you with the perfect mentors for
+                Once you submit, we&apos;ll match you with the perfect mentors for
                 your learning journey.
               </p>
             </div>
