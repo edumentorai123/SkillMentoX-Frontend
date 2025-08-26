@@ -64,7 +64,6 @@ const Step3Details: React.FC = () => {
       </div>
 
       <div className="space-y-6">
-        {/* Education Level */}
         <div>
           <label
             htmlFor="educationLevel"
@@ -92,8 +91,6 @@ const Step3Details: React.FC = () => {
             ))}
           </select>
         </div>
-
-        {/* Category Selection */}
         <div>
           <label
             htmlFor="selectedCategory"
@@ -122,8 +119,6 @@ const Step3Details: React.FC = () => {
             ))}
           </select>
         </div>
-
-        {/* Stack/Language Selection (depends on category) */}
         {availableStacks.length > 0 && (
           <div>
             <label
