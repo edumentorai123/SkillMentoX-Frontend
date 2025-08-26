@@ -29,15 +29,27 @@ const educationLevels = [
 
 // 🔥 Course → Stacks Mapping
 const courseStacks: Record<string, string[]> = {
-  "Web Development": ["MERN", "MEAN", "Next.js", "Django", "Flask", "Spring Boot"],
+  "Web Development": [
+    "MERN",
+    "MEAN",
+    "Next.js",
+    "Django",
+    "Flask",
+    "Spring Boot",
+  ],
   "Data Science": ["Python", "R", "TensorFlow", "PyTorch", "Scikit-learn"],
   "Mobile App Development": ["React Native", "Flutter", "Swift", "Kotlin"],
   "UI/UX Design": ["Figma", "Adobe XD", "Sketch", "InVision"],
-  "Digital Marketing": ["SEO", "Google Ads", "Facebook Ads", "Content Strategy"],
+  "Digital Marketing": [
+    "SEO",
+    "Google Ads",
+    "Facebook Ads",
+    "Content Strategy",
+  ],
   "Machine Learning": ["TensorFlow", "PyTorch", "Keras", "Scikit-learn"],
-  "Cybersecurity": ["Ethical Hacking", "Network Security", "Cryptography"],
+  Cybersecurity: ["Ethical Hacking", "Network Security", "Cryptography"],
   "Cloud Computing": ["AWS", "Azure", "Google Cloud", "Docker", "Kubernetes"],
-  "DevOps": ["CI/CD", "Jenkins", "Docker", "Kubernetes"],
+  DevOps: ["CI/CD", "Jenkins", "Docker", "Kubernetes"],
   "Blockchain Development": ["Ethereum", "Solidity", "Hyperledger", "Web3.js"],
 };
 
@@ -63,8 +75,9 @@ const Step3Details: React.FC = () => {
     dispatch(updateField({ field, value }));
   };
 
-  // Get stacks for selected course
-  const availableStacks = selectedCourse ? courseStacks[selectedCourse] || [] : [];
+  const availableStacks = selectedCourse
+    ? courseStacks[selectedCourse] || []
+    : [];
 
   return (
     <div className="bg-white rounded-2xl p-8 shadow-xl" data-aos="fade-left">
@@ -78,7 +91,6 @@ const Step3Details: React.FC = () => {
       </div>
 
       <div className="space-y-6">
-        {/* Education Level */}
         <div>
           <label
             htmlFor="educationLevel"
@@ -107,7 +119,7 @@ const Step3Details: React.FC = () => {
           </select>
         </div>
 
-        {/* Course Selection */}
+        
         <div>
           <label
             htmlFor="selectedCourse"
@@ -135,8 +147,7 @@ const Step3Details: React.FC = () => {
             ))}
           </select>
         </div>
-
-        {/* 🔥 Dynamic Stack Selection */}
+ 
         {availableStacks.length > 0 && (
           <div>
             <label
