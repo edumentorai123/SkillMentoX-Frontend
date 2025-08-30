@@ -365,7 +365,7 @@ export default function SignUpPage() {
                     : "translate-x-0 opacity-100"
                 }`}
               >
-                {isSignUp ? "Welcome to LearnHub" : "Welcome Back to LearnHub"}
+                {isSignUp ? "Welcome to SkillMentroX" : "Welcome Back to SkillMentroX"}
               </h2>
               <p
                 className={`${

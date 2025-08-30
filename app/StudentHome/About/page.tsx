@@ -172,7 +172,7 @@ const AboutPage = () => {
                                 className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
                                 variants={itemVariants}
                             >
-                                <Link href="/SetupProfile">
+                                <Link href="/SetudentProfile">
                                 <button
                                     className="bg-white text-[#1887A1] px-8 cursor-pointer py-4 rounded-xl font-semibold text-lg hover:bg-gray-100 transition-colors duration-300 flex items-center justify-center gap-2 group"
                                     aria-label="Get started with SkillMentorX"
@@ -459,7 +459,7 @@ const AboutPage = () => {
                         whileHover={{ scale: 1.02 }}
                         transition={{ duration: 0.2 }}
                     >
-                        <Link href="/SetupProfile">
+                        <Link href="/SetudentProfile">
                         <button
                             className="bg-white text-[#1887A1] px-10 py-4 cursor-pointer rounded-xl font-semibold text-lg hover:bg-gray-100 transition-colors duration-300 flex items-center justify-center gap-2 group"
                             aria-label="Start your mentorship journey with SkillMentorX"

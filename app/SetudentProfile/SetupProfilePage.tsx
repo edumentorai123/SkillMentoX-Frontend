@@ -11,7 +11,6 @@ import NavigationFooter from './NavigationFooter'
 import 'aos/dist/aos.css'
 import type { Aos } from 'aos'
 
-// Declare global AOS type
 declare global {
   interface Window {
     AOS?: Aos
@@ -24,7 +23,6 @@ const SetupProfilePage: React.FC = () => {
   const { currentStep, role } = profile
 
   useEffect(() => {
-    // Initialize AOS
     if (typeof window !== 'undefined') {
       import('aos').then((AOSModule) => {
         AOSModule.default.init({
@@ -33,12 +31,10 @@ const SetupProfilePage: React.FC = () => {
           offset: 40,
           easing: 'ease-out-cubic'
         })
-        // Store AOS in window for global access
         window.AOS = AOSModule.default
       })
     }
 
-    // Simulate getting role from auth/backend
     if (!role) {
       const urlParams = new URLSearchParams(window.location.search)
       const roleFromUrl = urlParams.get('role') as 'student' | 'mentor' | null
@@ -54,10 +50,10 @@ const SetupProfilePage: React.FC = () => {
   // Step validation logic
   const getStepValidation = (): boolean => {
     switch (currentStep) {
-      case 2: // Basic Info
+      case 2: 
         return !!(profile.name && profile.email && profile.location && profile.phone)
       
-      case 3: // Details
+      case 3: 
         if (role === 'student') {
           return !!(
             profile.educationLevel &&
@@ -75,7 +71,7 @@ const SetupProfilePage: React.FC = () => {
         }
         return false
       
-      case 4: // Review - always valid (final submit)
+      case 4:
         return true
       
       default:

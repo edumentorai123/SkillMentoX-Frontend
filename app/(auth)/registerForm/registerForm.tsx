@@ -134,9 +134,9 @@ const RegisterForm: React.FC = () => {
         { userId, otp: otpCode }
       );
       setIsVerified(true);
-      localStorage.setItem("token", response.data.token); // Store token
+      localStorage.setItem("token", response.data.token); 
       toast.success("Email verified successfully!");
-      setTimeout(() => router.push("/loginForm"), 1000); // Redirect to dashboard
+      setTimeout(() => router.push("/loginForm"), 1000); 
     } catch (error: any) {
       toast.error(error.response?.data?.message || "OTP verification failed");
     }
@@ -256,7 +256,7 @@ const RegisterForm: React.FC = () => {
                           </p>
                         </div>
                         <p className="text-blue-600 text-sm">
-                          We've sent a 6-digit code to {email}
+                          We&apos;ve sent a 6-digit code to {email}
                         </p>
                       </div>
 
@@ -418,7 +418,7 @@ const RegisterForm: React.FC = () => {
 
             <div className="relative z-10">
               <h2 className="text-3xl font-bold text-white mb-6">
-                Welcome to LearnHub
+                Welcome to SkillMentroX
               </h2>
               <p className="text-blue-100 text-lg mb-8 leading-relaxed">
                 Connect with expert mentors and unlock your learning potential.

@@ -1,4 +1,3 @@
-
 "use client";
 import React, { useState } from "react";
 import {
@@ -13,22 +12,18 @@ import {
   BookOpen,
   TrendingUp,
 } from "lucide-react";
-import Page from "./page";
 
 const Dashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activeMenu, setActiveMenu] = useState("DashBoard");
-  
 
-  const handleMenuClick = (menuName:string) => {
+  const handleMenuClick = (menuName: string) => {
     setActiveMenu(menuName);
-    setSidebarOpen(false); 
+    setSidebarOpen(false);
   };
-
 
   return (
     <div className="flex h-screen bg-gradient-to-br from-slate-50 to-gray-100 font-sans overflow-hidden">
-      
       {sidebarOpen && (
         <div
           className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
@@ -41,23 +36,23 @@ const Dashboard = () => {
           lg:static lg:translate-x-0
           ${
             sidebarOpen
-            ? "fixed translate-x-0"
-            : "fixed -translate-x-full lg:translate-x-0"
+              ? "fixed translate-x-0"
+              : "fixed -translate-x-full lg:translate-x-0"
           }
           transition-transform duration-300 ease-in-out
           `}
-          >
+      >
         <div className="p-4 sm:p-6">
           <div className="flex items-center justify-between">
             <h1 className="text-xl sm:text-2xl font-bold text-teal-600 mb-2">
               SkillMentorX
             </h1>
-      
+
             <button
               className="lg:hidden text-gray-500 hover:text-gray-700"
               onClick={() => setSidebarOpen(false)}
             >
-             <X className="w-5 h-5" />
+              <X className="w-5 h-5" />
             </button>
           </div>
           <div className="w-full h-px bg-gray-200 mt-4"></div>
@@ -91,7 +86,7 @@ const Dashboard = () => {
                 onClick={() => handleMenuClick("My Doubts")}
               >
                 <HelpCircle className="w-5 h-5 flex-shrink-0" />
-                 
+
                 <span>My Doubts</span>
               </button>
             </li>
@@ -206,9 +201,7 @@ const Dashboard = () => {
             </div>
           </div>
 
-          {/* Dashboard Cards Grid */}
           <div className="flex-1 grid grid-rows-1 lg:grid-rows-2 gap-3 sm:gap-4 lg:gap-4">
-            {/* Top Row */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4 lg:gap-6">
               {/* Learning Progress Card */}
               <div className="bg-white rounded-xl sm:rounded-2xl p-3 sm:p-4 lg:p-5 shadow-xl hover:shadow-2xl transition-all duration-300">

@@ -47,9 +47,9 @@ const ResetPassword: React.FC = () => {
           confirmPassword: data.confirmPassword,
         }
       );
-      localStorage.setItem("token", response.data.token); // Store token
+      localStorage.setItem("token", response.data.token); 
       toast.success(response.data.message);
-      setTimeout(() => router.push("/loginForm"), 2000); // Redirect to dashboard
+      setTimeout(() => router.push("/loginForm"), 2000); 
     } catch (error: any) {
       toast.error(error.response?.data?.message || "Failed to reset password");
     }
@@ -163,7 +163,7 @@ const ResetPassword: React.FC = () => {
               </h2>
               <p className="text-purple-100 text-lg mb-8 leading-relaxed">
                 Set a strong new password to continue your learning journey with
-                LearnHub. Your security is our priority!
+                SkillMentroX. Your security is our priority!
               </p>
               <div className="space-y-4">
                 {[

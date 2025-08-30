@@ -1,26 +1,41 @@
 "use client";
 import React, { useState } from "react";
-import { 
-  LayoutDashboard, 
-  HelpCircle, 
-  MessageCircle, 
-  FileQuestion, 
-  BookOpen, 
-  TrendingUp, 
-  X 
+import {
+  LayoutDashboard,
+  HelpCircle,
+  MessageCircle,
+  FileQuestion,
+  BookOpen,
+  TrendingUp,
+  X,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 function Navbar() {
   const [activeMenu, setActiveMenu] = useState("DashBoard");
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const router = useRouter();
 
-  const handleMenuClick = (menu:string) => {
+  const handleMenuClick = (menu: string) => {
     setActiveMenu(menu);
+    if (menu === "DashBoard") {
+      router.push("/Student/DashBord");
+    } else if (menu === "My Doubts") {
+      router.push("/Student/MyDouts");
+    } else if (menu === "Chats") {
+      router.push("/Student/Chart");
+    } else if (menu === "Quizzes") {
+      router.push("/Student/Quiezz");
+    } else if (menu === "Course") {
+      router.push("/Student/Course");
+    } else if (menu === "Progress") {
+      router.push("/Student/ProgressHeader");
+    }
   };
 
   return (
     <>
-      {/* Header */}
       <div className="p-4 sm:p-6">
         <div className="flex items-center justify-between">
           <h1 className="text-xl sm:text-2xl font-bold text-teal-600 mb-2">
@@ -36,38 +51,40 @@ function Navbar() {
         <div className="w-full h-px bg-gray-200 mt-4"></div>
       </div>
 
-      {/* Sidebar Navigation */}
       {sidebarOpen && (
         <nav className="px-4 mt-2">
           <ul className="space-y-2">
-            {/* DashBoard Button */}
             <li>
-              <button
-                className={`text-left px-4 py-2.5 rounded-lg font-medium transition-all duration-200 text-sm sm:text-base flex items-center space-x-3 ${
-                  activeMenu === "DashBoard"
-                    ? "bg-teal-600 text-white font-semibold shadow-lg hover:bg-teal-700"
-                    : "text-teal-700 hover:bg-teal-50 hover:text-teal-800"
-                }`}
-                onClick={() => handleMenuClick("DashBoard")}
-              >
-                <LayoutDashboard className="w-5 h-5 flex-shrink-0" />
-                <span>DashBoard</span>
-              </button>
+              <Link href={"/Student"}>
+                <button
+                  className={`text-left px-4 py-2.5 rounded-lg font-medium transition-all duration-200 text-sm sm:text-base flex items-center space-x-3 ${
+                    activeMenu === "DashBoard"
+                      ? "bg-teal-600 text-white font-semibold shadow-lg hover:bg-teal-700"
+                      : "text-teal-700 hover:bg-teal-50 hover:text-teal-800"
+                  }`}
+                  onClick={() => handleMenuClick("DashBoard")}
+                >
+                  <LayoutDashboard className="w-5 h-5 flex-shrink-0" />
+                  <span>DashBoard</span>
+                </button>
+              </Link>
             </li>
 
             {/* My Doubts */}
             <li>
-              <button
-                className={` text-left px-4 py-2.5 rounded-lg font-medium transition-all duration-200 text-sm sm:text-base flex items-center space-x-3 ${
-                  activeMenu === "My Doubts"
-                    ? "bg-teal-600 text-white font-semibold shadow-lg hover:bg-teal-700"
-                    : "text-teal-700 hover:bg-teal-50 hover:text-teal-800"
-                }`}
-                onClick={() => handleMenuClick("My Doubts")}
-              >
-                <HelpCircle className="w-5 h-5 flex-shrink-0" />
-                <span>My Doubts</span>
-              </button>
+              <Link href={"/MyDouts"}>
+                <button
+                  className={` text-left px-4 py-2.5 rounded-lg font-medium transition-all duration-200 text-sm sm:text-base flex items-center space-x-3 ${
+                    activeMenu === "My Doubts"
+                      ? "bg-teal-600 text-white font-semibold shadow-lg hover:bg-teal-700"
+                      : "text-teal-700 hover:bg-teal-50 hover:text-teal-800"
+                  }`}
+                  onClick={() => handleMenuClick("My Doubts")}
+                >
+                  <HelpCircle className="w-5 h-5 flex-shrink-0" />
+                  <span>My Doubts</span>
+                </button>
+              </Link>
             </li>
 
             {/* Chats */}
@@ -100,7 +117,7 @@ function Navbar() {
               </button>
             </li>
 
-            {/* Course */}
+          
             <li>
               <button
                 className={` text-left px-4 py-2.5 rounded-lg font-medium transition-all duration-200 text-sm sm:text-base flex items-center space-x-3 ${
@@ -115,20 +132,6 @@ function Navbar() {
               </button>
             </li>
 
-            {/* Progress */}
-            <li>
-              <button
-                className={` text-left px-4 py-2.5 rounded-lg font-medium transition-all duration-200 text-sm sm:text-base flex items-center space-x-3 ${
-                  activeMenu === "Progress"
-                    ? "bg-teal-600 text-white font-semibold shadow-lg hover:bg-teal-700"
-                    : "text-teal-700 hover:bg-teal-50 hover:text-teal-800"
-                }`}
-                onClick={() => handleMenuClick("Progress")}
-              >
-                <TrendingUp className="w-5 h-5 flex-shrink-0" />
-                <span>Progress</span>
-              </button>
-            </li>
           </ul>
         </nav>
       )}
