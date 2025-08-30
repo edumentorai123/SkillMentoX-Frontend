@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useEffect, useState } from "react";
 import { useAppSelector, useAppDispatch } from "@/redux/hooks";
 import ProgressHeader from "./ProgressHeader";
@@ -11,7 +10,7 @@ import "aos/dist/aos.css";
 import type { Aos } from "aos";
 import axios from "axios";
 import { setRole } from "@/redux/Slices/profileSlice";
-import { toast } from "react-toastify";
+
 
 declare global {
   interface Window {
@@ -67,7 +66,7 @@ const SetupProfilePage: React.FC = () => {
       case 3:
         return !!(
           profile.educationLevel &&
-          profile.selectedCourse &&
+          profile.selectedCategory &&
           profile.selectedStack
         );
 

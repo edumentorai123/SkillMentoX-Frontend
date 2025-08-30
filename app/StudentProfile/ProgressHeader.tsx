@@ -7,10 +7,8 @@ import { calcProfileStrength } from '@/redux/Slices/profileSlice'
 const ProgressHeader: React.FC = () => {
   const profile = useAppSelector((state) => state.profile)
   
-  // Safe destructuring with fallbacks
   const { currentStep = 2 } = profile || {}
   
-  // Calculate profile strength safely
   const profileStrength = profile ? calcProfileStrength(profile) : 0
   const stepProgress = ((currentStep - 1) / 3) * 100
 
@@ -20,7 +18,6 @@ const ProgressHeader: React.FC = () => {
     4: 'Review'
   }
 
-  // Show loading state if profile is not ready
   if (!profile) {
     return (
       <div className="bg-white rounded-2xl p-6 mb-6 shadow-lg">
@@ -119,4 +116,4 @@ const ProgressHeader: React.FC = () => {
   )
 }
 
-export default ProgressHeader
+export default ProgressHeader;
