@@ -1,17 +1,21 @@
+import axiosClient from "@/app/lib/axiosClient";
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios, { AxiosError } from "axios";
+
 
 interface User {
     id: string;
     email: string;
     firstName: string;
-    lastName?: string | null; 
+    lastName?: string | null;
     role: "student" | "mentor" | "admin" | null;
 }
 
 interface AuthState {
     user: User | null;
     token: string | null;
+    hasProfile: boolean;
+    isPremium: boolean;
     loading: boolean;
     error: string | null;
 }
@@ -23,6 +27,8 @@ interface ErrorResponse {
 const initialState: AuthState = {
     user: null,
     token: null,
+    hasProfile: false,
+    isPremium: false,
     loading: false,
     error: null,
 };
@@ -32,11 +38,18 @@ const loadInitialState = (): AuthState => {
     try {
         const stored = localStorage.getItem("auth");
         if (stored) {
-            const parsed = JSON.parse(stored) as { token: string; user: User };
+            const parsed = JSON.parse(stored) as {
+                token: string;
+                user: User;
+                hasProfile?: boolean;
+                isPremium?: boolean;
+            };
             return {
                 ...initialState,
                 user: parsed.user,
                 token: parsed.token,
+                hasProfile: parsed.hasProfile || false,
+                isPremium: parsed.isPremium || false,
             };
         }
     } catch (error) {
@@ -47,26 +60,38 @@ const loadInitialState = (): AuthState => {
 
 export const loginUser = createAsyncThunk(
     "auth/loginUser",
-    async ({ email, password }: { email: string; password: string }, thunkAPI) => {
+    async (
+        { email, password }: { email: string; password: string },
+        thunkAPI
+    ) => {
         try {
-            const res = await axios.post<{
+            const res = await axiosClient.post<{
                 message: string;
                 token: string;
                 user: User;
-            }>(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:9999/api/auth"}/login`, {
-                email,
-                password,
-            });
-            
+                hasProfile?: boolean;
+                isPremium?: boolean;
+            }>(
+                `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:9999/api/auth"
+                }/login`,
+                { email, password }
+            );
+
             const userData: User = {
                 ...res.data.user,
-                lastName: res.data.user.lastName || null, 
+                lastName: res.data.user.lastName || null,
             };
-            
-            const authData = { token: res.data.token, user: userData };
+
+            const authData = {
+                token: res.data.token,
+                user: userData,
+                hasProfile: res.data.hasProfile ?? false,
+                isPremium: res.data.isPremium ?? false,
+            };
+
             localStorage.setItem("auth", JSON.stringify(authData));
-            
-            return { ...res.data, user: userData };
+
+            return authData;
         } catch (err: unknown) {
             if (axios.isAxiosError(err)) {
                 const axiosError = err as AxiosError<ErrorResponse>;
@@ -86,35 +111,67 @@ const authSlice = createSlice({
         logout: (state) => {
             state.user = null;
             state.token = null;
+            state.hasProfile = false;
+            state.isPremium = false;
             localStorage.removeItem("auth");
         },
         setCredentials: (
             state,
-            action: PayloadAction<{ token: string; user: User }>
+            action: PayloadAction<{
+                token: string;
+                user: User;
+                hasProfile?: boolean;
+                isPremium?: boolean;
+            }>
         ) => {
             const userData: User = {
                 ...action.payload.user,
                 lastName: action.payload.user.lastName || null,
             };
-            
+
             state.token = action.payload.token;
             state.user = userData;
-            localStorage.setItem("auth", JSON.stringify({ 
-                token: action.payload.token, 
-                user: userData 
-            }));
+            state.hasProfile = action.payload.hasProfile ?? false;
+            state.isPremium = action.payload.isPremium ?? false;
+
+            localStorage.setItem(
+                "auth",
+                JSON.stringify({
+                    token: action.payload.token,
+                    user: userData,
+                    hasProfile: state.hasProfile,
+                    isPremium: state.isPremium,
+                })
+            );
         },
         loadUserFromStorage: (state) => {
             const stored = localStorage.getItem("auth");
             if (stored) {
-                const parsed = JSON.parse(stored) as { token: string; user: User };
-                const userData: User = {
-                    ...parsed.user,
-                    lastName: parsed.user.lastName || null,
+                const parsed = JSON.parse(stored) as {
+                    token: string;
+                    user: User;
+                    hasProfile?: boolean;
+                    isPremium?: boolean;
                 };
                 state.token = parsed.token;
-                state.user = userData;
+                state.user = parsed.user;
+                state.hasProfile = parsed.hasProfile ?? false;
+                state.isPremium = parsed.isPremium ?? false;
             }
+        },
+        setHasProfile: (state, action: PayloadAction<boolean>) => {
+            state.hasProfile = action.payload;
+            localStorage.setItem(
+                "auth",
+                JSON.stringify({ ...state, hasProfile: action.payload })
+            );
+        },
+        setPremium: (state, action: PayloadAction<boolean>) => {
+            state.isPremium = action.payload;
+            localStorage.setItem(
+                "auth",
+                JSON.stringify({ ...state, isPremium: action.payload })
+            );
         },
     },
     extraReducers: (builder) => {
@@ -125,14 +182,20 @@ const authSlice = createSlice({
             })
             .addCase(
                 loginUser.fulfilled,
-                (state, action: PayloadAction<{ token: string; user: User }>) => {
+                (
+                    state,
+                    action: PayloadAction<{
+                        token: string;
+                        user: User;
+                        hasProfile: boolean;
+                        isPremium: boolean;
+                    }>
+                ) => {
                     state.loading = false;
-                    const userData: User = {
-                        ...action.payload.user,
-                        lastName: action.payload.user.lastName || null,
-                    };
-                    state.user = userData;
+                    state.user = action.payload.user;
                     state.token = action.payload.token;
+                    state.hasProfile = action.payload.hasProfile;
+                    state.isPremium = action.payload.isPremium;
                 }
             )
             .addCase(loginUser.rejected, (state, action) => {
@@ -142,5 +205,12 @@ const authSlice = createSlice({
     },
 });
 
-export const { logout, setCredentials, loadUserFromStorage } = authSlice.actions;
+export const {
+    logout,
+    setCredentials,
+    loadUserFromStorage,
+    setHasProfile,
+    setPremium,
+} = authSlice.actions;
+
 export default authSlice.reducer;

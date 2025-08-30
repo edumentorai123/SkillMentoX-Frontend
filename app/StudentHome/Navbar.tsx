@@ -55,7 +55,7 @@ const Navbar: React.FC<NavbarProps> = ({ studentName: propStudentName }) => {
   ];
 
   const profileMenuItems = [
-    { name: "Profile", href: "/StudentHome/profile", icon: User },
+    { name: "Profile", href: "/StudentProfile", icon: User },
     { name: "Settings", href: "/StudentHome/settings", icon: Settings },
     { name: "Sign Out", href: "/loginForm", icon: LogOut },
   ];

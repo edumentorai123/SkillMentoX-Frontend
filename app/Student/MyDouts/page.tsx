@@ -23,7 +23,7 @@ export default function MyDoubts() {
     <div className="flex min-h-screen bg-gray-100">
 
       {/* Main Content */}
-      <main className="flex-1 bg-gradient-to-br from-teal-500 to-teal-700 p-4 sm:p-6 lg:p-8 overflow-y-auto">
+      <main className="flex-1 bg-blue-500 p-4 sm:p-6 lg:p-8 overflow-y-auto">
         <div className="max-w-7xl mx-auto">
           {/* Heading */}
           <header className="mb-6 sm:mb-8">
