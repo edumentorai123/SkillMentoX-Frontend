@@ -51,7 +51,8 @@ const MentorHomePage: React.FC = () => {
   }, [router]);
 
   const handleLogout = () => {
-    dispatch(logout()); // ✅ redux + localStorage clear
+    dispatch(logout());
+    localStorage.clear()
     router.replace("/loginForm"); // ✅ replace instead of push
   };
 
@@ -226,7 +227,7 @@ const MentorHomePage: React.FC = () => {
                 </div>
 
                 <span className="ml-2 text-xl font-bold bg-gradient-to-r from-[#1887A1] to-[#0D4C5B] bg-clip-text text-transparent">
-                  MentorHub
+                  SkillMentorX
                 </span>
               </div>
               <a
@@ -423,7 +424,9 @@ const MentorHomePage: React.FC = () => {
               <div className="w-10 h-10 bg-gradient-to-r from-[#1887A1] to-[#0D4C5B] rounded-xl flex items-center justify-center">
                 <span className="text-white font-bold">M</span>
               </div>
-              <span className="ml-3 text-2xl font-bold">MentorHub</span>
+              <span className="text-base sm:text-lg lg:text-xl font-bold tracking-wide text-gray-800 group-hover:text-[#1887A1] transition-colors duration-200 ml-1 sm:ml-2 truncate">
+                SkillMentorX
+              </span>
             </div>
             <p className="text-gray-400 mb-8">
               Excellence in mentorship through dedicated responsibility and
@@ -431,7 +434,7 @@ const MentorHomePage: React.FC = () => {
             </p>
             <div className="border-t border-gray-800 pt-8">
               <p className="text-gray-500">
-                © 2025 MentorHub. Transforming education through responsible
+                © 2025 SkillMentorX. Transforming education through responsible
                 mentorship.
               </p>
             </div>
