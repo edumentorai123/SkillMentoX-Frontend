@@ -21,14 +21,11 @@ const Navbar: React.FC<NavbarProps> = ({ studentName: propStudentName }) => {
   const user = useSelector((state: RootState) => state.auth.user);
   const isLoading = useSelector((state: RootState) => state.auth.loading);
 
-  // Get the display name for the student
   const getStudentName = () => {
-    // If a prop is provided, use it
     if (propStudentName) {
       return propStudentName;
     }
     
-    // If no user data, return default
     if (!user) {
       return "Guest";
     }
@@ -36,19 +33,16 @@ const Navbar: React.FC<NavbarProps> = ({ studentName: propStudentName }) => {
     const firstName = user.firstName?.trim() || "";
     const lastName = user.lastName?.trim() || "";
     
-    // Construct full name if both parts exist
     if (firstName && lastName) {
       return `${firstName} ${lastName}`;
     }
     
-    // Return available name or fallback
     return firstName || "Guest";
   };
 
   const studentName = getStudentName();
   const displayName = isLoading ? "Loading..." : studentName;
 
-  // Ensure component is mounted on client to avoid hydration mismatch
   useEffect(() => {
     setIsMounted(true);
   }, []);
@@ -61,7 +55,7 @@ const Navbar: React.FC<NavbarProps> = ({ studentName: propStudentName }) => {
   ];
 
   const profileMenuItems = [
-    { name: "Profile", href: "/StudentHome/profile", icon: User },
+    { name: "Profile", href: "/StudentProfile", icon: User },
     { name: "Settings", href: "/StudentHome/settings", icon: Settings },
     { name: "Sign Out", href: "/loginForm", icon: LogOut },
   ];

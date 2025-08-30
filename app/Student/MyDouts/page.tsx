@@ -1,6 +1,5 @@
 "use client";
 import { useState } from "react";
-import Navbar from "../Navbar";
 
 export default function MyDoubts() {
   const [activeFilter, setActiveFilter] = useState("All");
@@ -19,16 +18,12 @@ export default function MyDoubts() {
     if (activeFilter === "Java Script") return doubt.tag === "JavaScript";
     return doubt.status.toLowerCase() === activeFilter.toLowerCase();
   });
-
+  
   return (
     <div className="flex min-h-screen bg-gray-100">
-      {/* Navbar / Sidebar */}
-      <aside className="w-64 bg-white shadow-md">
-        <Navbar />
-      </aside>
 
       {/* Main Content */}
-      <main className="flex-1 bg-gradient-to-br from-teal-500 to-teal-700 p-4 sm:p-6 lg:p-8 overflow-y-auto">
+      <main className="flex-1 bg-blue-500 p-4 sm:p-6 lg:p-8 overflow-y-auto">
         <div className="max-w-7xl mx-auto">
           {/* Heading */}
           <header className="mb-6 sm:mb-8">

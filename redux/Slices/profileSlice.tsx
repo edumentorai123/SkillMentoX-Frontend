@@ -1,155 +1,127 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import axios from "axios";
 
 export interface ProfileState {
-  currentStep: 2 | 3 | 4
-  role: '' | 'student' | 'mentor'
-  
-  // Basic Info (Step 2)
-  name: string
-  email: string
-  location: string
-  phone: string
-  avatarPreview?: string | null
-  
-  // Student Fields (Step 3)
-  educationLevel: string
-  selectedCourse: string
-  goals: string[]
-  learningStyle: string
-  
-  // Mentor Fields (Step 3)
-  title: string
-  experience: string
-  expertise: string[]
-  availability: string
+  currentStep: 2 | 3 | 4;
+  role: "student" | null;
+  name: string;
+  email: string;
+  location: string;
+  phone: string;
+  avatarPreview?: string | null;
+  educationLevel: string;
+  selectedCategory: string;
+  selectedStack: string;
+  status: "idle" | "loading" | "succeeded" | "failed";
+  error: string | null;
 }
 
 const initialState: ProfileState = {
-  currentStep: 2, // Start at Basic Info since role comes from auth
-  role: '',
-  
-  // Basic Info
-  name: '',
-  email: '',
-  location: '',
-  phone: '',
+  currentStep: 2,
+  role: null,
+  name: "",
+  email: "",
+  location: "",
+  phone: "",
   avatarPreview: null,
-  
-  // Student Fields
-  educationLevel: '',
-  selectedCourse: '',
-  goals: [],
-  learningStyle: '',
-  
-  // Mentor Fields
-  title: '',
-  experience: '',
-  expertise: [],
-  availability: ''
-}
+  educationLevel: "",
+  selectedCategory: "",
+  selectedStack: "",
+  status: "idle",
+  error: null,
+};
 
-interface ToggleArrayItemPayload {
-  field: 'goals' | 'expertise'
-  value: string
-}
+const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL as string;
+
+export const calcProfileStrength = (profile: ProfileState): number => {
+  let strength = 0;
+
+  if (profile.name) strength += 15;
+  if (profile.email) strength += 15;
+  if (profile.location) strength += 10;
+  if (profile.phone) strength += 10;
+  if (profile.avatarPreview) strength += 15;
+  if (profile.educationLevel) strength += 15;
+  if (profile.selectedCategory) strength += 10;  
+  if (profile.selectedStack) strength += 10;
+
+  return Math.min(strength, 100);
+};
+
+export const createProfileApi = createAsyncThunk(
+  "profile/createProfile",
+  async (profileData: Partial<ProfileState>, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(
+        `${API_URL}/api/students/createprofile`,
+        profileData
+      );
+      return response.data;
+    } catch (err) {
+      let errorMessage = "Failed to create profile";
+      if (axios.isAxiosError(err)) {
+        errorMessage = err.response?.data || err.message;
+      }
+      return rejectWithValue(errorMessage);
+    }
+  }
+);
 
 const profileSlice = createSlice({
-  name: 'profile',
+  name: "student",
   initialState,
   reducers: {
-    setRole: (state, action: PayloadAction<'student' | 'mentor'>) => {
-      state.role = action.payload
+    setRole: (state, action: PayloadAction<"student">) => {
+      state.role = action.payload;
     },
-    
     setStep: (state, action: PayloadAction<2 | 3 | 4>) => {
-      state.currentStep = action.payload
+      state.currentStep = action.payload;
     },
-    
     nextStep: (state) => {
-      if (state.currentStep < 4) {
-        state.currentStep = (state.currentStep + 1) as 2 | 3 | 4
-      }
+      if (state.currentStep < 4) state.currentStep++;
     },
-    
     prevStep: (state) => {
-      if (state.currentStep > 2) {
-        state.currentStep = (state.currentStep - 1) as 2 | 3 | 4
-      }
+      if (state.currentStep > 2) state.currentStep--;
     },
-    
-    updateField: <K extends keyof Omit<ProfileState, 'currentStep'>>(
-  state: ProfileState,
-  action: PayloadAction<{ field: K; value: ProfileState[K] }>
-) => {
-  state[action.payload.field] = action.payload.value
-},
-
-    
-    toggleArrayItem: (state, action: PayloadAction<ToggleArrayItemPayload>) => {
-      const { field, value } = action.payload
-      const array = state[field]
-      const index = array.indexOf(value)
-      
-      if (index > -1) {
-        array.splice(index, 1)
-      } else {
-        array.push(value)
-      }
+    updateField: <
+      K extends keyof Omit<ProfileState, "currentStep" | "status" | "error">
+    >(
+      state: ProfileState,
+      action: PayloadAction<{ field: K; value: ProfileState[K] }>
+    ) => {
+      state[action.payload.field] = action.payload.value;
     },
-    
     setAvatarPreview: (state, action: PayloadAction<string | null>) => {
-      state.avatarPreview = action.payload
+      state.avatarPreview = action.payload;
     },
-    
-    resetProfile: () => initialState
-  }
-})
+    resetProfile: () => initialState,
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(createProfileApi.pending, (state) => {
+        state.status = "loading";
+        state.error = null;
+      })
+      .addCase(createProfileApi.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        Object.assign(state, action.payload);
+      })
+      .addCase(createProfileApi.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload as string;
+      });
+  },
+});
 
-// Helper function to calculate profile completion strength
-export const calcProfileStrength = (profile: ProfileState): number => {
-  const basicFields = [
-    profile.name,
-    profile.email,
-    profile.location,
-    profile.phone
-  ].filter(Boolean).length
-  
-  let roleFields = 0
-  let totalRoleFields = 0
-  
-  if (profile.role === 'student') {
-    totalRoleFields = 4
-    roleFields = [
-      profile.educationLevel,
-      profile.selectedCourse,
-      profile.learningStyle,
-      profile.goals.length > 0 ? 'filled' : ''
-    ].filter(Boolean).length
-  } else if (profile.role === 'mentor') {
-    totalRoleFields = 4
-    roleFields = [
-      profile.title,
-      profile.experience,
-      profile.availability,
-      profile.expertise.length > 0 ? 'filled' : ''
-    ].filter(Boolean).length
-  }
-  
-  const totalFields = 4 + totalRoleFields // 4 basic + role-specific
-  const filledFields = basicFields + roleFields
-  
-  return Math.round((filledFields / totalFields) * 100)
-}
 
-export const { 
-  setRole, 
-  setStep, 
-  nextStep, 
-  prevStep, 
-  updateField, 
-  toggleArrayItem, 
-  setAvatarPreview, 
-  resetProfile 
-} = profileSlice.actions
+export const {
+  setRole,
+  setStep,
+  nextStep,
+  prevStep,
+  updateField,
+  setAvatarPreview,
+  resetProfile,
+} = profileSlice.actions;
 
-export default profileSlice.reducer
+export default profileSlice.reducer;

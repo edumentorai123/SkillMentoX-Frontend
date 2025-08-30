@@ -6,15 +6,31 @@ import { calcProfileStrength } from '@/redux/Slices/profileSlice'
 
 const ProgressHeader: React.FC = () => {
   const profile = useAppSelector((state) => state.profile)
-  const { currentStep } = profile
   
-  const profileStrength = calcProfileStrength(profile)
+  const { currentStep = 2 } = profile || {}
+  
+  const profileStrength = profile ? calcProfileStrength(profile) : 0
   const stepProgress = ((currentStep - 1) / 3) * 100
 
   const stepLabels = {
     2: 'Basic Info',
     3: 'Details', 
     4: 'Review'
+  }
+
+  if (!profile) {
+    return (
+      <div className="bg-white rounded-2xl p-6 mb-6 shadow-lg">
+        <div className="animate-pulse">
+          <div className="h-8 bg-gray-200 rounded mb-4"></div>
+          <div className="h-4 bg-gray-200 rounded mb-6"></div>
+          <div className="space-y-4">
+            <div className="h-2 bg-gray-200 rounded"></div>
+            <div className="h-2 bg-gray-200 rounded"></div>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -25,7 +41,7 @@ const ProgressHeader: React.FC = () => {
           Setup Your Profile
         </h1>
         <p className="text-gray-600">
-          Step {currentStep - 1} of 3 • {stepLabels[currentStep]}
+          Step {currentStep - 1} of 3 • {stepLabels[currentStep as keyof typeof stepLabels] || 'Basic Info'}
         </p>
       </div>
 
@@ -38,7 +54,7 @@ const ProgressHeader: React.FC = () => {
         <div className="w-full bg-gray-200 rounded-full h-2">
           <div 
             className="bg-gradient-to-r from-[#1887A1] to-[#0D4C5B] h-2 rounded-full 
-                     transition-all duration-500 ease-out"
+                      transition-all duration-500 ease-out"
             style={{ width: `${stepProgress}%` }}
           />
         </div>
@@ -100,4 +116,4 @@ const ProgressHeader: React.FC = () => {
   )
 }
 
-export default ProgressHeader
+export default ProgressHeader;
