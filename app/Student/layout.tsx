@@ -3,7 +3,7 @@ import { usePathname } from "next/navigation";
 import Sidebar from "./Sidebar";
 
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function StudentLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
 
     const sidebarRoutes = [

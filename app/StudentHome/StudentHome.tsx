@@ -10,25 +10,30 @@ import Hero from "./Hero";
 import HowItWorks from "./Howtoworks";
 import Mentors from "./Mentors";
 import SuccessStories from "./SuccessStories";
+import AuthRedirect from "@/Components/AuthRedirect";
+
+
 
 const StudentHome = () => {
     useEffect(() => {
-    AOS.init({
-        duration: 1000,
-        once: true, 
-        easing: "ease-in-out",
-    });
+        AOS.init({
+            duration: 1000,
+            once: true,
+            easing: "ease-in-out",
+        });
     }, []);
 
     return (
-    <div className="bg-white min-h-screen">
-        <Hero data-aos="fade-up" />
-        <HowItWorks data-aos="fade-up" />
-        <Features data-aos="fade-up" />
-        <Mentors data-aos="fade-up" />
-        <SuccessStories data-aos="fade-up" />
-        <CTA data-aos="zoom-in" />
-    </div>
+        <AuthRedirect>
+            <main className="bg-white min-h-screen">
+                <Hero data-aos="fade-up" />
+                <HowItWorks data-aos="fade-up" />
+                <Features data-aos="fade-up" />
+                <Mentors data-aos="fade-up" />
+                <SuccessStories data-aos="fade-up" />
+                <CTA data-aos="zoom-in" />
+            </main>
+        </AuthRedirect>
     );
 };
 

@@ -27,12 +27,10 @@ type HeroProps = {
 const Hero: React.FC<HeroProps> = ({ _heroRef, _rightSideRef, studentName: propStudentName }) => {
     const [activeIndex, setActiveIndex] = useState(0);
     const [isPaused, setIsPaused] = useState(false);
-    const [isMounted, setIsMounted] = useState(false);
     const intervalRef = useRef<NodeJS.Timeout | null>(null);
     const user = useSelector((state: RootState) => state.auth.user);
     const isLoading = useSelector((state: RootState) => state.auth.loading);
 
-    // Fixed name concatenation to handle undefined/null lastName
     const getStudentName = () => {
         if (propStudentName) return propStudentName;
         if (!user) return "Guest";
@@ -40,7 +38,6 @@ const Hero: React.FC<HeroProps> = ({ _heroRef, _rightSideRef, studentName: propS
         const firstName = user.firstName || "";
         const lastName = user.lastName;
         
-        // Only add lastName if it exists, is not null/undefined, and is not empty
         if (lastName && typeof lastName === 'string' && lastName.trim()) {
             return `${firstName} ${lastName}`.trim() || "Guest";
         }
@@ -49,7 +46,16 @@ const Hero: React.FC<HeroProps> = ({ _heroRef, _rightSideRef, studentName: propS
     };
 
     const studentName = getStudentName();
-    const displayName = isMounted ? (isLoading ? "Loading..." : studentName) : "Guest";
+    
+    const [displayName, setDisplayName] = useState("Guest");
+
+    useEffect(() => {
+        if (isLoading) {
+            setDisplayName("Loading...");
+        } else {
+            setDisplayName(studentName);
+        }
+    }, [isLoading, studentName]);
 
     const slides = [
         {
@@ -96,10 +102,6 @@ const Hero: React.FC<HeroProps> = ({ _heroRef, _rightSideRef, studentName: propS
     const totalSlides = slides.length;
 
     useEffect(() => {
-        setIsMounted(true);
-    }, []);
-
-    useEffect(() => {
         if (!isPaused) {
             intervalRef.current = setInterval(() => {
                 setActiveIndex((prev) => (prev + 1) % totalSlides);
@@ -119,7 +121,8 @@ const Hero: React.FC<HeroProps> = ({ _heroRef, _rightSideRef, studentName: propS
             ref={_heroRef}
             className="relative overflow-hidden bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen flex items-center scroll-animation"
         >
-            <div data-aos="fade-up" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 mt-0 pt-0">
+            {/* Removed data-aos attribute to fix hydration issue */}
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 mt-0 pt-0">
                 <div className="grid lg:grid-cols-2 gap-16 items-center">
                     {/* Left Side */}
                     <div className="space-y-8">

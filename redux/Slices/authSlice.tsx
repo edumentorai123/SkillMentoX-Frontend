@@ -16,6 +16,8 @@ interface AuthState {
     token: string | null;
     hasProfile: boolean;
     isPremium: boolean;
+    mentorSelected: boolean;
+    mentorAccepted: boolean;
     loading: boolean;
     error: string | null;
 }
@@ -29,6 +31,8 @@ const initialState: AuthState = {
     token: null,
     hasProfile: false,
     isPremium: false,
+    mentorSelected: false,
+    mentorAccepted: false,
     loading: false,
     error: null,
 };
