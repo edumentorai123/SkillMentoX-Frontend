@@ -10,7 +10,7 @@ export interface ProfileState {
   phone: string;
   avatarPreview?: string | null;
   educationLevel: string;
-  selectedCourse: string;
+  selectedCategory: string;
   selectedStack: string;
   status: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
@@ -25,7 +25,7 @@ const initialState: ProfileState = {
   phone: "",
   avatarPreview: null,
   educationLevel: "",
-  selectedCourse: "",
+  selectedCategory: "",
   selectedStack: "",
   status: "idle",
   error: null,
@@ -42,22 +42,27 @@ export const calcProfileStrength = (profile: ProfileState): number => {
   if (profile.phone) strength += 10;
   if (profile.avatarPreview) strength += 15;
   if (profile.educationLevel) strength += 15;
-  if (profile.selectedCourse) strength += 10;
+  if (profile.selectedCategory) strength += 10;  
   if (profile.selectedStack) strength += 10;
 
   return Math.min(strength, 100);
 };
 
-
-// thunk for creating profile
 export const createProfileApi = createAsyncThunk(
   "profile/createProfile",
   async (profileData: Partial<ProfileState>, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`${API_URL}/api/students/createprofile`, profileData);
+      const response = await axios.post(
+        `${API_URL}/api/students/createprofile`,
+        profileData
+      );
       return response.data;
-    } catch (err: any) {
-      return rejectWithValue(err.response?.data || "Failed to create profile");
+    } catch (err) {
+      let errorMessage = "Failed to create profile";
+      if (axios.isAxiosError(err)) {
+        errorMessage = err.response?.data || err.message;
+      }
+      return rejectWithValue(errorMessage);
     }
   }
 );
@@ -78,7 +83,9 @@ const profileSlice = createSlice({
     prevStep: (state) => {
       if (state.currentStep > 2) state.currentStep--;
     },
-    updateField: <K extends keyof Omit<ProfileState, "currentStep" | "status" | "error">>(
+    updateField: <
+      K extends keyof Omit<ProfileState, "currentStep" | "status" | "error">
+    >(
       state: ProfileState,
       action: PayloadAction<{ field: K; value: ProfileState[K] }>
     ) => {
@@ -97,7 +104,7 @@ const profileSlice = createSlice({
       })
       .addCase(createProfileApi.fulfilled, (state, action) => {
         state.status = "succeeded";
-        Object.assign(state, action.payload); 
+        Object.assign(state, action.payload);
       })
       .addCase(createProfileApi.rejected, (state, action) => {
         state.status = "failed";

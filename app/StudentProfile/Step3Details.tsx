@@ -3,20 +3,7 @@ import React, { useEffect } from "react";
 import { GraduationCap, BookOpen, Layers } from "lucide-react";
 import { useAppSelector, useAppDispatch } from "@/redux/hooks";
 import { updateField } from "@/redux/Slices/profileSlice";
-import type { ProfileState } from "@/redux/Slices/profileSlice";
-
-const courses = [
-  "Web Development",
-  "Data Science",
-  "Mobile App Development",
-  "UI/UX Design",
-  "Digital Marketing",
-  "Machine Learning",
-  "Cybersecurity",
-  "Cloud Computing",
-  "DevOps",
-  "Blockchain Development",
-];
+import { courseCategories } from "../shared/courseCategories";
 
 const educationLevels = [
   "High School",
@@ -27,21 +14,16 @@ const educationLevels = [
   "Self-Taught",
 ];
 
-// 🔥 Course → Stacks Mapping
-const courseStacks: Record<string, string[]> = {
-  "Web Development": ["MERN", "MEAN", "Next.js", "Django", "Flask", "Spring Boot"],
-  "Data Science": ["Python", "R", "TensorFlow", "PyTorch", "Scikit-learn"],
-  "Mobile App Development": ["React Native", "Flutter", "Swift", "Kotlin"],
-  "UI/UX Design": ["Figma", "Adobe XD", "Sketch", "InVision"],
-  "Digital Marketing": ["SEO", "Google Ads", "Facebook Ads", "Content Strategy"],
-  "Machine Learning": ["TensorFlow", "PyTorch", "Keras", "Scikit-learn"],
-  "Cybersecurity": ["Ethical Hacking", "Network Security", "Cryptography"],
-  "Cloud Computing": ["AWS", "Azure", "Google Cloud", "Docker", "Kubernetes"],
-  "DevOps": ["CI/CD", "Jenkins", "Docker", "Kubernetes"],
-  "Blockchain Development": ["Ethereum", "Solidity", "Hyperledger", "Web3.js"],
-};
-
-type UpdateFieldKeys = keyof Omit<ProfileState, "currentStep" | "goals">;
+type UpdateFieldKeys =
+  | "role"
+  | "name"
+  | "email"
+  | "location"
+  | "phone"
+  | "avatarPreview"
+  | "educationLevel"
+  | "selectedCategory"
+  | "selectedStack";
 
 const Step3Details: React.FC = () => {
   const profile = useAppSelector((state) => state.profile);
@@ -49,7 +31,7 @@ const Step3Details: React.FC = () => {
 
   const {
     educationLevel = "",
-    selectedCourse = "",
+    selectedCategory = "",
     selectedStack = "",
   } = profile || {};
 
@@ -63,8 +45,12 @@ const Step3Details: React.FC = () => {
     dispatch(updateField({ field, value }));
   };
 
-  // Get stacks for selected course
-  const availableStacks = selectedCourse ? courseStacks[selectedCourse] || [] : [];
+  const availableStacks: string[] =
+    selectedCategory && courseCategories[selectedCategory]
+      ? courseCategories[selectedCategory].Stacks ||
+        courseCategories[selectedCategory].Languages ||
+        []
+      : [];
 
   return (
     <div className="bg-white rounded-2xl p-8 shadow-xl" data-aos="fade-left">
@@ -78,7 +64,6 @@ const Step3Details: React.FC = () => {
       </div>
 
       <div className="space-y-6">
-        {/* Education Level */}
         <div>
           <label
             htmlFor="educationLevel"
@@ -94,8 +79,8 @@ const Step3Details: React.FC = () => {
               handleInputChange("educationLevel", e.target.value)
             }
             className="w-full px-4 py-3 border border-gray-300 rounded-xl
-                     focus:outline-none focus:ring-2 focus:ring-[#1887A1] focus:border-transparent
-                     transition-all duration-200 text-gray-900 bg-white"
+                      focus:outline-none focus:ring-2 focus:ring-[#1887A1] focus:border-transparent
+                      transition-all duration-200 text-gray-900 bg-white"
             required
           >
             <option value="">Select your education level</option>
@@ -106,37 +91,34 @@ const Step3Details: React.FC = () => {
             ))}
           </select>
         </div>
-
-        {/* Course Selection */}
         <div>
           <label
-            htmlFor="selectedCourse"
+            htmlFor="selectedCategory"
             className="block text-sm font-semibold text-gray-700 mb-2"
           >
             <BookOpen className="inline w-4 h-4 mr-2" />
-            Course Interest *
+            Course Category *
           </label>
           <select
-            id="selectedCourse"
-            value={selectedCourse}
-            onChange={(e) =>
-              handleInputChange("selectedCourse", e.target.value)
-            }
+            id="selectedCategory"
+            value={selectedCategory}
+            onChange={(e) => {
+              handleInputChange("selectedCategory", e.target.value);
+              handleInputChange("selectedStack", "");
+            }}
             className="w-full px-4 py-3 border border-gray-300 rounded-xl
-                     focus:outline-none focus:ring-2 focus:ring-[#1887A1] focus:border-transparent
-                     transition-all duration-200 text-gray-900 bg-white"
+                      focus:outline-none focus:ring-2 focus:ring-[#1887A1] focus:border-transparent
+                      transition-all duration-200 text-gray-900 bg-white"
             required
           >
-            <option value="">Select a course you&apos;re interested in</option>
-            {courses.map((course) => (
-              <option key={course} value={course}>
-                {course}
+            <option value="">Select a category</option>
+            {Object.keys(courseCategories).map((category) => (
+              <option key={category} value={category}>
+                {category}
               </option>
             ))}
           </select>
         </div>
-
-        {/* 🔥 Dynamic Stack Selection */}
         {availableStacks.length > 0 && (
           <div>
             <label
@@ -144,7 +126,7 @@ const Step3Details: React.FC = () => {
               className="block text-sm font-semibold text-gray-700 mb-2"
             >
               <Layers className="inline w-4 h-4 mr-2" />
-              Choose a Stack *
+              Choose a Stack or Language *
             </label>
             <select
               id="selectedStack"
@@ -153,11 +135,13 @@ const Step3Details: React.FC = () => {
                 handleInputChange("selectedStack", e.target.value)
               }
               className="w-full px-4 py-3 border border-gray-300 rounded-xl
-                       focus:outline-none focus:ring-2 focus:ring-[#1887A1] focus:border-transparent
-                       transition-all duration-200 text-gray-900 bg-white"
+                        focus:outline-none focus:ring-2 focus:ring-[#1887A1] focus:border-transparent
+                        transition-all duration-200 text-gray-900 bg-white"
               required
             >
-              <option value="">Select a stack for {selectedCourse}</option>
+              <option value="">
+                Select a stack or language for {selectedCategory}
+              </option>
               {availableStacks.map((stack) => (
                 <option key={stack} value={stack}>
                   {stack}
@@ -168,12 +152,6 @@ const Step3Details: React.FC = () => {
         )}
       </div>
 
-      <div className="mt-8 p-4 bg-blue-50 rounded-xl border border-blue-200">
-        <p className="text-sm text-blue-800">
-          <span className="font-semibold">Note:</span> Fields marked with * are
-          required to continue
-        </p>
-      </div>
     </div>
   );
 };

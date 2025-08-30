@@ -21,7 +21,7 @@ const Course = () => {
   return (
     <div className="flex h-screen bg-gray-50">
       {/* Main Content */}
-      <div className="flex-1 bg-gradient-to-br from-teal-600 to-teal-800 p-8">
+      <div className="flex-1 bg-blue-500 p-8">
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <div className="bg-white/20 backdrop-blur-sm rounded-2xl px-6 py-4 text-white">

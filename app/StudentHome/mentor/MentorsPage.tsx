@@ -267,7 +267,7 @@ export default function MentorsPage() {
             <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
               Join thousands of students who have transformed their careers with personalized mentorship from industry experts.
             </p>
-            <Link href="/SetudentProfile">
+            <Link href="/StudentProfile">
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}

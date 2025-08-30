@@ -10,11 +10,9 @@ const Step2BasicInfo: React.FC = () => {
   const profile = useAppSelector((state) => state.profile)
   const dispatch = useAppDispatch()
 
-  // Safe destructuring with fallbacks
   const { name = '', email = '', location = '', phone = '' } = profile || {}
 
   useEffect(() => {
-    // Safely refresh AOS if it exists
     if (typeof window !== 'undefined' && window.AOS) {
       window.AOS.refresh()
     }
@@ -29,7 +27,6 @@ const Step2BasicInfo: React.FC = () => {
     dispatch(updateField({ field, value }))
   }
 
-  // Show loading state if profile is not ready
   if (!profile) {
     return (
       <div className="bg-white rounded-2xl p-8 shadow-xl">
@@ -86,8 +83,8 @@ const Step2BasicInfo: React.FC = () => {
               onChange={(e) => handleInputChange('name', e.target.value)}
               placeholder="Enter your full name"
               className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl
-                       focus:outline-none focus:ring-2 focus:ring-[#1887A1] focus:border-transparent
-                       transition-all duration-200 text-gray-900 placeholder-gray-500"
+                        focus:outline-none focus:ring-2 focus:ring-[#1887A1] focus:border-transparent
+                        transition-all duration-200 text-gray-900 placeholder-gray-500"
               required
               aria-describedby="name-helper"
             />
@@ -116,8 +113,8 @@ const Step2BasicInfo: React.FC = () => {
               onChange={(e) => handleInputChange('email', e.target.value)}
               placeholder="Enter your email address"
               className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl
-                       focus:outline-none focus:ring-2 focus:ring-[#1887A1] focus:border-transparent
-                       transition-all duration-200 text-gray-900 placeholder-gray-500"
+                        focus:outline-none focus:ring-2 focus:ring-[#1887A1] focus:border-transparent
+                        transition-all duration-200 text-gray-900 placeholder-gray-500"
               required
               aria-describedby="email-helper"
             />
@@ -146,8 +143,8 @@ const Step2BasicInfo: React.FC = () => {
               onChange={(e) => handleInputChange('location', e.target.value)}
               placeholder="City, State/Country"
               className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl
-                       focus:outline-none focus:ring-2 focus:ring-[#1887A1] focus:border-transparent
-                       transition-all duration-200 text-gray-900 placeholder-gray-500"
+                        focus:outline-none focus:ring-2 focus:ring-[#1887A1] focus:border-transparent
+                        transition-all duration-200 text-gray-900 placeholder-gray-500"
               required
               aria-describedby="location-helper"
             />
@@ -176,8 +173,8 @@ const Step2BasicInfo: React.FC = () => {
               onChange={(e) => handleInputChange('phone', e.target.value)}
               placeholder="+1 (555) 123-4567"
               className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl
-                       focus:outline-none focus:ring-2 focus:ring-[#1887A1] focus:border-transparent
-                       transition-all duration-200 text-gray-900 placeholder-gray-500"
+                        focus:outline-none focus:ring-2 focus:ring-[#1887A1] focus:border-transparent
+                        transition-all duration-200 text-gray-900 placeholder-gray-500"
               required
               aria-describedby="phone-helper"
             />
@@ -188,13 +185,6 @@ const Step2BasicInfo: React.FC = () => {
         </div>
       </div>
 
-      {/* Required Fields Note */}
-      <div className="mt-8 p-4 bg-blue-50 rounded-xl border border-blue-200">
-        <p className="text-sm text-blue-800">
-          <span className="font-semibold">Note:</span> Fields marked with * are
-          required to continue
-        </p>
-      </div>
     </div>
   )
 }
