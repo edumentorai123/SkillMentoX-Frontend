@@ -1,6 +1,4 @@
-// pages/resetPassword/[token].tsx
 "use client";
-
 import React, { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { toast, ToastContainer } from "react-toastify";
@@ -20,9 +18,10 @@ const API_URL =
 
 const ResetPassword: React.FC = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
+  const [showConfirmPassword, setShowConfirmPassword] =
+    useState<boolean>(false);
   const router = useRouter();
-  const { token } = useParams(); // Extract token from URL
+  const { token } = useParams();
 
   const {
     register,
@@ -47,9 +46,9 @@ const ResetPassword: React.FC = () => {
           confirmPassword: data.confirmPassword,
         }
       );
-      localStorage.setItem("token", response.data.token); 
+      localStorage.setItem("token", response.data.token);
       toast.success(response.data.message);
-      setTimeout(() => router.push("/loginForm"), 2000); 
+      setTimeout(() => router.push("/loginForm"), 2000);
     } catch (error: any) {
       toast.error(error.response?.data?.message || "Failed to reset password");
     }
@@ -123,7 +122,11 @@ const ResetPassword: React.FC = () => {
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                     className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-all duration-300 hover:scale-110"
                   >
-                    {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                    {showConfirmPassword ? (
+                      <EyeOff size={20} />
+                    ) : (
+                      <Eye size={20} />
+                    )}
                   </button>
                   {errors.confirmPassword && (
                     <p className="text-red-500 text-sm mt-1">

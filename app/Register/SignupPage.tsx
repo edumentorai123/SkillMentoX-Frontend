@@ -1,4 +1,3 @@
-
 "use client";
 import React, { useState } from "react";
 import {
@@ -21,9 +20,8 @@ export default function SignUpPage() {
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [email, setEmail] = useState("");
   const [isVerified, setIsVerified] = useState(false);
-  
 
-  const handleModeChange = (newIsSignUp :boolean) => {
+  const handleModeChange = (newIsSignUp: boolean) => {
     if (newIsSignUp !== isSignUp) {
       setIsTransitioning(true);
       setTimeout(() => {
@@ -43,17 +41,15 @@ export default function SignUpPage() {
     setShowOTPModal(true);
   };
 
-  const handleRoleSelect = (role :string) => {
+  const handleRoleSelect = (role: string) => {
     setSelectedRole(role);
     setShowRoleModal(false);
     setIsVerified(false);
     setOtp(["", "", "", "", "", ""]);
     alert(`Account created successfully as ${role}!`);
-    
-    
   };
 
-  const handleOtpChange = (index:number, value:string) => {
+  const handleOtpChange = (index: number, value: string) => {
     if (value.length > 1) return;
     const newOtp = [...otp];
     newOtp[index] = value;
@@ -65,7 +61,10 @@ export default function SignUpPage() {
     }
   };
 
-  const handleKeyDown = (index:number, e:React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = (
+    index: number,
+    e: React.KeyboardEvent<HTMLInputElement>
+  ) => {
     if (e.key === "Backspace" && !otp[index] && index > 0) {
       const prevInput = document.getElementById(`otp-${index - 1}`);
       if (prevInput) prevInput.focus();
@@ -75,11 +74,10 @@ export default function SignUpPage() {
   const handleVerifyOTP = () => {
     const otpCode = otp.join("");
     if (otpCode.length === 6) {
-    
       setIsVerified(true);
       setTimeout(() => {
         setShowOTPModal(false);
-      
+
         setTimeout(() => {
           setShowRoleModal(true);
         }, 300);
@@ -365,7 +363,9 @@ export default function SignUpPage() {
                     : "translate-x-0 opacity-100"
                 }`}
               >
-                {isSignUp ? "Welcome to SkillMentroX" : "Welcome Back to SkillMentroX"}
+                {isSignUp
+                  ? "Welcome to SkillMentroX"
+                  : "Welcome Back to SkillMentroX"}
               </h2>
               <p
                 className={`${
@@ -421,7 +421,6 @@ export default function SignUpPage() {
           </div>
         </div>
       </div>
-
 
       {showRoleModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
@@ -481,7 +480,6 @@ export default function SignUpPage() {
         </div>
       )}
 
-      
       {showOTPModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-2xl p-8 max-w-md w-full transform transition-all duration-300 scale-100">
