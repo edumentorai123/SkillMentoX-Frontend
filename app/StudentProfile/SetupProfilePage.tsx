@@ -11,7 +11,6 @@ import type { Aos } from "aos";
 import axios from "axios";
 import { setRole } from "@/redux/Slices/profileSlice";
 
-
 declare global {
   interface Window {
     AOS?: Aos;

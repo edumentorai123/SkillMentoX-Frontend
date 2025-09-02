@@ -162,7 +162,7 @@ const Nav = () => {
           
           {/* CTA Section */}
           <div className="px-4 py-6 border-t border-gray-100 mt-auto">
-            <Link href="/Register" onClick={closeMobileMenu}>
+            <Link href="/loginForm" onClick={closeMobileMenu}>
               <button className="w-full bg-[#1887A1] text-white px-6 py-3 rounded-2xl hover:bg-[#0D4C5B] cursor-pointer transition-colors duration-200 font-medium text-center min-h-[48px] flex items-center justify-center">
                 Signup Free
               </button>

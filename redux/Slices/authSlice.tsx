@@ -117,7 +117,9 @@ const authSlice = createSlice({
             state.token = null;
             state.hasProfile = false;
             state.isPremium = false;
+
             localStorage.removeItem("auth");
+            localStorage.removeItem("accessToken");
         },
         setCredentials: (
             state,
@@ -200,8 +202,12 @@ const authSlice = createSlice({
                     state.token = action.payload.token;
                     state.hasProfile = action.payload.hasProfile;
                     state.isPremium = action.payload.isPremium;
+
+                    localStorage.setItem("auth", JSON.stringify(action.payload));
+                    localStorage.setItem("accessToken", action.payload.token);
                 }
             )
+
             .addCase(loginUser.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload as string;

@@ -1,19 +1,28 @@
-
+"use client";
+import { usePathname } from "next/navigation";
 import Sidebar from "./Student/Sidebar";
 
+export default function SidebarWrapper() {
+    const pathname = usePathname();
 
-export default function StudentWrapper({ children }: { children: React.ReactNode }) {
+    const sidebarRoutes = [
+        "/Student",
+        "/Student/DashBord",
+        "/Student/MyDouts",
+        "/Student/Chat",
+        "/Student/Quiezz",
+        "/Student/Course",
+    ];
+
+    const showSidebar = sidebarRoutes.some((route) =>
+        pathname.startsWith(route)
+    );
+
+    if (!showSidebar) return null;
+
     return (
-        <div className="flex min-h-screen bg-gray-100">
-            {/* Sidebar fixed */}
-            <aside className="w-64 bg-white shadow-md border-r border-gray-200">
-                <Sidebar />
-            </aside>
-
-            {/* Main content */}
-            <main className="flex-1 overflow-y-auto min-h-screen">
-                {children}
-            </main>
-        </div>
+        <aside className="w-64 bg-white shadow-md border-r border-gray-200">
+            <Sidebar />
+        </aside>
     );
 }
