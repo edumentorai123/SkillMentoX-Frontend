@@ -1,201 +1,265 @@
 "use client";
-import React, { useState } from 'react';
-import { Search, Users, UserCheck, MessageSquare, FileText, BookOpen, Filter, MoreVertical, Eye, CheckCircle, X, Clock, AlertCircle, User, Flag, MessageCircle, UserPlus, School, Calendar, ArrowRight } from 'lucide-react';
+import React, { useState } from "react";
+import {
+  Search,
+  Users,
+  UserCheck,
+  MessageSquare,
+  FileText,
+  BookOpen,
+  Filter,
+  MoreVertical,
+  Eye,
+  CheckCircle,
+  X,
+  Clock,
+  AlertCircle,
+  User,
+  Flag,
+  MessageCircle,
+  UserPlus,
+  School,
+  Calendar,
+  ArrowRight,
+} from "lucide-react";
 
 const RequestsPage = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedFilter, setSelectedFilter] = useState('All');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedFilter, setSelectedFilter] = useState("All");
   const [selectedRequests, setSelectedRequests] = useState([]);
 
   const requests = [
     {
       id: 1,
-      type: 'Mentor Application',
-      title: 'Mathematics Mentor Application',
-      description: 'Sarah Johnson applying to become a Mathematics mentor',
-      requester: 'Sarah Johnson',
-      requesterEmail: 'sarah.johnson@email.com',
-      status: 'Pending',
-      priority: 'High',
-      dateSubmitted: '2024-08-20',
-      lastUpdated: '2 mins ago',
-      category: 'Application',
-      details: 'PhD in Mathematics, 5 years teaching experience',
-      avatar: 'SJ'
+      type: "Mentor Application",
+      title: "Mathematics Mentor Application",
+      description: "Sarah Johnson applying to become a Mathematics mentor",
+      requester: "Sarah Johnson",
+      requesterEmail: "sarah.johnson@email.com",
+      status: "Pending",
+      priority: "High",
+      dateSubmitted: "2024-08-20",
+      lastUpdated: "2 mins ago",
+      category: "Application",
+      details: "PhD in Mathematics, 5 years teaching experience",
+      avatar: "SJ",
     },
     {
       id: 2,
-      type: 'Account Recovery',
-      title: 'Password Reset Request',
-      description: 'Michael Chen requesting account password reset',
-      requester: 'Michael Chen',
-      requesterEmail: 'michael.chen@email.com',
-      status: 'In Progress',
-      priority: 'Medium',
-      dateSubmitted: '2024-08-19',
-      lastUpdated: '15 mins ago',
-      category: 'Support',
-      details: 'Lost access to email account',
-      avatar: 'MC'
+      type: "Account Recovery",
+      title: "Password Reset Request",
+      description: "Michael Chen requesting account password reset",
+      requester: "Michael Chen",
+      requesterEmail: "michael.chen@email.com",
+      status: "In Progress",
+      priority: "Medium",
+      dateSubmitted: "2024-08-19",
+      lastUpdated: "15 mins ago",
+      category: "Support",
+      details: "Lost access to email account",
+      avatar: "MC",
     },
     {
       id: 3,
-      type: 'Content Report',
-      title: 'Inappropriate Content in Chemistry Forum',
-      description: 'Report of inappropriate message in Chemistry discussion',
-      requester: 'Emma Wilson',
-      requesterEmail: 'emma.wilson@email.com',
-      status: 'Under Review',
-      priority: 'High',
-      dateSubmitted: '2024-08-18',
-      lastUpdated: '1 hour ago',
-      category: 'Moderation',
-      details: 'Spam messages disrupting learning environment',
-      avatar: 'EW'
+      type: "Content Report",
+      title: "Inappropriate Content in Chemistry Forum",
+      description: "Report of inappropriate message in Chemistry discussion",
+      requester: "Emma Wilson",
+      requesterEmail: "emma.wilson@email.com",
+      status: "Under Review",
+      priority: "High",
+      dateSubmitted: "2024-08-18",
+      lastUpdated: "1 hour ago",
+      category: "Moderation",
+      details: "Spam messages disrupting learning environment",
+      avatar: "EW",
     },
     {
       id: 4,
-      type: 'Session Request',
-      title: 'Emergency Tutoring Session',
-      description: 'Urgent request for Physics tutoring before exam',
-      requester: 'Alex Thompson',
-      requesterEmail: 'alex.thompson@email.com',
-      status: 'Approved',
-      priority: 'High',
-      dateSubmitted: '2024-08-17',
-      lastUpdated: '2 hours ago',
-      category: 'Tutoring',
-      details: 'Final exam in 2 days, need help with Thermodynamics',
-      avatar: 'AT'
+      type: "Session Request",
+      title: "Emergency Tutoring Session",
+      description: "Urgent request for Physics tutoring before exam",
+      requester: "Alex Thompson",
+      requesterEmail: "alex.thompson@email.com",
+      status: "Approved",
+      priority: "High",
+      dateSubmitted: "2024-08-17",
+      lastUpdated: "2 hours ago",
+      category: "Tutoring",
+      details: "Final exam in 2 days, need help with Thermodynamics",
+      avatar: "AT",
     },
     {
       id: 5,
-      type: 'Course Addition',
-      title: 'Add Advanced Biology Course',
-      description: 'Request to add Advanced Molecular Biology course',
-      requester: 'Dr. Robert Smith',
-      requesterEmail: 'robert.smith@email.com',
-      status: 'Pending',
-      priority: 'Low',
-      dateSubmitted: '2024-08-16',
-      lastUpdated: '3 hours ago',
-      category: 'Curriculum',
-      details: 'Graduate-level course for advanced students',
-      avatar: 'RS'
+      type: "Course Addition",
+      title: "Add Advanced Biology Course",
+      description: "Request to add Advanced Molecular Biology course",
+      requester: "Dr. Robert Smith",
+      requesterEmail: "robert.smith@email.com",
+      status: "Pending",
+      priority: "Low",
+      dateSubmitted: "2024-08-16",
+      lastUpdated: "3 hours ago",
+      category: "Curriculum",
+      details: "Graduate-level course for advanced students",
+      avatar: "RS",
     },
     {
       id: 6,
-      type: 'Technical Issue',
-      title: 'Video Call Connection Problems',
-      description: 'Unable to connect to mentoring sessions',
-      requester: 'Lisa Davis',
-      requesterEmail: 'lisa.davis@email.com',
-      status: 'Resolved',
-      priority: 'Medium',
-      dateSubmitted: '2024-08-15',
-      lastUpdated: '1 day ago',
-      category: 'Technical',
-      details: 'Browser compatibility issues with video platform',
-      avatar: 'LD'
+      type: "Technical Issue",
+      title: "Video Call Connection Problems",
+      description: "Unable to connect to mentoring sessions",
+      requester: "Lisa Davis",
+      requesterEmail: "lisa.davis@email.com",
+      status: "Resolved",
+      priority: "Medium",
+      dateSubmitted: "2024-08-15",
+      lastUpdated: "1 day ago",
+      category: "Technical",
+      details: "Browser compatibility issues with video platform",
+      avatar: "LD",
     },
     {
       id: 7,
-      type: 'Refund Request',
-      title: 'Session Cancellation Refund',
-      description: 'Requesting refund for cancelled tutoring session',
-      requester: 'John Martinez',
-      requesterEmail: 'john.martinez@email.com',
-      status: 'Rejected',
-      priority: 'Low',
-      dateSubmitted: '2024-08-14',
-      lastUpdated: '2 days ago',
-      category: 'Financial',
-      details: 'Session cancelled within 24-hour policy window',
-      avatar: 'JM'
+      type: "Refund Request",
+      title: "Session Cancellation Refund",
+      description: "Requesting refund for cancelled tutoring session",
+      requester: "John Martinez",
+      requesterEmail: "john.martinez@email.com",
+      status: "Rejected",
+      priority: "Low",
+      dateSubmitted: "2024-08-14",
+      lastUpdated: "2 days ago",
+      category: "Financial",
+      details: "Session cancelled within 24-hour policy window",
+      avatar: "JM",
     },
     {
       id: 8,
-      type: 'Feature Request',
-      title: 'Mobile App Development',
-      description: 'Request for dedicated mobile application',
-      requester: 'Amanda Lee',
-      requesterEmail: 'amanda.lee@email.com',
-      status: 'Under Review',
-      priority: 'Medium',
-      dateSubmitted: '2024-08-13',
-      lastUpdated: '3 days ago',
-      category: 'Development',
-      details: 'Better mobile experience for students and mentors',
-      avatar: 'AL'
-    }
+      type: "Feature Request",
+      title: "Mobile App Development",
+      description: "Request for dedicated mobile application",
+      requester: "Amanda Lee",
+      requesterEmail: "amanda.lee@email.com",
+      status: "Under Review",
+      priority: "Medium",
+      dateSubmitted: "2024-08-13",
+      lastUpdated: "3 days ago",
+      category: "Development",
+      details: "Better mobile experience for students and mentors",
+      avatar: "AL",
+    },
   ];
 
-  const filters = ['All', 'Pending', 'In Progress', 'Under Review', 'Approved', 'Resolved', 'Rejected'];
-  const categories = ['All Categories', 'Application', 'Support', 'Moderation', 'Tutoring', 'Curriculum', 'Technical', 'Financial', 'Development'];
+  const filters = [
+    "All",
+    "Pending",
+    "In Progress",
+    "Under Review",
+    "Approved",
+    "Resolved",
+    "Rejected",
+  ];
+  const categories = [
+    "All Categories",
+    "Application",
+    "Support",
+    "Moderation",
+    "Tutoring",
+    "Curriculum",
+    "Technical",
+    "Financial",
+    "Development",
+  ];
 
-  const filteredRequests = requests.filter(request => {
-    const matchesSearch = request.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         request.requester.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         request.type.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesFilter = selectedFilter === 'All' || request.status === selectedFilter;
+  const filteredRequests = requests.filter((request) => {
+    const matchesSearch =
+      request.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      request.requester.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      request.type.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesFilter =
+      selectedFilter === "All" || request.status === selectedFilter;
     return matchesSearch && matchesFilter;
   });
 
   const handleRequestSelect = (requestId) => {
-    setSelectedRequests(prev => 
-      prev.includes(requestId) 
-        ? prev.filter(id => id !== requestId)
+    setSelectedRequests((prev) =>
+      prev.includes(requestId)
+        ? prev.filter((id) => id !== requestId)
         : [...prev, requestId]
     );
   };
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 'Pending': return 'bg-yellow-100 text-yellow-800';
-      case 'In Progress': return 'bg-blue-100 text-blue-800';
-      case 'Under Review': return 'bg-purple-100 text-purple-800';
-      case 'Approved': return 'bg-green-100 text-green-800';
-      case 'Resolved': return 'bg-green-100 text-green-800';
-      case 'Rejected': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case "Pending":
+        return "bg-yellow-100 text-yellow-800";
+      case "In Progress":
+        return "bg-blue-100 text-blue-800";
+      case "Under Review":
+        return "bg-purple-100 text-purple-800";
+      case "Approved":
+        return "bg-green-100 text-green-800";
+      case "Resolved":
+        return "bg-green-100 text-green-800";
+      case "Rejected":
+        return "bg-red-100 text-red-800";
+      default:
+        return "bg-gray-100 text-gray-800";
     }
   };
 
   const getPriorityColor = (priority) => {
     switch (priority) {
-      case 'High': return 'bg-red-100 text-red-800';
-      case 'Medium': return 'bg-yellow-100 text-yellow-800';
-      case 'Low': return 'bg-green-100 text-green-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case "High":
+        return "bg-red-100 text-red-800";
+      case "Medium":
+        return "bg-yellow-100 text-yellow-800";
+      case "Low":
+        return "bg-green-100 text-green-800";
+      default:
+        return "bg-gray-100 text-gray-800";
     }
   };
 
   const getTypeIcon = (type) => {
     switch (type) {
-      case 'Mentor Application': return <UserPlus size={16} className="text-blue-600" />;
-      case 'Account Recovery': return <User size={16} className="text-green-600" />;
-      case 'Content Report': return <Flag size={16} className="text-red-600" />;
-      case 'Session Request': return <MessageCircle size={16} className="text-purple-600" />;
-      case 'Course Addition': return <School size={16} className="text-orange-600" />;
-      case 'Technical Issue': return <AlertCircle size={16} className="text-gray-600" />;
-      case 'Refund Request': return <FileText size={16} className="text-yellow-600" />;
-      case 'Feature Request': return <MessageSquare size={16} className="text-indigo-600" />;
-      default: return <FileText size={16} className="text-gray-600" />;
+      case "Mentor Application":
+        return <UserPlus size={16} className="text-blue-600" />;
+      case "Account Recovery":
+        return <User size={16} className="text-green-600" />;
+      case "Content Report":
+        return <Flag size={16} className="text-red-600" />;
+      case "Session Request":
+        return <MessageCircle size={16} className="text-purple-600" />;
+      case "Course Addition":
+        return <School size={16} className="text-orange-600" />;
+      case "Technical Issue":
+        return <AlertCircle size={16} className="text-gray-600" />;
+      case "Refund Request":
+        return <FileText size={16} className="text-yellow-600" />;
+      case "Feature Request":
+        return <MessageSquare size={16} className="text-indigo-600" />;
+      default:
+        return <FileText size={16} className="text-gray-600" />;
     }
   };
 
   return (
     <div className="min-h-screen bg-white flex">
-     
-
       {/* Main Content */}
       <div className="flex-1 p-8">
         {/* Header */}
         <div className="mb-8">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-3xl font-bold text-gray-900">Requests Management</h2>
+            <h2 className="text-3xl font-bold text-gray-900">
+              Requests Management
+            </h2>
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+              <Search
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                size={20}
+              />
               <input
                 type="text"
                 placeholder="Search requests by title, type or requester"
@@ -249,8 +313,8 @@ const RequestsPage = () => {
                   onClick={() => setSelectedFilter(filter)}
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
                     selectedFilter === filter
-                      ? 'bg-[#1887A1] text-white'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      ? "bg-[#1887A1] text-white"
+                      : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                   }`}
                 >
                   {filter}
@@ -267,33 +331,49 @@ const RequestsPage = () => {
               <thead className="bg-gray-50">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    <input 
-                      type="checkbox" 
+                    <input
+                      type="checkbox"
                       className="rounded border-gray-300"
                       onChange={(e) => {
                         if (e.target.checked) {
-                          setSelectedRequests(filteredRequests.map(r => r.id));
+                          setSelectedRequests(
+                            filteredRequests.map((r) => r.id)
+                          );
                         } else {
                           setSelectedRequests([]);
                         }
                       }}
                     />
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Request</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Requester</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Priority</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Updated</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Request
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Requester
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Status
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Priority
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Date
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Last Updated
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {filteredRequests.map((request) => (
                   <tr key={request.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <input 
-                        type="checkbox" 
+                      <input
+                        type="checkbox"
                         className="rounded border-gray-300"
                         checked={selectedRequests.includes(request.id)}
                         onChange={() => handleRequestSelect(request.id)}
@@ -305,9 +385,15 @@ const RequestsPage = () => {
                           {getTypeIcon(request.type)}
                         </div>
                         <div className="min-w-0">
-                          <div className="text-sm font-medium text-gray-900">{request.title}</div>
-                          <div className="text-sm text-gray-500">{request.description}</div>
-                          <div className="text-xs text-gray-400 mt-1">{request.type}</div>
+                          <div className="text-sm font-medium text-gray-900">
+                            {request.title}
+                          </div>
+                          <div className="text-sm text-gray-500">
+                            {request.description}
+                          </div>
+                          <div className="text-xs text-gray-400 mt-1">
+                            {request.type}
+                          </div>
                         </div>
                       </div>
                     </td>
@@ -317,18 +403,30 @@ const RequestsPage = () => {
                           {request.avatar}
                         </div>
                         <div className="ml-3">
-                          <div className="text-sm font-medium text-gray-900">{request.requester}</div>
-                          <div className="text-xs text-gray-500">{request.requesterEmail}</div>
+                          <div className="text-sm font-medium text-gray-900">
+                            {request.requester}
+                          </div>
+                          <div className="text-xs text-gray-500">
+                            {request.requesterEmail}
+                          </div>
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(request.status)}`}>
+                      <span
+                        className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(
+                          request.status
+                        )}`}
+                      >
                         {request.status}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getPriorityColor(request.priority)}`}>
+                      <span
+                        className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getPriorityColor(
+                          request.priority
+                        )}`}
+                      >
                         {request.priority}
                       </span>
                     </td>
@@ -340,13 +438,22 @@ const RequestsPage = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <div className="flex items-center space-x-2">
-                        <button className="text-[#1887A1] hover:text-[#0D4C5B]" title="View Details">
+                        <button
+                          className="text-[#1887A1] hover:text-[#0D4C5B]"
+                          title="View Details"
+                        >
                           <Eye size={16} />
                         </button>
-                        <button className="text-green-600 hover:text-green-900" title="Approve">
+                        <button
+                          className="text-green-600 hover:text-green-900"
+                          title="Approve"
+                        >
                           <CheckCircle size={16} />
                         </button>
-                        <button className="text-red-600 hover:text-red-900" title="Reject">
+                        <button
+                          className="text-red-600 hover:text-red-900"
+                          title="Reject"
+                        >
                           <X size={16} />
                         </button>
                         <button className="text-gray-400 hover:text-gray-600">
@@ -373,8 +480,10 @@ const RequestsPage = () => {
             <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
               <div>
                 <p className="text-sm text-gray-700">
-                  Showing <span className="font-medium">1</span> to <span className="font-medium">8</span> of{' '}
-                  <span className="font-medium">{filteredRequests.length}</span> results
+                  Showing <span className="font-medium">1</span> to{" "}
+                  <span className="font-medium">8</span> of{" "}
+                  <span className="font-medium">{filteredRequests.length}</span>{" "}
+                  results
                 </p>
               </div>
               <div>
@@ -404,7 +513,9 @@ const RequestsPage = () => {
         {selectedRequests.length > 0 && (
           <div className="fixed bottom-6 right-6 bg-white rounded-lg shadow-lg border border-gray-200 p-4">
             <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-600">{selectedRequests.length} requests selected</span>
+              <span className="text-sm text-gray-600">
+                {selectedRequests.length} requests selected
+              </span>
               <div className="flex space-x-2">
                 <button className="px-3 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 text-sm flex items-center space-x-1">
                   <CheckCircle size={16} />
@@ -414,7 +525,7 @@ const RequestsPage = () => {
                   <X size={16} />
                   <span>Reject</span>
                 </button>
-                <button 
+                <button
                   onClick={() => setSelectedRequests([])}
                   className="px-3 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 text-sm"
                 >
