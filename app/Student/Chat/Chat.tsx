@@ -203,7 +203,6 @@ const ChatPage = () => {
   const handleFileUpload = (type: "Document" | "Image" | "File") => {
     setShowAttachments(false);
     console.log(`Uploading ${type}...`);
-    // Simulate file upload
     alert(`${type} upload feature would be implemented here`);
   };
 
@@ -304,7 +303,6 @@ const ChatPage = () => {
             </div>
           )}
 
-          {/* Tab Navigation */}
           <div className="flex bg-gray-200 rounded-lg p-1">
             {Object.keys(chatData).map((tab) => (
               <button

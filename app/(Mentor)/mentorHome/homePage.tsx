@@ -8,7 +8,6 @@ import {
   MessageCircle,
   Target,
   TrendingUp,
-  Bell,
   ChevronRight,
   BookOpen,
   Users,
@@ -33,27 +32,32 @@ const MentorHomePage: React.FC = () => {
   const [isActive, setIsActive] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [userName, setUserName] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
   const dispatch = useDispatch();
 
   useEffect(() => {
     const storedName = localStorage.getItem("userName");
-    setUserName(storedName);
-  }, []);
+    const storedRole = localStorage.getItem("userRole");
 
-  useEffect(() => {
-    const storedName = localStorage.getItem("userName");
-    if (!storedName) {
-      router.push("/loginForm"); // not logged in → redirect
-    } else {
-      setUserName(storedName);
+    if (!storedName || !storedRole) {
+      router.replace("/loginForm");
+      return;
     }
+
+    if (storedRole !== "mentor") {
+      router.replace("/studentHome");
+      return;
+    }
+
+    setUserName(storedName);
+    setLoading(false);
   }, [router]);
 
   const handleLogout = () => {
     dispatch(logout());
-    localStorage.clear()
-    router.replace("/loginForm"); // ✅ replace instead of push
+    localStorage.clear();
+    router.replace("/loginForm");
   };
 
   useEffect(() => {
@@ -209,6 +213,22 @@ const MentorHomePage: React.FC = () => {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <div className="bg-white/90 backdrop-blur-md rounded-2xl p-8 flex flex-col items-center gap-4 shadow-lg">
+          <div className="w-12 h-12 border-4 border-t-transparent border-[#1887A1] rounded-full animate-spin"></div>
+          <div className="text-xl font-semibold text-[#0D4C5B]">
+            Loading Your Mentor Dashboard...
+          </div>
+          <p className="text-sm text-gray-600 max-w-xs text-center">
+            Preparing your personalized experience for guiding students to success.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-white">
       {/* Navigation Bar */}
@@ -219,13 +239,12 @@ const MentorHomePage: React.FC = () => {
               <div className="flex items-center">
                 <div>
                   <Image
-                    src="/skillmentorX.tm.png" 
+                    src="/skillmentorX.tm.png"
                     alt="Skill MentorX"
                     width={50}
                     height={50}
                   />
                 </div>
-
                 <span className="ml-2 text-xl font-bold bg-gradient-to-r from-[#1887A1] to-[#0D4C5B] bg-clip-text text-transparent">
                   SkillMentorX
                 </span>
@@ -237,8 +256,6 @@ const MentorHomePage: React.FC = () => {
                 Dashboard
               </a>
             </div>
-
-            {/* User Dropdown */}
             <div className="relative">
               <div
                 className="w-8 h-8 bg-gradient-to-r from-[#1887A1] to-[#0D4C5B] rounded-full flex items-center justify-center cursor-pointer hover:scale-105 transition-transform duration-200 shadow-md"
@@ -246,7 +263,6 @@ const MentorHomePage: React.FC = () => {
               >
                 <User className="w-4 h-4 text-white" />
               </div>
-
               {isDropdownOpen && (
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 py-2 z-50 animate-dropdown">
                   <div className="px-4 py-2 text-[#0D4C5B] font-semibold border-b border-gray-100">
@@ -290,8 +306,7 @@ const MentorHomePage: React.FC = () => {
               </span>
             </h2>
             <p className="text-xl md:text-2xl text-blue-100 mb-8 max-w-4xl mx-auto animate-fade-in-delay">
-              Comprehensive overview of your duties and commitments as a mentor
-              in our educational platform
+              Comprehensive overview of your duties and commitments as a mentor in our educational platform
             </p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto mt-12">
               <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 text-center transform hover:scale-105 transition-all duration-300 animate-bounce-gentle">
@@ -301,9 +316,7 @@ const MentorHomePage: React.FC = () => {
                 <div className="text-sm text-blue-100">Active Hours Daily</div>
               </div>
               <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 text-center transform hover:scale-105 transition-all duration-300 animate-bounce-gentle-delay">
-                <div className="text-2xl font-bold text-yellow-400">
-                  Weekend
-                </div>
+                <div className="text-2xl font-bold text-yellow-400">Weekend</div>
                 <div className="text-sm text-blue-100">Weekly Reviews</div>
               </div>
               <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 text-center transform hover:scale-105 transition-all duration-300 animate-bounce-gentle-delay-2">
@@ -328,8 +341,7 @@ const MentorHomePage: React.FC = () => {
               Responsibilities
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto animate-fade-in-delay">
-              Every responsibility is designed to ensure exceptional student
-              outcomes and educational excellence
+              Every responsibility is designed to ensure exceptional student outcomes and educational excellence
             </p>
           </div>
 
@@ -339,7 +351,7 @@ const MentorHomePage: React.FC = () => {
                 key={index}
                 className="group bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 hover:scale-105 cursor-pointer border border-gray-100 animate-stagger"
                 style={{
-                  animationDelay: `${index * 0.1}s`
+                  animationDelay: `${index * 0.1}s`,
                 }}
               >
                 <div className="flex items-center justify-between mb-6">
@@ -398,19 +410,17 @@ const MentorHomePage: React.FC = () => {
               need immediate support, real-time guidance, and instant query
               resolution.
             </p>
+            <div className="text-lg text-blue-100 mb-4">
+              Current Time: {currentTime.toLocaleTimeString()}
+            </div>
             <div
-              className={`inline-flex items-center px-6 py-3 rounded-full font-semibold text-lg transition-all duration-500 ${
-                isActive ? "bg-green-500 text-white animate-pulse-success" : "bg-red-500 text-white animate-pulse-warning"
-              }`}
+              className={`inline-flex items-center px-6 py-3 rounded-full font-semibold text-lg transition-all duration-500 ${isActive ? "bg-green-500 text-white animate-pulse-success" : "bg-red-500 text-white animate-pulse-warning"
+                }`}
             >
               <div
-                className={`w-3 h-3 rounded-full mr-3 ${
-                  isActive ? "bg-green-200" : "bg-red-200"
-                } animate-pulse`}
+                className={`w-3 h-3 rounded-full mr-3 ${isActive ? "bg-green-200" : "bg-red-200"} animate-pulse`}
               ></div>
-              {isActive
-                ? "Currently Active & Available"
-                : "Outside Active Hours"}
+              {isActive ? "Currently Active & Available" : "Outside Active Hours"}
             </div>
           </div>
         </div>
@@ -429,13 +439,11 @@ const MentorHomePage: React.FC = () => {
               </span>
             </div>
             <p className="text-gray-400 mb-8">
-              Excellence in mentorship through dedicated responsibility and
-              commitment
+              Excellence in mentorship through dedicated responsibility and commitment
             </p>
             <div className="border-t border-gray-800 pt-8">
               <p className="text-gray-500">
-                © 2025 SkillMentorX. Transforming education through responsible
-                mentorship.
+                © 2025 SkillMentorX. Transforming education through responsible mentorship.
               </p>
             </div>
           </div>
@@ -453,7 +461,7 @@ const MentorHomePage: React.FC = () => {
             transform: translateY(0);
           }
         }
-        
+
         @keyframes fade-in-delay {
           0% {
             opacity: 0;
@@ -464,7 +472,7 @@ const MentorHomePage: React.FC = () => {
             transform: translateY(0);
           }
         }
-        
+
         @keyframes bounce-gentle {
           0%, 100% {
             transform: translateY(0);
@@ -473,7 +481,7 @@ const MentorHomePage: React.FC = () => {
             transform: translateY(-5px);
           }
         }
-        
+
         @keyframes float {
           0%, 100% {
             transform: translateY(0px);
@@ -482,7 +490,7 @@ const MentorHomePage: React.FC = () => {
             transform: translateY(-10px);
           }
         }
-        
+
         @keyframes pulse-slow {
           0%, 100% {
             opacity: 1;
@@ -491,7 +499,7 @@ const MentorHomePage: React.FC = () => {
             opacity: 0.8;
           }
         }
-        
+
         @keyframes pulse-success {
           0%, 100% {
             box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4);
@@ -500,7 +508,7 @@ const MentorHomePage: React.FC = () => {
             box-shadow: 0 0 0 10px rgba(34, 197, 94, 0);
           }
         }
-        
+
         @keyframes pulse-warning {
           0%, 100% {
             box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
@@ -509,7 +517,7 @@ const MentorHomePage: React.FC = () => {
             box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
           }
         }
-        
+
         @keyframes stagger {
           from {
             opacity: 0;
@@ -520,7 +528,7 @@ const MentorHomePage: React.FC = () => {
             transform: translateY(0);
           }
         }
-        
+
         @keyframes dropdown {
           from {
             opacity: 0;
@@ -531,47 +539,47 @@ const MentorHomePage: React.FC = () => {
             transform: translateY(0);
           }
         }
-        
+
         .animate-fade-in-up {
           animation: fade-in-up 0.8s ease-out;
         }
-        
+
         .animate-fade-in-delay {
           animation: fade-in-delay 0.8s ease-out 0.3s both;
         }
-        
+
         .animate-bounce-gentle {
           animation: bounce-gentle 2s ease-in-out infinite;
         }
-        
+
         .animate-bounce-gentle-delay {
           animation: bounce-gentle 2s ease-in-out infinite 0.2s;
         }
-        
+
         .animate-bounce-gentle-delay-2 {
           animation: bounce-gentle 2s ease-in-out infinite 0.4s;
         }
-        
+
         .animate-float {
           animation: float 3s ease-in-out infinite;
         }
-        
+
         .animate-pulse-slow {
           animation: pulse-slow 2s ease-in-out infinite;
         }
-        
+
         .animate-pulse-success {
           animation: pulse-success 2s infinite;
         }
-        
+
         .animate-pulse-warning {
           animation: pulse-warning 2s infinite;
         }
-        
+
         .animate-stagger {
           animation: stagger 0.6s ease-out both;
         }
-        
+
         .animate-dropdown {
           animation: dropdown 0.2s ease-out;
         }

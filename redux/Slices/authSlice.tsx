@@ -76,7 +76,7 @@ export const loginUser = createAsyncThunk(
                 hasProfile?: boolean;
                 isPremium?: boolean;
             }>(
-                `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:9999/api/auth"
+                `${process.env.NEXT_PUBLIC_API_URL as string
                 }/login`,
                 { email, password }
             );

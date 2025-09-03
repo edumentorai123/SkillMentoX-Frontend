@@ -24,7 +24,7 @@ const SetupProfilePage: React.FC = () => {
 
   useEffect(() => {
     const initializeComponent = async () => {
-      
+
       if (typeof window !== "undefined") {
         try {
           const AOSModule = await import("aos");
