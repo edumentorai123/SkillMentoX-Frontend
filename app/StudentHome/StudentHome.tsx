@@ -10,7 +10,7 @@ import Hero from "./Hero";
 import HowItWorks from "./Howtoworks";
 import Mentors from "./Mentors";
 import SuccessStories from "./SuccessStories";
-import AuthRedirect from "@/Components/AuthRedirect";
+import AuthRedirect from "../AuthRedirect/AuthRedirect";
 
 
 

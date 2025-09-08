@@ -2,7 +2,6 @@ import axiosClient from "@/app/lib/axiosClient";
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios, { AxiosError } from "axios";
 
-
 interface User {
     id: string;
     email: string;
@@ -76,8 +75,7 @@ export const loginUser = createAsyncThunk(
                 hasProfile?: boolean;
                 isPremium?: boolean;
             }>(
-                `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:9999/api/auth"
-                }/login`,
+                `${process.env.NEXT_PUBLIC_API_URL as string}/login`,
                 { email, password }
             );
 
@@ -93,7 +91,17 @@ export const loginUser = createAsyncThunk(
                 isPremium: res.data.isPremium ?? false,
             };
 
+            // Store auth data
             localStorage.setItem("auth", JSON.stringify(authData));
+            localStorage.setItem("accessToken", res.data.token);
+
+            // Also store individual items for backward compatibility
+            // (Remove these after updating all components to use the new structure)
+            localStorage.setItem("userName", userData.firstName + (userData.lastName ? ` ${userData.lastName}` : ''));
+            localStorage.setItem("userRole", userData.role || '');
+            localStorage.setItem("authToken", res.data.token);
+
+            console.log("Login successful - User:", userData.firstName, "Role:", userData.role);
 
             return authData;
         } catch (err: unknown) {
@@ -117,9 +125,16 @@ const authSlice = createSlice({
             state.token = null;
             state.hasProfile = false;
             state.isPremium = false;
+            state.mentorSelected = false;
+            state.mentorAccepted = false;
 
+            // Clear all auth-related localStorage items
             localStorage.removeItem("auth");
             localStorage.removeItem("accessToken");
+            localStorage.removeItem("userName");
+            localStorage.removeItem("userRole");
+            localStorage.removeItem("authToken");
+            localStorage.removeItem("userId");
         },
         setCredentials: (
             state,
@@ -140,15 +155,20 @@ const authSlice = createSlice({
             state.hasProfile = action.payload.hasProfile ?? false;
             state.isPremium = action.payload.isPremium ?? false;
 
-            localStorage.setItem(
-                "auth",
-                JSON.stringify({
-                    token: action.payload.token,
-                    user: userData,
-                    hasProfile: state.hasProfile,
-                    isPremium: state.isPremium,
-                })
-            );
+            const authData = {
+                token: action.payload.token,
+                user: userData,
+                hasProfile: state.hasProfile,
+                isPremium: state.isPremium,
+            };
+
+            localStorage.setItem("auth", JSON.stringify(authData));
+            localStorage.setItem("accessToken", action.payload.token);
+
+            // Also store individual items for backward compatibility
+            localStorage.setItem("userName", userData.firstName + (userData.lastName ? ` ${userData.lastName}` : ''));
+            localStorage.setItem("userRole", userData.role || '');
+            localStorage.setItem("authToken", action.payload.token);
         },
         loadUserFromStorage: (state) => {
             const stored = localStorage.getItem("auth");
@@ -163,21 +183,37 @@ const authSlice = createSlice({
                 state.user = parsed.user;
                 state.hasProfile = parsed.hasProfile ?? false;
                 state.isPremium = parsed.isPremium ?? false;
+
+                // Also set individual items for backward compatibility
+                const fullName = parsed.user.firstName + (parsed.user.lastName ? ` ${parsed.user.lastName}` : '');
+                localStorage.setItem("userName", fullName);
+                localStorage.setItem("userRole", parsed.user.role || '');
+                localStorage.setItem("authToken", parsed.token);
             }
         },
         setHasProfile: (state, action: PayloadAction<boolean>) => {
             state.hasProfile = action.payload;
-            localStorage.setItem(
-                "auth",
-                JSON.stringify({ ...state, hasProfile: action.payload })
-            );
+            if (state.user && state.token) {
+                const authData = {
+                    token: state.token,
+                    user: state.user,
+                    hasProfile: action.payload,
+                    isPremium: state.isPremium,
+                };
+                localStorage.setItem("auth", JSON.stringify(authData));
+            }
         },
         setPremium: (state, action: PayloadAction<boolean>) => {
             state.isPremium = action.payload;
-            localStorage.setItem(
-                "auth",
-                JSON.stringify({ ...state, isPremium: action.payload })
-            );
+            if (state.user && state.token) {
+                const authData = {
+                    token: state.token,
+                    user: state.user,
+                    hasProfile: state.hasProfile,
+                    isPremium: action.payload,
+                };
+                localStorage.setItem("auth", JSON.stringify(authData));
+            }
         },
     },
     extraReducers: (builder) => {
@@ -203,11 +239,19 @@ const authSlice = createSlice({
                     state.hasProfile = action.payload.hasProfile;
                     state.isPremium = action.payload.isPremium;
 
+                    // Store auth data
                     localStorage.setItem("auth", JSON.stringify(action.payload));
                     localStorage.setItem("accessToken", action.payload.token);
+
+                    // Also store individual items for backward compatibility
+                    const fullName = action.payload.user.firstName + (action.payload.user.lastName ? ` ${action.payload.user.lastName}` : '');
+                    localStorage.setItem("userName", fullName);
+                    localStorage.setItem("userRole", action.payload.user.role || '');
+                    localStorage.setItem("authToken", action.payload.token);
+
+                    console.log("Auth state updated - User:", action.payload.user.firstName, "Role:", action.payload.user.role);
                 }
             )
-
             .addCase(loginUser.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload as string;
