@@ -180,8 +180,12 @@ const Navbar: React.FC<NavbarProps> = ({ studentName: propStudentName }) => {
                       <p className="text-sm font-medium text-gray-900 truncate">
                         {isMounted ? displayName : "Loading..."}
                       </p>
+                      <p className="text-xs text-gray-500 truncate">
+                        {isMounted && user?.email ? user.email : "Loading..."}
+                      </p>
                       <p className="text-xs text-gray-500">Student Account</p>
                     </div>
+
                     {profileMenuItems.map((item) =>
                       item.name === "Sign Out" ? (
                         <button

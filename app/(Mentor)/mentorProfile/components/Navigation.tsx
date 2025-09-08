@@ -14,6 +14,7 @@ const Navigation: React.FC<NavigationProps> = ({
   onPrevious,
   onNext,
   loadingCategories,
+  
 }) => {
   return (
     <div className="flex justify-between mt-8">

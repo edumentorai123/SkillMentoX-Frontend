@@ -141,8 +141,8 @@ const Step4Review: React.FC = () => {
                         font-medium transition-colors duration-200 focus:outline-none 
                         focus:ring-2 focus:ring-[#1887A1] focus:ring-offset-2 rounded-lg px-2 py-1"
             >
-              <Edit size={16} />
-              <span>Edit</span>
+              <Edit size={16} className="cursor-pointer" />
+              <span className="cursor-pointer">Edit</span>
             </button>
           </div>
 
@@ -194,8 +194,8 @@ const Step4Review: React.FC = () => {
                         font-medium transition-colors duration-200 focus:outline-none 
                         focus:ring-2 focus:ring-[#1887A1] focus:ring-offset-2 rounded-lg px-2 py-1"
             >
-              <Edit size={16} />
-              <span>Edit</span>
+              <Edit size={16} className="cursor-pointer" />
+              <span className="cursor-pointer">Edit</span>
             </button>
           </div>
 
