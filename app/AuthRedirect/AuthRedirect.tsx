@@ -20,24 +20,21 @@ export default function AuthRedirect({ children }: AuthRedirectProps) {
     const { user, hasProfile, isPremium, mentorSelected, mentorAccepted, loading } =
         useAppSelector((state) => state.auth);
 
-    // Ensure component is mounted before running redirect logic
     useEffect(() => {
         setMounted(true);
     }, []);
 
-    // Determine the proper target route based on user role and status
     const getTargetRoute = useCallback((): string | null => {
         if (!user?.role) {
-            // Not logged in -> only redirect if not on public route
             return PUBLIC_ROUTES.includes(pathname) ? null : "/loginForm";
         }
 
         if (user.role === "student") {
-            if (!hasProfile) return "/Student-Profile";
+            if (!hasProfile) return "/StudentProfile";
             if (!isPremium) return "/subscription";
             if (!mentorSelected) return "/choose-mentor";
             if (!mentorAccepted) return "/mentor-pending";
-            return "/Student-Home";
+            return "/StudentHome";
         }
 
         if (user.role === "mentor") return "/mentorHome";
@@ -51,7 +48,6 @@ export default function AuthRedirect({ children }: AuthRedirectProps) {
 
         const target = getTargetRoute();
 
-        // Only redirect if we are not already on the correct page
         if (target && pathname !== target) {
             setRedirecting(true);
             const id = setTimeout(() => {
