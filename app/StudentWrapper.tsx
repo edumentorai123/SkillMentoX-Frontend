@@ -21,7 +21,7 @@ export default function SidebarWrapper() {
     if (!showSidebar) return null;
 
     return (
-        <aside className="w-64 bg-white shadow-md border-r border-gray-200">
+        <aside>
             <Sidebar />
         </aside>
     );

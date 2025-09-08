@@ -33,33 +33,93 @@ const MentorHomePage: React.FC = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [userName, setUserName] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [authError, setAuthError] = useState<string | null>(null);
+  const [isRedirecting, setIsRedirecting] = useState(false);
   const router = useRouter();
   const dispatch = useDispatch();
 
+  // Authentication check with improved error handling
   useEffect(() => {
-    const storedName = localStorage.getItem("userName");
-    const storedRole = localStorage.getItem("userRole");
+    let isMounted = true; // Prevent state updates if component unmounts
+    
+    const checkAuthentication = async () => {
+      try {
+        // Check if we're in browser environment
+        if (typeof window === 'undefined') {
+          return;
+        }
 
-    if (!storedName || !storedRole) {
-      router.replace("/loginForm");
-      return;
-    }
+        // Add small delay to prevent immediate redirects and race conditions
+        await new Promise(resolve => setTimeout(resolve, 100));
 
-    if (storedRole !== "mentor") {
-      router.replace("/studentHome");
-      return;
-    }
+        const storedName = localStorage.getItem("userName");
+        const storedRole = localStorage.getItem("userRole");
+        const authToken = localStorage.getItem("authToken");
 
-    setUserName(storedName);
-    setLoading(false);
+        console.log("Auth Check - Name:", storedName, "Role:", storedRole, "Token:", !!authToken);
+
+        // Check if user data exists
+        if (!storedName || !storedRole) {
+          console.log("Missing user credentials, redirecting to login");
+          if (isMounted) {
+            setAuthError("Please login to continue");
+            setIsRedirecting(true);
+            // Use setTimeout to prevent redirect loops
+            setTimeout(() => {
+              if (isMounted) {
+                router.replace("/loginForm");
+              }
+            }, 1000);
+          }
+          return;
+        }
+
+        // Check if user is a mentor
+        if (storedRole !== "mentor") {
+          console.log("User role is not mentor, redirecting to student home");
+          if (isMounted) {
+            setAuthError("Redirecting to appropriate dashboard...");
+            setIsRedirecting(true);
+            setTimeout(() => {
+              if (isMounted) {
+                router.replace("/StudentHome");
+              }
+            }, 1000);
+          }
+          return;
+        }
+
+        // Authentication successful
+        if (isMounted) {
+          setUserName(storedName);
+          setLoading(false);
+          setAuthError(null);
+        }
+
+      } catch (error) {
+        console.error("Authentication check failed:", error);
+        if (isMounted) {
+          setAuthError("Authentication verification failed");
+          setIsRedirecting(true);
+          setTimeout(() => {
+            if (isMounted) {
+              localStorage.clear();
+              router.replace("/loginForm");
+            }
+          }, 1000);
+        }
+      }
+    };
+
+    checkAuthentication();
+
+    // Cleanup function
+    return () => {
+      isMounted = false;
+    };
   }, [router]);
 
-  const handleLogout = () => {
-    dispatch(logout());
-    localStorage.clear();
-    router.replace("/loginForm");
-  };
-
+  // Time and active status effect
   useEffect(() => {
     const timer = setInterval(() => {
       const now = new Date();
@@ -70,6 +130,35 @@ const MentorHomePage: React.FC = () => {
 
     return () => clearInterval(timer);
   }, []);
+
+  // Improved logout handler
+  const handleLogout = async () => {
+    try {
+      setIsDropdownOpen(false);
+      
+      // Clear Redux state (this will also clear localStorage)
+      dispatch(logout());
+      
+      // Optional: Call logout API
+      try {
+        await fetch("/api/auth/logout", {
+          method: "POST",
+          credentials: "include",
+        });
+      } catch (apiError) {
+        console.warn("Logout API call failed:", apiError);
+        // Continue with client-side logout even if API fails
+      }
+
+      // Redirect to login
+      router.replace("/loginForm");
+      
+    } catch (error) {
+      console.error("Logout failed:", error);
+      // Force redirect even if logout fails
+      router.replace("/loginForm");
+    }
+  };
 
   const mentorResponsibilities = [
     {
@@ -213,17 +302,23 @@ const MentorHomePage: React.FC = () => {
     }
   };
 
-  if (loading) {
+  // Loading screen with better UX
+  if (loading || isRedirecting) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
-        <div className="bg-white/90 backdrop-blur-md rounded-2xl p-8 flex flex-col items-center gap-4 shadow-lg">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#1887A1]/10 to-[#0D4C5B]/10">
+        <div className="bg-white/90 backdrop-blur-md rounded-2xl p-8 flex flex-col items-center gap-4 shadow-lg max-w-md mx-4">
           <div className="w-12 h-12 border-4 border-t-transparent border-[#1887A1] rounded-full animate-spin"></div>
-          <div className="text-xl font-semibold text-[#0D4C5B]">
-            Loading Your Mentor Dashboard...
+          <div className="text-xl font-semibold text-[#0D4C5B] text-center">
+            {isRedirecting ? "Redirecting..." : "Loading Your Mentor Home..."}
           </div>
           <p className="text-sm text-gray-600 max-w-xs text-center">
-            Preparing your personalized experience for guiding students to success.
+            {authError || "Preparing your personalized experience for guiding students to success."}
           </p>
+          {isRedirecting && (
+            <div className="text-xs text-gray-500 mt-2">
+              Please wait while we redirect you to the appropriate page...
+            </div>
+          )}
         </div>
       </div>
     );
@@ -271,6 +366,7 @@ const MentorHomePage: React.FC = () => {
                   <Link
                     href="/mentorProfile"
                     className="block px-4 py-2 text-gray-600 hover:bg-[#1887A1]/10 hover:text-[#1887A1] transition-colors duration-200"
+                    onClick={() => setIsDropdownOpen(false)}
                   >
                     Profile
                   </Link>
@@ -296,7 +392,7 @@ const MentorHomePage: React.FC = () => {
             <h1 className="text-5xl md:text-6xl font-bold mb-6 animate-fade-in-up">
               Hello{" "}
               <span className="bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
-                {userName ? userName : "Mentor"}
+                {userName || "Mentor"}
               </span>
             </h1>
             <h2 className="text-3xl md:text-4xl font-semibold mb-6 animate-fade-in-delay text-white/90">
