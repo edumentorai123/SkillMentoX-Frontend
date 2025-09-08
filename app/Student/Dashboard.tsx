@@ -6,7 +6,7 @@ const Dashboard = () => {
     return (
         <div className="min-h-screen bg-blue-500">
             <div className="p-3 sm:p-4 lg:p-6 h-full flex flex-col">
-                {/* Header Section */}
+             
                 <div className="flex items-center justify-between mb-4 sm:mb-6">
                     <div className="text-white flex-1">
                         <h2 className="text-lg sm:text-xl lg:text-2xl font-bold mb-1 sm:mb-2">
@@ -18,7 +18,7 @@ const Dashboard = () => {
                     </div>
 
                     <div className="flex items-center space-x-2 sm:space-x-4">
-                        {/* Notification Bell */}
+               
                         <div className="relative">
                             <div className="p-2 sm:p-2.5 bg-amber-500 bg-opacity-20 rounded-full hover:bg-opacity-30 transition-all duration-200 cursor-pointer">
                                 <Bell className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
@@ -42,16 +42,16 @@ const Dashboard = () => {
                     </div>
                 </div>
 
-                {/* Dashboard Body */}
+              
                 <div className="flex-1 grid grid-rows-1 lg:grid-rows-2 gap-3 sm:gap-4 lg:gap-4">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4 lg:gap-6">
-                        {/* Learning Progress Card */}
+                   
                         <div className="bg-white rounded-xl sm:rounded-2xl p-3 sm:p-4 lg:p-5 shadow-xl hover:shadow-2xl transition-all duration-300">
                             <h3 className="text-base sm:text-lg font-bold text-gray-800 mb-3 sm:mb-4">
                                 Your Learning Progress
                             </h3>
 
-                            {/* Circular Progress Chart */}
+                          
                             <div className="flex items-center justify-center mb-3 sm:mb-4">
                                 <div className="relative">
                                     <svg

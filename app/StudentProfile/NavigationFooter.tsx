@@ -124,4 +124,4 @@ const NavigationFooter: React.FC<NavigationFooterProps> = ({ isStepValid, onSubm
   )
 }
 
-export default NavigationFooter
+export default NavigationFooter;
