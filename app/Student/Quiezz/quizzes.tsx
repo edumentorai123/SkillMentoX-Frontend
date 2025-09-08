@@ -14,8 +14,6 @@ import {
   Play,
   ArrowRight,
   Home,
-  User,
-  Settings,
   Star,
   Target,
 } from "lucide-react";
@@ -624,9 +622,9 @@ export default function QuizMaster() {
               </div>
               <p className="text-sm text-gray-500">
                 {isExcellent ? 'Perfect score! You\'re a master!' : 
-                 isGood ? 'Great job! You know your stuff!' : 
-                 isPassed ? 'Good effort! Room for improvement.' : 
-                 'Don\'t give up! Practice makes perfect.'}
+                  isGood ? 'Great job! You know your stuff!' : 
+                  isPassed ? 'Good effort! Room for improvement.' : 
+                  'Don\'t give up! Practice makes perfect.'}
               </p>
             </div>
             
@@ -835,7 +833,7 @@ export default function QuizMaster() {
           </p>
           <button
             onClick={() => setCurrentPage("quizzes")}
-            className="bg-white text-[#1887A1] px-6 py-3 rounded-xl font-semibold hover:shadow-lg transition-all duration-200 flex items-center gap-2"
+            className="bg-white text-[#1887A1] px-6 py-3 rounded-xl cursor-pointer shadow-lg font-semibold hover:shadow-lg transition-all duration-200 flex items-center gap-2"
           >
             Start Learning
             <ArrowRight className="w-5 h-5" />

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Search,
   MoreVertical,
@@ -9,14 +9,14 @@ import {
   Smile,
   X,
   Upload,
-  Image,
   FileText,
   Users,
   User,
   Video,
   Phone,
+  ImageIcon,
 } from "lucide-react";
-
+import EmojiPicker, { EmojiClickData, Theme } from "emoji-picker-react";
 
 interface Chat {
   id: number;
@@ -49,11 +49,12 @@ const ChatPage = () => {
   const [showEmojiPicker, setShowEmojiPicker] = useState<boolean>(false);
   const [showAttachments, setShowAttachments] = useState<boolean>(false);
   const [isRecording, setIsRecording] = useState<boolean>(false);
+  const [isAITyping, setIsAITyping] = useState<boolean>(false);
   const [messages, setMessages] = useState<Message[]>([
-    { id: 1, text: "Hi how can i assist with you", sender: "user" },
-    { id: 2, text: "please Explain eventloop node.js", sender: "ai" },
+    { id: 1, text: "Hi, how can I assist you?", sender: "ai" },
+    { id: 2, text: "Please explain eventloop in Node.js", sender: "user" },
   ]);
-
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const chatData: ChatData = {
     "Ask AI": [
@@ -127,6 +128,11 @@ const ChatPage = () => {
     ],
   };
 
+  // Auto-scroll to the latest message
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, isAITyping]);
+
   const currentChatList: Chat[] = chatData[activeTab] || [];
 
   const filteredChats: Chat[] = currentChatList.filter(
@@ -134,34 +140,6 @@ const ChatPage = () => {
       chat.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       chat.subtitle.toLowerCase().includes(searchTerm.toLowerCase())
   );
-
-  const emojis: string[] = [
-    "😀",
-    "😃",
-    "😄",
-    "😁",
-    "😆",
-    "😅",
-    "🤣",
-    "😂",
-    "🙂",
-    "🙃",
-    "😉",
-    "😊",
-    "😇",
-    "🥰",
-    "😍",
-    "🤩",
-    "😘",
-    "😗",
-    "😚",
-    "😙",
-    "🥲",
-    "😋",
-    "😛",
-    "😜",
-    "🤪",
-  ];
 
   const handleSendMessage = () => {
     if (message.trim()) {
@@ -172,6 +150,7 @@ const ChatPage = () => {
       };
       setMessages([...messages, newMessage]);
       setMessage("");
+      setIsAITyping(true);
 
       setTimeout(() => {
         const aiResponse: Message = {
@@ -180,23 +159,26 @@ const ChatPage = () => {
           sender: "ai",
         };
         setMessages((prev) => [...prev, aiResponse]);
+        setIsAITyping(false);
       }, 1000);
     }
   };
 
   const getAIResponse = (message: string): string => {
-    const responses: string[] = [
-      "That's an interesting question! Let me help you with that.",
-      "I understand what you're asking. Here's my response...",
-      "Great question! Let me break this down for you.",
-      "I'm here to help! Here's what I think about that:",
-      "Thanks for asking! Here's my detailed response...",
-    ];
-    return responses[Math.floor(Math.random() * responses.length)];
+    const lowerMessage = message.toLowerCase();
+    if (lowerMessage.includes("eventloop") || lowerMessage.includes("node.js")) {
+      return "The Node.js event loop is a core part of its asynchronous architecture. It processes events from the event queue, handling tasks like I/O operations, timers, and callbacks. Would you like a detailed explanation?";
+    } else if (lowerMessage.includes("react") || lowerMessage.includes("jsx")) {
+      return "React is a JavaScript library for building user interfaces, and JSX is a syntax extension that allows you to write HTML-like code in JavaScript. Want me to explain a specific React concept?";
+    } else if (lowerMessage.includes("javascript")) {
+      return "JavaScript is a versatile programming language used for web development. Ask me about any specific JavaScript topic, like closures or promises!";
+    } else {
+      return "That's an interesting question! Can you provide more details or ask about a specific topic, like JavaScript, React, or Node.js?";
+    }
   };
 
-  const handleEmojiSelect = (emoji: string) => {
-    setMessage((prev) => prev + emoji);
+  const handleEmojiSelect = (emojiData: EmojiClickData) => {
+    setMessage((prev) => prev + emojiData.emoji);
     setShowEmojiPicker(false);
   };
 
@@ -248,7 +230,7 @@ const ChatPage = () => {
   const currentChat: Chat = getCurrentChat();
 
   return (
-    <div className="h-screen w-screen bg-gray-100 flex">
+    <div className="h-screen w-screen bg-white flex">
       {/* Sidebar */}
       <div className="w-80 bg-gray-50 border-r border-gray-200 flex flex-col">
         {/* Sidebar Header */}
@@ -259,16 +241,22 @@ const ChatPage = () => {
               <button
                 onClick={() => setShowSearch(!showSearch)}
                 className="p-1 hover:bg-gray-200 rounded"
+                aria-label="Toggle search"
               >
                 <Search
                   size={20}
                   className="text-gray-500 hover:text-gray-700"
+                  aria-hidden="true"
                 />
               </button>
-              <button className="p-1 hover:bg-gray-200 rounded">
+              <button
+                className="p-1 hover:bg-gray-200 rounded"
+                aria-label="More options"
+              >
                 <MoreVertical
                   size={20}
                   className="text-gray-500 hover:text-gray-700"
+                  aria-hidden="true"
                 />
               </button>
             </div>
@@ -280,22 +268,25 @@ const ChatPage = () => {
                 <Search
                   size={16}
                   className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                  aria-hidden="true"
                 />
                 <input
                   type="text"
                   placeholder="Search chats..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1887A1]"
                 />
                 {searchTerm && (
                   <button
                     onClick={() => setSearchTerm("")}
                     className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                    aria-label="Clear search"
                   >
                     <X
                       size={16}
                       className="text-gray-400 hover:text-gray-600"
+                      aria-hidden="true"
                     />
                   </button>
                 )}
@@ -311,10 +302,11 @@ const ChatPage = () => {
                   setActiveTab(tab as ChatTab);
                   setSearchTerm("");
                 }}
-                className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${activeTab === tab
-                    ? "bg-teal-600 text-white"
+                className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
+                  activeTab === tab
+                    ? "bg-[#1887A1] text-white"
                     : "text-gray-600 hover:bg-gray-100"
-                  }`}
+                }`}
               >
                 {tab}
               </button>
@@ -328,14 +320,15 @@ const ChatPage = () => {
               <div
                 key={chat.id}
                 onClick={() => setSelectedChat(chat.id)}
-                className={`p-4 cursor-pointer border-b border-gray-100 hover:bg-gray-100 transition-colors ${selectedChat === chat.id
-                    ? "bg-blue-50 border-r-2 border-r-teal-600"
+                className={`p-4 cursor-pointer border-b border-gray-100 hover:bg-gray-100 transition-colors ${
+                  selectedChat === chat.id
+                    ? "bg-blue-50 border-r-2 border-r-[#1887A1]"
                     : ""
-                  }`}
+                }`}
               >
                 <div className="flex items-center gap-3">
                   <div className="relative">
-                    <div className="w-10 h-10 bg-teal-600 rounded-full flex items-center justify-center text-white font-semibold text-sm">
+                    <div className="w-10 h-10 bg-[#1887A1] rounded-full flex items-center justify-center text-white font-semibold text-sm">
                       {chat.avatar}
                     </div>
                     <div
@@ -353,10 +346,10 @@ const ChatPage = () => {
                     </p>
                   </div>
                   {activeTab === "Groups" && (
-                    <Users size={16} className="text-gray-400" />
+                    <Users size={16} className="text-gray-400" aria-hidden="true" />
                   )}
                   {activeTab === "Mentor" && (
-                    <User size={16} className="text-gray-400" />
+                    <User size={16} className="text-gray-400" aria-hidden="true" />
                   )}
                 </div>
               </div>
@@ -373,7 +366,7 @@ const ChatPage = () => {
         <div className="p-4 border-b border-gray-200 flex items-center justify-between bg-white">
           <div className="flex items-center gap-3">
             <div className="relative">
-              <div className="w-10 h-10 bg-teal-600 rounded-full flex items-center justify-center text-white font-semibold">
+              <div className="w-10 h-10 bg-[#1887A1] rounded-full flex items-center justify-center text-white font-semibold">
                 {currentChat.avatar}
               </div>
               <div
@@ -391,10 +384,10 @@ const ChatPage = () => {
                   {currentChat.status === "online"
                     ? "online"
                     : currentChat.status === "away"
-                      ? "away"
-                      : currentChat.status === "group"
-                        ? currentChat.subtitle
-                        : "last seen recently"}
+                    ? "away"
+                    : currentChat.status === "group"
+                    ? currentChat.subtitle
+                    : "last seen recently"}
                 </span>
               </div>
             </div>
@@ -402,16 +395,24 @@ const ChatPage = () => {
           <div className="flex items-center gap-2">
             {activeTab === "Mentor" && (
               <>
-                <button className="p-2 hover:bg-gray-100 rounded-full">
+                <button
+                  className="p-2 hover:bg-gray-100 rounded-full"
+                  aria-label="Start phone call"
+                >
                   <Phone
                     size={20}
                     className="text-gray-500 hover:text-gray-700"
+                    aria-hidden="true"
                   />
                 </button>
-                <button className="p-2 hover:bg-gray-100 rounded-full">
+                <button
+                  className="p-2 hover:bg-gray-100 rounded-full"
+                  aria-label="Start video call"
+                >
                   <Video
                     size={20}
                     className="text-gray-500 hover:text-gray-700"
+                    aria-hidden="true"
                   />
                 </button>
               </>
@@ -419,13 +420,22 @@ const ChatPage = () => {
             <button
               onClick={() => setShowSearch(!showSearch)}
               className="p-2 hover:bg-gray-100 rounded-full"
+              aria-label="Toggle search"
             >
-              <Search size={20} className="text-gray-500 hover:text-gray-700" />
+              <Search
+                size={20}
+                className="text-gray-500 hover:text-gray-700"
+                aria-hidden="true"
+              />
             </button>
-            <button className="p-2 hover:bg-gray-100 rounded-full">
+            <button
+              className="p-2 hover:bg-gray-100 rounded-full"
+              aria-label="More options"
+            >
               <MoreVertical
                 size={20}
                 className="text-gray-500 hover:text-gray-700"
+                aria-hidden="true"
               />
             </button>
           </div>
@@ -436,24 +446,35 @@ const ChatPage = () => {
           {messages.map((msg: Message) => (
             <div
               key={msg.id}
-              className={`flex ${msg.sender === "ai" ? "justify-start" : "justify-end"
-                }`}
+              className={`flex ${msg.sender === "ai" ? "justify-start" : "justify-end"}`}
             >
               {msg.sender === "ai" && (
-                <div className="w-8 h-8 bg-teal-600 rounded-full flex items-center justify-center text-white text-sm font-semibold mr-3 mt-1">
+                <div className="w-8 h-8 bg-[#1887A1] rounded-full flex items-center justify-center text-white text-sm font-semibold mr-3 mt-1">
                   {currentChat.avatar}
                 </div>
               )}
               <div
-                className={`max-w-xs lg:max-w-md px-4 py-2 rounded-2xl ${msg.sender === "ai"
+                className={`max-w-xs lg:max-w-md px-4 py-2 rounded-2xl ${
+                  msg.sender === "ai"
                     ? "bg-white text-gray-800 shadow-sm"
-                    : "bg-teal-600 text-white"
-                  }`}
+                    : "bg-[#1887A1] text-white"
+                }`}
               >
                 {msg.text}
               </div>
             </div>
           ))}
+          {isAITyping && (
+            <div className="flex justify-start">
+              <div className="w-8 h-8 bg-[#1887A1] rounded-full flex items-center justify-center text-white text-sm font-semibold mr-3 mt-1">
+                {currentChat.avatar}
+              </div>
+              <div className="bg-white text-gray-800 shadow-sm px-4 py-2 rounded-2xl">
+                <span className="animate-pulse">Typing...</span>
+              </div>
+            </div>
+          )}
+          <div ref={messagesEndRef} />
         </div>
 
         {/* Message Input */}
@@ -464,25 +485,27 @@ const ChatPage = () => {
                 <button
                   onClick={() => setShowEmojiPicker(!showEmojiPicker)}
                   className="p-1 hover:bg-gray-200 rounded-full"
+                  aria-label="Toggle emoji picker"
                 >
                   <Smile
                     size={20}
                     className="text-gray-500 hover:text-gray-700"
+                    aria-hidden="true"
                   />
                 </button>
 
                 {/* Emoji Picker */}
                 {showEmojiPicker && (
-                  <div className="absolute bottom-12 left-0 bg-white border border-gray-200 rounded-lg shadow-lg p-2 grid grid-cols-5 gap-2 z-10">
-                    {emojis.map((emoji, index) => (
-                      <button
-                        key={index}
-                        onClick={() => handleEmojiSelect(emoji)}
-                        className="p-2 hover:bg-gray-100 rounded text-lg"
-                      >
-                        {emoji}
-                      </button>
-                    ))}
+                  <div className="absolute bottom-12 left-0 z-10">
+                    <EmojiPicker
+                      onEmojiClick={handleEmojiSelect}
+                      theme={Theme.LIGHT}
+                      skinTonesDisabled
+                      previewConfig={{ showPreview: false }}
+                      searchDisabled
+                      width={320}
+                      height={400}
+                    />
                   </div>
                 )}
               </div>
@@ -501,35 +524,37 @@ const ChatPage = () => {
                   <button
                     onClick={() => setShowAttachments(!showAttachments)}
                     className="p-1 hover:bg-gray-200 rounded-full"
+                    aria-label="Toggle attachments"
                   >
                     <Plus
                       size={20}
                       className="text-gray-500 hover:text-gray-700"
+                      aria-hidden="true"
                     />
                   </button>
 
                   {/* Attachment Menu */}
                   {showAttachments && (
-                    <div className="absolute bottom-12 right-0 bg-white border border-gray-200 rounded-lg shadow-lg py-2 z-10 min-w-48">
+                    <div className="absolute bottom-12 right-way bg-white border border-gray-200 rounded-lg shadow-lg py-2 z-10 min-w-48">
                       <button
                         onClick={() => handleFileUpload("Document")}
                         className="flex items-center gap-3 w-full px-4 py-2 hover:bg-gray-100"
                       >
-                        <FileText size={16} className="text-blue-500" />
+                        <FileText size={16} className="text-blue-500" aria-hidden="true" />
                         <span className="text-sm">Document</span>
                       </button>
                       <button
                         onClick={() => handleFileUpload("Image")}
                         className="flex items-center gap-3 w-full px-4 py-2 hover:bg-gray-100"
                       >
-                        <Image size={16} className="text-green-500" />
+                        <ImageIcon size={16} className="text-green-500" aria-hidden="true" />
                         <span className="text-sm">Photo</span>
                       </button>
                       <button
                         onClick={() => handleFileUpload("File")}
                         className="flex items-center gap-3 w-full px-4 py-2 hover:bg-gray-100"
                       >
-                        <Upload size={16} className="text-purple-500" />
+                        <Upload size={16} className="text-purple-500" aria-hidden="true" />
                         <span className="text-sm">Upload File</span>
                       </button>
                     </div>
@@ -538,23 +563,33 @@ const ChatPage = () => {
 
                 <button
                   onClick={handleVoiceRecord}
-                  className={`p-1 hover:bg-gray-200 rounded-full ${isRecording ? "animate-pulse" : ""
-                    }`}
+                  className={`p-1 hover:bg-gray-200 rounded-full ${
+                    isRecording ? "animate-pulse" : ""
+                  }`}
+                  aria-label={isRecording ? "Stop recording" : "Start recording"}
                 >
                   <Mic
                     size={20}
-                    className={`${isRecording
+                    className={`${
+                      isRecording
                         ? "text-red-500"
                         : "text-gray-500 hover:text-gray-700"
-                      }`}
+                    }`}
+                    aria-hidden="true"
                   />
                 </button>
 
                 <button
                   onClick={handleSendMessage}
-                  className="bg-teal-600 text-white p-2 rounded-full hover:bg-teal-700 transition-colors"
+                  disabled={!message.trim()}
+                  className={`p-2 rounded-full transition-colors ${
+                    message.trim()
+                      ? "bg-[#1887A1] hover:bg-[#0D4C5B] text-white"
+                      : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  }`}
+                  aria-label="Send message"
                 >
-                  <Send size={16} />
+                  <Send size={16} aria-hidden="true" />
                 </button>
               </div>
             </div>

@@ -11,14 +11,14 @@ import {
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { useMemo, useState, useEffect } from "react";
+import Image from "next/image";
 
 function Sidebar() {
   const pathname = usePathname();
-  const [isCollapsed, setIsCollapsed] = useState(true); // Start collapsed
+  const [isCollapsed, setIsCollapsed] = useState(true);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
-  // Check if mobile on mount and resize
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
@@ -32,12 +32,10 @@ function Sidebar() {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  // Close mobile menu when route changes
   useEffect(() => {
     setIsMobileOpen(false);
   }, [pathname]);
 
-  // Handle mouse events for collapse/expand
   const handleMouseEnter = () => {
     if (!isMobile) {
       setIsCollapsed(false);
@@ -51,7 +49,7 @@ function Sidebar() {
   };
 
   const getActiveMenu = useMemo(() => {
-    return (currentPath: string) => {
+    return (currentPath: string) => {  // Added string type annotation
       if (currentPath === "/Student" || currentPath === "/Student/DashBord") {
         return "DashBoard";
       } else if (currentPath === "/Student/MyDouts") {
@@ -79,7 +77,7 @@ function Sidebar() {
     { name: "Course", icon: BookOpen, href: "/Student/Course" },
   ], []);
 
-  const sidebarWidth = isCollapsed ? "w-16" : "w-64";
+  const sidebarWidth = isCollapsed ? "w-20" : "w-64";
 
   return (
     <>
@@ -113,17 +111,28 @@ function Sidebar() {
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-        {/* Header */}
+        {/* Header - Enhanced Logo Section */}
         <div className="relative p-6 bg-white">
           {!isCollapsed && (
-            <h1 className="text-2xl font-bold text-[#1887A1] transition-opacity duration-200 pb-2 border-b border-gray-200">
-              SkillMentorX
-            </h1>
+            <div className="transition-opacity duration-200">
+              <h1 className="text-2xl font-bold text-[#1887A1] pb-2 border-b border-gray-200">
+                SkillMentorX
+              </h1>
+            </div>
           )}
           {isCollapsed && (
-            <h1 className="text-xl font-bold text-[#1887A1] text-center pb-2 border-b border-gray-200">
-              SMX
-            </h1>
+            <div className="flex justify-center pb-2 border-b border-gray-200">
+              <div className="relative w-12 h-12 rounded-lg bg-gradient-to-br from-[#1887A1]/10 to-[#0D4C5B]/10 p-2 hover:shadow-lg transition-all duration-300 hover:scale-105">
+                <Image
+                  src="/skillmentorX.tm.png"
+                  alt="SMX Logo"
+                  width={32}
+                  height={32}
+                  className="object-contain w-full h-full filter drop-shadow-sm"
+                  priority
+                />
+              </div>
+            </div>
           )}
         </div>
 
@@ -135,7 +144,7 @@ function Sidebar() {
               const isActive = activeMenu === item.name;
 
               return (
-                <li 
+                <li
                   key={item.name}
                   className="transform transition-all duration-200"
                   style={{ animationDelay: `${index * 50}ms` }}
@@ -148,28 +157,27 @@ function Sidebar() {
                       flex items-center
                       ${isCollapsed ? 'justify-center px-2' : 'justify-start space-x-3'}
                       transform hover:scale-[1.02] active:scale-[0.98]
-                      ${
-                        isActive
-                          ? "bg-gradient-to-r from-[#1887A1] to-[#0D4C5B] text-white shadow-lg shadow-[#1887A1]/25"
-                          : "text-[#0D4C5B] hover:bg-gradient-to-r hover:from-[#1887A1]/10 hover:to-[#0D4C5B]/10 hover:text-[#0D4C5B] hover:shadow-md"
+                      ${isActive
+                        ? "bg-gradient-to-r from-[#1887A1] to-[#0D4C5B] text-white shadow-lg shadow-[#1887A1]/25"
+                        : "text-[#0D4C5B] hover:bg-gradient-to-r hover:from-[#1887A1]/10 hover:to-[#0D4C5B]/10 hover:text-[#0D4C5B] hover:shadow-md"
                       }
                     `}
                     prefetch={false}
                     replace={false}
                   >
                     <div className="relative">
-                      <IconComponent 
+                      <IconComponent
                         className={`
                           w-5 h-5 flex-shrink-0 transition-all duration-300
                           ${isActive ? 'drop-shadow-sm' : 'group-hover:scale-110'}
-                        `} 
+                        `}
                       />
                       {/* Active indicator dot */}
                       {isActive && isCollapsed && (
                         <div className="absolute -top-1 -right-1 w-2 h-2 bg-white rounded-full animate-pulse" />
                       )}
                     </div>
-                    
+
                     {!isCollapsed && (
                       <span className="transition-opacity duration-200 truncate">
                         {item.name}
@@ -194,7 +202,6 @@ function Sidebar() {
             })}
           </ul>
         </nav>
-
       </div>
 
       {/* Content Spacer - This ensures content doesn't overlap with fixed sidebar */}

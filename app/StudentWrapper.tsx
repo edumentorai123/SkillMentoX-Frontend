@@ -9,14 +9,16 @@ export default function SidebarWrapper() {
         "/Student",
         "/Student/DashBord",
         "/Student/MyDouts",
-        "/Student/Chat",
         "/Student/Quiezz",
         "/Student/Course",
     ];
 
-    const showSidebar = sidebarRoutes.some((route) =>
-        pathname.startsWith(route)
-    );
+    const hiddenRoutes = ["/Student/Chat"];
+
+
+    const showSidebar = 
+    sidebarRoutes.some((route) => pathname.startsWith(route)) &&
+    !hiddenRoutes.includes(pathname)
 
     if (!showSidebar) return null;
 
