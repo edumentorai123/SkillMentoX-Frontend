@@ -1,5 +1,7 @@
+
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import {
   Search,
   Users,
@@ -20,134 +22,127 @@ import {
   X,
   Ban,
 } from "lucide-react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:9999";
+
+interface Mentor {
+  _id: string;
+  name: string;
+  email: string;
+  subject: string;
+  expertise: string[];
+  status: string;
+  joinDate: string;
+  lastActive: string;
+  totalSessions: number;
+  rating: number;
+  studentsHelped: number;
+  avatar: string;
+  verified: boolean;
+}
 
 const MentorsPage = () => {
+  const [mentors, setMentors] = useState<Mentor[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedFilter, setSelectedFilter] = useState("All");
-  const [selectedMentors, setSelectedMentors] = useState([]);
+  const [selectedMentors, setSelectedMentors] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const mentors = [
-    {
-      id: 1,
-      name: "Dr. Sarah Johnson",
-      email: "sarah.johnson@email.com",
-      subject: "Mathematics",
-      expertise: ["Calculus", "Algebra", "Statistics"],
-      status: "Active",
-      joinDate: "2023-08-15",
-      lastActive: "2 mins ago",
-      totalSessions: 89,
-      rating: 4.9,
-      studentsHelped: 45,
-      avatar: "SJ",
-      verified: true,
-    },
-    {
-      id: 2,
-      name: "Prof. Michael Chen",
-      email: "michael.chen@email.com",
-      subject: "Physics",
-      expertise: ["Quantum Physics", "Mechanics", "Thermodynamics"],
-      status: "Active",
-      joinDate: "2023-09-20",
-      lastActive: "15 mins ago",
-      totalSessions: 67,
-      rating: 4.8,
-      studentsHelped: 38,
-      avatar: "MC",
-      verified: true,
-    },
-    {
-      id: 3,
-      name: "Dr. Emily Rodriguez",
-      email: "emily.rodriguez@email.com",
-      subject: "Chemistry",
-      expertise: ["Organic Chemistry", "Biochemistry", "Lab Techniques"],
-      status: "Inactive",
-      joinDate: "2023-07-10",
-      lastActive: "3 days ago",
-      totalSessions: 34,
-      rating: 4.7,
-      studentsHelped: 22,
-      avatar: "ER",
-      verified: true,
-    },
-    {
-      id: 4,
-      name: "Dr. Robert Smith",
-      email: "robert.smith@email.com",
-      subject: "Computer Science",
-      expertise: ["Programming", "Data Structures", "Algorithms"],
-      status: "Active",
-      joinDate: "2023-06-05",
-      lastActive: "1 hour ago",
-      totalSessions: 156,
-      rating: 4.9,
-      studentsHelped: 78,
-      avatar: "RS",
-      verified: true,
-    },
-    {
-      id: 5,
-      name: "Dr. Amanda Wilson",
-      email: "amanda.wilson@email.com",
-      subject: "Biology",
-      expertise: ["Molecular Biology", "Genetics", "Cell Biology"],
-      status: "Pending",
-      joinDate: "2024-01-15",
-      lastActive: "20 mins ago",
-      totalSessions: 12,
-      rating: 4.6,
-      studentsHelped: 8,
-      avatar: "AW",
-      verified: false,
-    },
-    {
-      id: 6,
-      name: "Prof. David Lee",
-      email: "david.lee@email.com",
-      subject: "Economics",
-      expertise: ["Microeconomics", "Macroeconomics", "Statistics"],
-      status: "Active",
-      joinDate: "2023-10-12",
-      lastActive: "5 mins ago",
-      totalSessions: 78,
-      rating: 4.8,
-      studentsHelped: 42,
-      avatar: "DL",
-      verified: true,
-    },
-    {
-      id: 7,
-      name: "Dr. Lisa Thompson",
-      email: "lisa.thompson@email.com",
-      subject: "English Literature",
-      expertise: ["Literary Analysis", "Creative Writing", "Grammar"],
-      status: "Suspended",
-      joinDate: "2023-05-20",
-      lastActive: "1 week ago",
-      totalSessions: 45,
-      rating: 4.3,
-      studentsHelped: 28,
-      avatar: "LT",
-      verified: true,
-    },
-    {
-      id: 8,
-      name: "Dr. James Martinez",
-      email: "james.martinez@email.com",
-      subject: "History",
-      expertise: ["World History", "American History", "Research Methods"],
-      status: "Active",
-      joinDate: "2023-11-08",
-      lastActive: "30 mins ago",
-      totalSessions: 23,
-      rating: 4.7,
-      studentsHelped: 15,
-      avatar: "JM",
-      verified: true,
-    },
-  ];
+  useEffect(() => {
+    const fetchMentors = async () => {
+      try {
+        setIsLoading(true);
+        console.log("Fetching mentors from:", `${API_BASE_URL}/api/admin/getAllmentors`);
+        const response = await axios.get(`${API_BASE_URL}/api/admin/getAllmentors`, {
+          withCredentials: true,
+        });
+        console.log("Mentors API Response:", response.data);
+        if (!response.data.success || !Array.isArray(response.data.data)) {
+          throw new Error("Invalid API response: Expected an array");
+        }
+        setMentors(response.data.data);
+      } catch (error: any) {
+        console.error("Error fetching mentors:", error);
+        toast.error(
+          error.response?.status === 404
+            ? "Mentors endpoint not found. Please check the server configuration."
+            : error.response?.status === 401
+            ? "Unauthorized. Please log in as an admin."
+            : error.message || "Failed to fetch mentors. Please try again later.",
+          { position: "top-right", autoClose: 5000 }
+        );
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchMentors();
+  }, []);
+
+  const handleApproveMentors = async () => {
+    try {
+      const responses = await Promise.all(
+        selectedMentors.map((id) =>
+          axios.put(`${API_BASE_URL}/api/mentor/mentors/${id}/approve`, null, {
+            withCredentials: true,
+          })
+        )
+      );
+      setMentors((prev) =>
+        prev.map((mentor) =>
+          selectedMentors.includes(mentor._id)
+            ? responses.find((res) => res.data.data._id === mentor._id)?.data.data || mentor
+            : mentor
+        )
+      );
+      setSelectedMentors([]);
+      toast.success("Mentors approved successfully!", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+    } catch (error: any) {
+      console.error("Error approving mentors:", error);
+      toast.error(
+        error.response?.status === 401
+          ? "Unauthorized. Please log in as an admin."
+          : "Failed to approve mentors. Please try again.",
+        { position: "top-right", autoClose: 5000 }
+      );
+    }
+  };
+
+  const handleSuspendMentors = async () => {
+    try {
+      const responses = await Promise.all(
+        selectedMentors.map((id) =>
+          axios.put(`${API_BASE_URL}/api/mentor/mentors/${id}/suspend`, null, {
+            withCredentials: true,
+          })
+        )
+      );
+      setMentors((prev) =>
+        prev.map((mentor) =>
+          selectedMentors.includes(mentor._id)
+            ? responses.find((res) => res.data.data._id === mentor._id)?.data.data || mentor
+            : mentor
+        )
+      );
+      setSelectedMentors([]);
+      toast.success("Mentors suspended successfully!", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+    } catch (error: any) {
+      console.error("Error suspending mentors:", error);
+      toast.error(
+        error.response?.status === 401
+          ? "Unauthorized. Please log in as an admin."
+          : "Failed to suspend mentors. Please try again.",
+        { position: "top-right", autoClose: 5000 }
+      );
+    }
+  };
 
   const filters = [
     "All",
@@ -169,12 +164,12 @@ const MentorsPage = () => {
     if (selectedFilter === "Verified") matchesFilter = mentor.verified;
     else if (selectedFilter === "Unverified") matchesFilter = !mentor.verified;
     else if (selectedFilter !== "All")
-      matchesFilter = mentor.status === selectedFilter;
+      matchesFilter = mentor.status.toLowerCase() === selectedFilter.toLowerCase();
 
     return matchesSearch && matchesFilter;
   });
 
-  const handleMentorSelect = (mentorId) => {
+  const handleMentorSelect = (mentorId: string) => {
     setSelectedMentors((prev) =>
       prev.includes(mentorId)
         ? prev.filter((id) => id !== mentorId)
@@ -182,22 +177,23 @@ const MentorsPage = () => {
     );
   };
 
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "Active":
+  const getStatusColor = (status: string) => {
+    switch (status.toLowerCase()) {
+      case "active":
+      case "approved":
         return "bg-green-100 text-green-800 border-green-200";
-      case "Inactive":
+      case "inactive":
         return "bg-gray-100 text-gray-800 border-gray-200";
-      case "Pending":
+      case "pending":
         return "bg-yellow-100 text-yellow-800 border-yellow-200";
-      case "Suspended":
+      case "suspended":
         return "bg-red-100 text-red-800 border-red-200";
       default:
         return "bg-gray-100 text-gray-800 border-gray-200";
     }
   };
 
-  const renderStars = (rating) => {
+  const renderStars = (rating: number) => {
     return [...Array(5)].map((_, i) => (
       <Star
         key={i}
@@ -214,7 +210,10 @@ const MentorsPage = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Page Header */}
+        <ToastContainer position="top-right" autoClose={5000} />
+        {isLoading && (
+          <div className="text-center py-6 text-gray-500">Loading...</div>
+        )}
         <div className="mb-8">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-8">
             <div>
@@ -245,8 +244,6 @@ const MentorsPage = () => {
               </button>
             </div>
           </div>
-
-          {/* Stats Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
               <div className="flex items-center justify-between mb-4">
@@ -254,45 +251,46 @@ const MentorsPage = () => {
                   <UserCheck size={24} className="text-blue-600" />
                 </div>
                 <span className="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-semibold">
-                  +5
+                  +{mentors.filter((m) => new Date(m.joinDate).getFullYear() === new Date().getFullYear()).length}
                 </span>
               </div>
-              <div className="text-3xl font-bold text-gray-900 mb-1">24</div>
+              <div className="text-3xl font-bold text-gray-900 mb-1">{mentors.length}</div>
               <div className="text-gray-600 text-sm">Total Mentors</div>
             </div>
-
             <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
               <div className="flex items-center justify-between mb-4">
                 <div className="p-3 bg-green-100 rounded-lg">
                   <CheckCircle size={24} className="text-green-600" />
                 </div>
               </div>
-              <div className="text-3xl font-bold text-gray-900 mb-1">19</div>
+              <div className="text-3xl font-bold text-gray-900 mb-1">
+                {mentors.filter((m) => m.status.toLowerCase() === "approved" || m.status.toLowerCase() === "active").length}
+              </div>
               <div className="text-gray-600 text-sm">Active Mentors</div>
             </div>
-
             <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
               <div className="flex items-center justify-between mb-4">
                 <div className="p-3 bg-yellow-100 rounded-lg">
                   <Clock size={24} className="text-yellow-600" />
                 </div>
               </div>
-              <div className="text-3xl font-bold text-gray-900 mb-1">3</div>
+              <div className="text-3xl font-bold text-gray-900 mb-1">
+                {mentors.filter((m) => m.status.toLowerCase() === "pending").length}
+              </div>
               <div className="text-gray-600 text-sm">Pending Approval</div>
             </div>
-
             <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
               <div className="flex items-center justify-between mb-4">
                 <div className="p-3 bg-orange-100 rounded-lg">
                   <Award size={24} className="text-orange-600" />
                 </div>
               </div>
-              <div className="text-3xl font-bold text-gray-900 mb-1">4.8</div>
+              <div className="text-3xl font-bold text-gray-900 mb-1">
+                {(mentors.reduce((sum, m) => sum + m.rating, 0) / mentors.length || 0).toFixed(1)}
+              </div>
               <div className="text-gray-600 text-sm">Average Rating</div>
             </div>
           </div>
-
-          {/* Filters */}
           <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 mb-6">
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2 text-gray-700">
@@ -316,9 +314,8 @@ const MentorsPage = () => {
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Mentors Table */}
+        </div>
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
@@ -330,7 +327,7 @@ const MentorsPage = () => {
                       className="rounded border-gray-300 text-[#1887A1] focus:ring-[#1887A1]"
                       onChange={(e) => {
                         if (e.target.checked) {
-                          setSelectedMentors(filteredMentors.map((m) => m.id));
+                          setSelectedMentors(filteredMentors.map((m) => m._id));
                         } else {
                           setSelectedMentors([]);
                         }
@@ -366,15 +363,15 @@ const MentorsPage = () => {
               <tbody className="bg-white divide-y divide-gray-200">
                 {filteredMentors.map((mentor) => (
                   <tr
-                    key={mentor.id}
+                    key={mentor._id}
                     className="hover:bg-gray-50 transition-colors"
                   >
                     <td className="px-6 py-4">
                       <input
                         type="checkbox"
                         className="rounded border-gray-300 text-[#1887A1] focus:ring-[#1887A1]"
-                        checked={selectedMentors.includes(mentor.id)}
-                        onChange={() => handleMentorSelect(mentor.id)}
+                        checked={selectedMentors.includes(mentor._id)}
+                        onChange={() => handleMentorSelect(mentor._id)}
                       />
                     </td>
                     <td className="px-6 py-4">
@@ -467,11 +464,19 @@ const MentorsPage = () => {
                     </td>
                   </tr>
                 ))}
+                {filteredMentors.length === 0 && (
+                  <tr>
+                    <td
+                      colSpan={9}
+                      className="text-center py-6 text-gray-500 text-sm"
+                    >
+                      No mentors found
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
-
-          {/* Pagination */}
           <div className="bg-white px-6 py-4 flex items-center justify-between border-t border-gray-200">
             <div className="flex-1 flex justify-between sm:hidden">
               <button className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors">
@@ -485,9 +490,8 @@ const MentorsPage = () => {
               <div>
                 <p className="text-sm text-gray-700">
                   Showing <span className="font-medium">1</span> to{" "}
-                  <span className="font-medium">8</span> of{" "}
-                  <span className="font-medium">{filteredMentors.length}</span>{" "}
-                  results
+                  <span className="font-medium">{filteredMentors.length}</span> of{" "}
+                  <span className="font-medium">{mentors.length}</span> results
                 </p>
               </div>
               <div>
@@ -512,8 +516,6 @@ const MentorsPage = () => {
             </div>
           </div>
         </div>
-
-        {/* Bulk Actions Floating Panel */}
         {selectedMentors.length > 0 && (
           <div className="fixed bottom-8 right-8 bg-white rounded-xl shadow-2xl border border-gray-200 p-6 z-50">
             <div className="flex items-center space-x-4">
@@ -522,11 +524,17 @@ const MentorsPage = () => {
                 {selectedMentors.length !== 1 ? "s" : ""} selected
               </span>
               <div className="flex space-x-2">
-                <button className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm flex items-center space-x-2 transition-colors">
+                <button
+                  onClick={handleApproveMentors}
+                  className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm flex items-center space-x-2 transition-colors"
+                >
                   <CheckCircle size={16} />
                   <span>Approve</span>
                 </button>
-                <button className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 text-sm flex items-center space-x-2 transition-colors">
+                <button
+                  onClick={handleSuspendMentors}
+                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 text-sm flex items-center space-x-2 transition-colors"
+                >
                   <Ban size={16} />
                   <span>Suspend</span>
                 </button>
@@ -545,5 +553,4 @@ const MentorsPage = () => {
     </div>
   );
 };
-
 export default MentorsPage;
