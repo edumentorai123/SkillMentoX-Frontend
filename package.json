@@ -26,7 +26,11 @@
     "react-router-dom": "^7.8.0",
     "react-swipeable": "^7.0.2",
     "react-toastify": "^11.0.5",
+<<<<<<< HEAD
     "zod": "^4.0.17"
+=======
+    "recharts": "^3.1.2"
+>>>>>>> a415376704732b43207049db449d6d7f652570e7
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

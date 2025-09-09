@@ -98,7 +98,7 @@ const LoginForm: React.FC = () => {
         } else {
           router.push("/registerForm");
         }
-      }, 100); // 100ms delay
+      }, 100); 
       return () => clearTimeout(timer);
     }
   }, [user, token, router]);

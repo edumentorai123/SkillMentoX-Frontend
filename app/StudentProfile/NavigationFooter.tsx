@@ -11,8 +11,11 @@ interface NavigationFooterProps {
 }
 
 const NavigationFooter: React.FC<NavigationFooterProps> = ({ isStepValid, onSubmit }) => {
-  const { currentStep } = useAppSelector((state) => state.profile)
+  const profile = useAppSelector((state) => state.profile)
   const dispatch = useAppDispatch()
+
+  // Safe destructuring with fallback
+  const { currentStep = 2 } = profile || {}
 
   const handleBack = () => {
     dispatch(prevStep())
@@ -28,6 +31,20 @@ const NavigationFooter: React.FC<NavigationFooterProps> = ({ isStepValid, onSubm
 
   const isFirstStep = currentStep === 2
   const isLastStep = currentStep === 4
+
+  // Show loading state if profile is not ready
+  if (!profile) {
+    return (
+      <div className="bg-white rounded-2xl p-6 shadow-lg">
+        <div className="animate-pulse">
+          <div className="flex justify-between">
+            <div className="h-12 w-24 bg-gray-200 rounded"></div>
+            <div className="h-12 w-24 bg-gray-200 rounded"></div>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="bg-white rounded-2xl p-6 shadow-lg" data-aos="fade-up">
@@ -107,4 +124,4 @@ const NavigationFooter: React.FC<NavigationFooterProps> = ({ isStepValid, onSubm
   )
 }
 
-export default NavigationFooter
+export default NavigationFooter;

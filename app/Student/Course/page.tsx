@@ -2,23 +2,16 @@
 'use client';
 import React, { useState } from 'react';
 import { 
-  Home, 
-  MessageCircle, 
-  HelpCircle, 
-  BookOpen, 
-  BarChart3, 
   User,
   Play,
-  X
 } from 'lucide-react';
-import Navbar from '../Navbar';
 
 const Course = () => {
     const [sidebarOpen, setSidebarOpen] = useState(true);
     const [activeNav, setActiveNav] = useState('Course');
 
 
- 
+
   const handleNavClick = (navId: string, label: string) => {
     setActiveNav(label);
     setSidebarOpen(false);
@@ -27,15 +20,8 @@ const Course = () => {
 
   return (
     <div className="flex h-screen bg-gray-50">
-     <div
-        className={`${
-          sidebarOpen ? "block" : "hidden"
-        } lg:block w-64 bg-white shadow-md flex-shrink-0`}
-      >
-        <Navbar />
-      </div>
       {/* Main Content */}
-      <div className="flex-1 bg-gradient-to-br from-teal-600 to-teal-800 p-8">
+      <div className="flex-1 bg-blue-500 p-8">
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <div className="bg-white/20 backdrop-blur-sm rounded-2xl px-6 py-4 text-white">
