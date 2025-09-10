@@ -30,6 +30,7 @@ interface User {
   avatar?: string;
 }
 
+
 const UsersPage = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
