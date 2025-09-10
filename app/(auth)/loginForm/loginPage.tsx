@@ -94,7 +94,7 @@ const LoginForm: React.FC = () => {
         } else if (role === "mentor") {
           router.push("/mentorHome");
         } else if (role === "admin") {
-          router.push("/adminDashboard");
+          router.push("/Admin");
         } else {
           router.push("/registerForm");
         }

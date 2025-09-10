@@ -1,11 +1,13 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import { Menu, X, Settings, LogOut, User } from "lucide-react";
 import { RootState } from "@/redux/store";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "@/redux/Slices/authSlice";
+
 
 interface NavbarProps {
   studentName?: string;
@@ -20,23 +22,27 @@ const Navbar: React.FC<NavbarProps> = ({ studentName: propStudentName }) => {
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const user = useSelector((state: RootState) => state.auth.user);
   const isLoading = useSelector((state: RootState) => state.auth.loading);
+  const dispatch = useDispatch();
+  const router = useRouter()
+
+
 
   const getStudentName = () => {
     if (propStudentName) {
       return propStudentName;
     }
-    
+
     if (!user) {
       return "Guest";
     }
-    
+
     const firstName = user.firstName?.trim() || "";
     const lastName = user.lastName?.trim() || "";
-    
+
     if (firstName && lastName) {
       return `${firstName} ${lastName}`;
     }
-    
+
     return firstName || "Guest";
   };
 
@@ -59,6 +65,13 @@ const Navbar: React.FC<NavbarProps> = ({ studentName: propStudentName }) => {
     { name: "Settings", href: "/StudentHome/settings", icon: Settings },
     { name: "Sign Out", href: "/loginForm", icon: LogOut },
   ];
+
+  const handleLogout = () => {
+    dispatch(logout());
+    router.push("/loginForm");
+    setIsProfileDropdownOpen(false);
+    setIsMobileMenuOpen(false);
+  };
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -134,9 +147,8 @@ const Navbar: React.FC<NavbarProps> = ({ studentName: propStudentName }) => {
                 <Link
                   key={link.name}
                   href={link.href}
-                  className={`px-3 xl:px-4 py-2 text-sm font-medium transition-all duration-300 whitespace-nowrap relative group ${
-                    pathname === link.href ? "text-[#1887A1]" : "text-gray-600 hover:text-[#1887A1]"
-                  }`}
+                  className={`px-3 xl:px-4 py-2 text-sm font-medium transition-all duration-300 whitespace-nowrap relative group ${pathname === link.href ? "text-[#1887A1]" : "text-gray-600 hover:text-[#1887A1]"
+                    }`}
                 >
                   {link.name}
                   {pathname === link.href && (
@@ -168,19 +180,35 @@ const Navbar: React.FC<NavbarProps> = ({ studentName: propStudentName }) => {
                       <p className="text-sm font-medium text-gray-900 truncate">
                         {isMounted ? displayName : "Loading..."}
                       </p>
+                      <p className="text-xs text-gray-500 truncate">
+                        {isMounted && user?.email ? user.email : "Loading..."}
+                      </p>
                       <p className="text-xs text-gray-500">Student Account</p>
                     </div>
-                    {profileMenuItems.map((item) => (
-                      <Link
-                        key={item.name}
-                        href={item.href}
-                        className="flex items-center px-3 sm:px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#1887A1] transition-colors duration-150"
-                        onClick={() => setIsProfileDropdownOpen(false)}
-                      >
-                        <item.icon className="w-4 h-4 mr-2 sm:mr-3 flex-shrink-0" />
-                        <span className="truncate">{item.name}</span>
-                      </Link>
-                    ))}
+
+                    {profileMenuItems.map((item) =>
+                      item.name === "Sign Out" ? (
+                        <button
+                          key={item.name}
+                          onClick={handleLogout}
+                          className="flex items-center w-full text-left px-3 sm:px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#1887A1] transition-colors duration-150"
+                        >
+                          <item.icon className="w-4 h-4 mr-2 sm:mr-3 flex-shrink-0" />
+                          <span>{item.name}</span>
+                        </button>
+                      ) : (
+                        <Link
+                          key={item.name}
+                          href={item.href!}
+                          className="flex items-center px-3 sm:px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#1887A1] transition-colors duration-150"
+                          onClick={() => setIsProfileDropdownOpen(false)}
+                        >
+                          <item.icon className="w-4 h-4 mr-2 sm:mr-3 flex-shrink-0" />
+                          <span>{item.name}</span>
+                        </Link>
+                      )
+                    )}
+
                   </div>
                 )}
               </div>
@@ -208,9 +236,8 @@ const Navbar: React.FC<NavbarProps> = ({ studentName: propStudentName }) => {
 
       <div
         ref={mobileMenuRef}
-        className={`fixed top-0 right-0 w-80 max-w-[85vw] h-full bg-white z-50 transform transition-transform duration-300 ease-in-out lg:hidden shadow-2xl ${
-          isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
-        }`}
+        className={`fixed top-0 right-0 w-80 max-w-[85vw] h-full bg-white z-50 transform transition-transform duration-300 ease-in-out lg:hidden shadow-2xl ${isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
+          }`}
       >
         <div className="flex items-center justify-between p-4 border-b border-gray-100 bg-gray-50">
           <div className="flex items-center">
@@ -240,11 +267,10 @@ const Navbar: React.FC<NavbarProps> = ({ studentName: propStudentName }) => {
               <Link
                 key={link.name}
                 href={link.href}
-                className={`px-4 py-3 rounded-lg text-base font-medium transition-colors duration-200 min-h-[48px] flex items-center ${
-                  pathname === link.href
-                    ? "text-[#1887A1] bg-[#1887A1]/10 border-l-4 border-[#1887A1]"
-                    : "text-gray-700 hover:text-[#1887A1] hover:bg-gray-50"
-                }`}
+                className={`px-4 py-3 rounded-lg text-base font-medium transition-colors duration-200 min-h-[48px] flex items-center ${pathname === link.href
+                  ? "text-[#1887A1] bg-[#1887A1]/10 border-l-4 border-[#1887A1]"
+                  : "text-gray-700 hover:text-[#1887A1] hover:bg-gray-50"
+                  }`}
                 onClick={closeMobileMenu}
               >
                 {link.name}
