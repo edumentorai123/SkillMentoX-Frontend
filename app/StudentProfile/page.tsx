@@ -1,10 +1,11 @@
+import AuthRedirect from "../AuthRedirect/AuthRedirect";
 import SetupProfilePage from "./SetupProfilePage";
 
 const page = () => {
     return (
-        <div>
+        <AuthRedirect>
             <SetupProfilePage/>
-        </div>
+        </AuthRedirect>
     );
 }
 
