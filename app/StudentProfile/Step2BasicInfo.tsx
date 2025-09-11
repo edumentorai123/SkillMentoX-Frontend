@@ -8,15 +8,30 @@ import AvatarUploader from './AvatarUploader'
 
 const Step2BasicInfo: React.FC = () => {
   const profile = useAppSelector((state) => state.profile)
+  const auth = useAppSelector((state) => state.auth) 
   const dispatch = useAppDispatch()
 
   const { name = '', email = '', location = '', phone = '' } = profile || {}
 
   useEffect(() => {
+    if (auth?.user) {
+      const fullName = auth.user.lastName
+        ? `${auth.user.firstName} ${auth.user.lastName}`
+        : auth.user.firstName
+
+      if (!name) {
+        dispatch(updateField({ field: 'name', value: fullName }))
+      }
+      if (!email) {
+        dispatch(updateField({ field: 'email', value: auth.user.email }))
+      }
+    }
+
+    // AOS refresh
     if (typeof window !== 'undefined' && window.AOS) {
       window.AOS.refresh()
     }
-  }, [])
+  }, [auth?.user, dispatch, name, email])
 
   const handleInputChange = <
     K extends 'name' | 'email' | 'location' | 'phone'
@@ -184,7 +199,6 @@ const Step2BasicInfo: React.FC = () => {
           </p>
         </div>
       </div>
-
     </div>
   )
 }

@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosRequestHeaders } from "axios";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL as string;
 
@@ -10,8 +10,8 @@ axiosClient.interceptors.request.use((config) => {
     if (typeof window !== "undefined") {
         const token = localStorage.getItem("accessToken");
         if (token) {
-            config.headers = config.headers ?? {};
-            (config.headers as any).Authorization = `Bearer ${token}`;
+            const headers = config.headers as AxiosRequestHeaders;
+            headers.Authorization = `Bearer ${token}`;
         }
     }
     return config;

@@ -11,7 +11,6 @@ import type { Aos } from "aos";
 import axios from "axios";
 import { setRole } from "@/redux/Slices/profileSlice";
 
-
 declare global {
   interface Window {
     AOS?: Aos;
@@ -25,7 +24,7 @@ const SetupProfilePage: React.FC = () => {
 
   useEffect(() => {
     const initializeComponent = async () => {
-      
+
       if (typeof window !== "undefined") {
         try {
           const AOSModule = await import("aos");
