@@ -134,9 +134,9 @@ const RegisterForm: React.FC = () => {
         { userId, otp: otpCode }
       );
       setIsVerified(true);
-      localStorage.setItem("token", response.data.token); 
+      localStorage.setItem("token", response.data.token);
       toast.success("Email verified successfully!");
-      setTimeout(() => router.push("/loginForm"), 1000); 
+      setTimeout(() => router.push("/loginForm"), 1000);
     } catch (error: any) {
       toast.error(error.response?.data?.message || "OTP verification failed");
     }
