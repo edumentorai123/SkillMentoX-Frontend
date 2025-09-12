@@ -26,7 +26,7 @@ const RequestsPage = () => {
     const fetchRequests = async () => {
       try {
         const { data } = await axios.get(
-          "http://localhost:9999/api/mentor/admin/mentor-requests",
+          "http://localhost:9999/api/admin/mentor-requests",
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -57,7 +57,7 @@ const RequestsPage = () => {
       }
 
       await axios.put(
-        `http://localhost:9999/api/mentor/admin/${endpoint}/${id}`,
+        `http://localhost:9999/api/admin/${endpoint}/${id}`,
         {},
         {
           headers: { Authorization: `Bearer ${token}` }, // <-- add token here
