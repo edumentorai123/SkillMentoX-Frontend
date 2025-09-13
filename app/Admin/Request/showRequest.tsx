@@ -3,6 +3,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { MoreVertical, User, Mail, Calendar, ChevronDown } from "lucide-react";
+import { useRouter } from "next/navigation";  // top import
+
+
 
 interface MentorRequest {
   _id: string;
@@ -18,6 +21,7 @@ interface MentorRequest {
 
 const RequestsPage = () => {
   const [requests, setRequests] = useState<MentorRequest[]>([]);
+  const router = useRouter();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -153,6 +157,7 @@ const RequestsPage = () => {
           {requests.map((request) => (
             <div
               key={request._id}
+              onClick={() => router.push(`/Admin/Request/${request.mentorId._id}`)}
               className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
             >
               <div className="flex items-start justify-between mb-4">
