@@ -135,6 +135,8 @@ const authSlice = createSlice({
             localStorage.removeItem("userRole");
             localStorage.removeItem("authToken");
             localStorage.removeItem("userId");
+            localStorage.removeItem('token')
+            localStorage.removeItem('user')
         },
         setCredentials: (
             state,
@@ -165,7 +167,7 @@ const authSlice = createSlice({
             localStorage.setItem("auth", JSON.stringify(authData));
             localStorage.setItem("accessToken", action.payload.token);
 
-            // Also store individual items for backward compatibility
+           
             localStorage.setItem("userName", userData.firstName + (userData.lastName ? ` ${userData.lastName}` : ''));
             localStorage.setItem("userRole", userData.role || '');
             localStorage.setItem("authToken", action.payload.token);
@@ -184,7 +186,7 @@ const authSlice = createSlice({
                 state.hasProfile = parsed.hasProfile ?? false;
                 state.isPremium = parsed.isPremium ?? false;
 
-                // Also set individual items for backward compatibility
+            
                 const fullName = parsed.user.firstName + (parsed.user.lastName ? ` ${parsed.user.lastName}` : '');
                 localStorage.setItem("userName", fullName);
                 localStorage.setItem("userRole", parsed.user.role || '');
@@ -239,11 +241,11 @@ const authSlice = createSlice({
                     state.hasProfile = action.payload.hasProfile;
                     state.isPremium = action.payload.isPremium;
 
-                    // Store auth data
+                   
                     localStorage.setItem("auth", JSON.stringify(action.payload));
                     localStorage.setItem("accessToken", action.payload.token);
 
-                    // Also store individual items for backward compatibility
+                    
                     const fullName = action.payload.user.firstName + (action.payload.user.lastName ? ` ${action.payload.user.lastName}` : '');
                     localStorage.setItem("userName", fullName);
                     localStorage.setItem("userRole", action.payload.user.role || '');
