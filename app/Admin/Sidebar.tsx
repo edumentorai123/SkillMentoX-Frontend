@@ -26,8 +26,8 @@ function Sidebar() {
       return "Mentor";
     } else if (currentPath === "/Admin/Request") {
       return "Request";
-    } else if (currentPath === "/Admin/Course") {
-      return "Add Course";
+    } else if (currentPath === "/Admin/Courses") {
+      return "Courses";
     }
     return "DashBoard";
   };
@@ -39,7 +39,7 @@ function Sidebar() {
     { name: "Students", icon: GraduationCap, href: "/Admin/Students" },
     { name: "Mentor", icon: MessageCircle, href: "/Admin/Mentor" },
     { name: "Request", icon: FileQuestion, href: "/Admin/Request" },
-    { name: "Add Course", icon: BookOpen, href: "/Admin/Add Course" },
+    { name: "Courses", icon: BookOpen, href: "/Admin/Courses" },
   ];
 
   return (
