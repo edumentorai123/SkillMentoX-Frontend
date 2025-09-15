@@ -1,5 +1,5 @@
-"use client"
 
+"use client"
 import React, { useState } from 'react';
 import { courseCategories } from './courseCategoriesData';
 import SectionHeader from './SectionHeader';

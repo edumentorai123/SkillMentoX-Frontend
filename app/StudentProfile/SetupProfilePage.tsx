@@ -10,6 +10,7 @@ import "aos/dist/aos.css";
 import type { Aos } from "aos";
 import axios from "axios";
 import { setRole } from "@/redux/Slices/profileSlice";
+import { useRouter } from "next/navigation";
 
 declare global {
   interface Window {
@@ -21,6 +22,7 @@ const SetupProfilePage: React.FC = () => {
   const profile = useAppSelector((state) => state.profile);
   const dispatch = useAppDispatch();
   const [isInitializing, setIsInitializing] = useState(true);
+  const router = useRouter()
 
   useEffect(() => {
     const initializeComponent = async () => {
@@ -89,11 +91,14 @@ const SetupProfilePage: React.FC = () => {
       );
       console.log("Profile saved to DB:", response.data);
       alert(`Profile submitted successfully!\nName: ${profile.name}`);
+
+      router.push("/subscription");
     } catch (error) {
       console.error("Failed to submit profile:", error);
       alert("Failed to submit profile. Please try again.");
     }
   };
+
 
   const renderStepContent = () => {
     if (!profile) return null;

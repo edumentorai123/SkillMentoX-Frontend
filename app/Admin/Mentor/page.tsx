@@ -4,5 +4,5 @@ export default function ProfilePage() {
     <div>
       <MentorPage />
     </div>
-  );
+  )
 }

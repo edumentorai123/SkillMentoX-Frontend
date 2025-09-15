@@ -24,3 +24,5 @@ export default function DoubtCard({ student, subject, time, priority }: DoubtCar
         </div>
     );
 }
+
+

@@ -25,6 +25,7 @@ const Dashboard = () => {
     ];
 
     return (
+
         <div className="min-h-screen bg-gradient-to-br from-[#1887A1] to-[#0D4C5B] relative overflow-hidden">
             {/* Animated Background Elements */}
             <div className="absolute inset-0">
@@ -54,6 +55,7 @@ const Dashboard = () => {
                             })}
                         </p>
                     </div>
+
 
                     <div className="flex items-center space-x-2 sm:space-x-4 animate-slide-left">
                         {/* Notification Bell */}
@@ -97,6 +99,7 @@ const Dashboard = () => {
 
                             {/* Circular Progress Chart */}
                             <div className="flex items-center justify-center mb-6">
+
                                 <div className="relative">
                                     <svg
                                         className="w-28 h-28 sm:w-32 sm:h-32 transform -rotate-90"
