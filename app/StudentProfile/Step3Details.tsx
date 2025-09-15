@@ -48,8 +48,8 @@ const Step3Details: React.FC = () => {
   const availableStacks: string[] =
     selectedCategory && courseCategories[selectedCategory]
       ? courseCategories[selectedCategory].Stacks ||
-        courseCategories[selectedCategory].Languages ||
-        []
+      courseCategories[selectedCategory].Languages ||
+      []
       : [];
 
   return (
@@ -105,6 +105,7 @@ const Step3Details: React.FC = () => {
             onChange={(e) => {
               handleInputChange("selectedCategory", e.target.value);
               handleInputChange("selectedStack", "");
+              localStorage.removeItem("selectedStack");
             }}
             className="w-full px-4 py-3 border border-gray-300 rounded-xl
                       focus:outline-none focus:ring-2 focus:ring-[#1887A1] focus:border-transparent
@@ -112,7 +113,7 @@ const Step3Details: React.FC = () => {
             required
           >
             <option value="">Select a category</option>
-            {Object.keys(courseCategories).map((category) => (
+            {["Full Stack Web Development"].map((category) => (
               <option key={category} value={category}>
                 {category}
               </option>
