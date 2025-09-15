@@ -1,10 +1,8 @@
 import React from "react";
-import { useFieldArray } from "react-hook-form";
 import { CoursesProps } from "../types";
 
 const Courses: React.FC<CoursesProps> = ({
   register,
-  control,
   errors,
   courseCategories,
   courseNames = {},
@@ -56,7 +54,6 @@ const Courses: React.FC<CoursesProps> = ({
                   })}
                   className="w-full px-4 py-3 rounded-lg border border-[#1887A1]/50 focus:border-[#1887A1] focus:ring-4 focus:ring-[#1887A1]/10 transition-all duration-200 bg-white"
                 >
-                  <option value="">Select Category</option>
                   {Object.keys(courseCategories || {}).map((category) => (
                     <option key={category} value={category}>
                       {category}
