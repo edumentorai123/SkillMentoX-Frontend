@@ -2,14 +2,12 @@
 
 import React from 'react'
 import { useAppSelector } from '@/redux/hooks'
-import { calcProfileStrength } from '@/redux/Slices/profileSlice'
 
 const ProgressHeader: React.FC = () => {
   const profile = useAppSelector((state) => state.profile)
   
   const { currentStep = 2 } = profile || {}
   
-  const profileStrength = profile ? calcProfileStrength(profile) : 0
   const stepProgress = ((currentStep - 1) / 3) * 100
 
   const stepLabels = {
@@ -56,21 +54,6 @@ const ProgressHeader: React.FC = () => {
             className="bg-gradient-to-r from-[#1887A1] to-[#0D4C5B] h-2 rounded-full 
                       transition-all duration-500 ease-out"
             style={{ width: `${stepProgress}%` }}
-          />
-        </div>
-      </div>
-
-      {/* Profile Strength */}
-      <div className="mb-4">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-sm font-medium text-gray-700">Profile Strength</span>
-          <span className="text-sm font-semibold text-green-600">{profileStrength}%</span>
-        </div>
-        <div className="w-full bg-gray-200 rounded-full h-2">
-          <div 
-            className="bg-gradient-to-r from-green-400 to-green-600 h-2 rounded-full 
-                      transition-all duration-500 ease-out"
-            style={{ width: `${profileStrength}%` }}
           />
         </div>
       </div>
