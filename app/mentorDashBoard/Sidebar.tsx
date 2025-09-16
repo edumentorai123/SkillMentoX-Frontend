@@ -1,4 +1,4 @@
-"use client"; 
+"use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -28,11 +28,13 @@ export default function Sidebar({
 }: SidebarProps) {
   const pathname = usePathname();
 
+
+
   const links = [
     { href: "/mentorDashBoard", label: "Dashboard", icon: Activity },
-    { href: "/mentorDashBoard/", label: "Student Doubts", icon: MessageCircle },
-    { href: "/mentorDashBoard/my-students", label: "My Students", icon: GraduationCap },
-    { href: "/mentorDashBoard/sessions", label: "Sessions", icon: Calendar },
+    {href: "/mentorDashBoard/StudentDoubts",label: "Student Doubts",icon: MessageCircle,},
+    { href: "/mentorDashBoard/MyStudent", label: "My Students",icon: GraduationCap,},
+    { href: "/mentorDashBoard/Sessions", label: "Sessions", icon: Calendar },
     { href: "/mentorDashBoard/chat", label: "Chat", icon: TrendingUp },
     { href: "/mentorDashBoard/profile", label: "Profile", icon: User },
   ];

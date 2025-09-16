@@ -25,11 +25,7 @@ const Documents: React.FC<DocumentsProps> = ({
     qualificationProof: "",
     cv: "",
   },
-  deleteFlags = {
-    idProof: false,
-    qualificationProof: false,
-    cv: false,
-  },
+
   handleDelete,
 }) => {
   const viewDocument = (url: string) => {

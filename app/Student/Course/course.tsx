@@ -7,8 +7,7 @@ import {
 } from 'lucide-react';
 
 const Course = () => {
-    const [sidebarOpen, setSidebarOpen] = useState(true);
-    const [activeNav, setActiveNav] = useState('Course');
+   
 
 
 
