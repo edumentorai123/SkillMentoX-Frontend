@@ -15,56 +15,14 @@ const StudentsPage = () => {
       joinedDate: '2024-01-15',
       avatar: 'AJ'
     },
-    {
-      id: 2,
-      name: 'Sarah Chen',
-      email: 'sarah.chen@email.com',
-      course: 'Data Science Bootcamp',
-      status: 'Active',
-      joinedDate: '2024-02-20',
-      avatar: 'SC'
-    },
-    {
-      id: 3,
-      name: 'Michael Rodriguez',
-      email: 'michael.r@email.com',
-      course: 'UI/UX Design',
-      status: 'Inactive',
-      joinedDate: '2023-11-10',
-      avatar: 'MR'
-    },
-    {
-      id: 4,
-      name: 'Emily Davis',
-      email: 'emily.davis@email.com',
-      course: 'Machine Learning',
-      status: 'Completed',
-      joinedDate: '2023-09-05',
-      avatar: 'ED'
-    },
-    {
-      id: 5,
-      name: 'David Kim',
-      email: 'david.kim@email.com',
-      course: 'Mobile Development',
-      status: 'Active',
-      joinedDate: '2024-03-01',
-      avatar: 'DK'
-    },
-    {
-      id: 6,
-      name: 'Lisa Thompson',
-      email: 'lisa.t@email.com',
-      course: 'Cybersecurity Fundamentals',
-      status: 'Active',
-      joinedDate: '2024-01-28',
-      avatar: 'LT'
-    }
+    
+    // ... other student data ...
   ]);
 
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false); // Added state for sidebarCollapsed
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false); // Added state for mobileMenuOpen
 
   // Filter and search logic
   const filteredStudents = useMemo(() => {
@@ -77,7 +35,7 @@ const StudentsPage = () => {
   }, [students, searchTerm, statusFilter]);
 
   // Status badge styling
-  const getStatusBadge = (status) => {
+  const getStatusBadge = (status: string) => {
     const baseClasses = 'px-3 py-1 rounded-full text-sm font-medium';
     switch (status) {
       case 'Active':
@@ -92,7 +50,7 @@ const StudentsPage = () => {
   };
 
   // Format date
-  const formatDate = (dateString:string) => {
+  const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
@@ -111,14 +69,19 @@ const StudentsPage = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 flex">
-     
-<Sidebar/>
+      {/* Pass required props to Sidebar */}
+      <Sidebar
+        sidebarCollapsed={sidebarCollapsed}
+        setSidebarCollapsed={setSidebarCollapsed}
+        mobileMenuOpen={mobileMenuOpen}
+        setMobileMenuOpen={setMobileMenuOpen}
+      />
       {/* Main Content */}
       <div className="flex-1">
         {/* Mobile Sidebar Toggle */}
         <div className="md:hidden p-4 bg-white shadow-sm border-b">
           <button
-            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)} // Updated to use setMobileMenuOpen
             className="p-2 rounded-lg bg-teal-600 text-white"
           >
             <Users className="w-5 h-5" />

@@ -6,6 +6,8 @@ export const store = configureStore({
     reducer: {
     profile: profileReducer,
     auth: authSlice,
+    
+     
     },
 });
 

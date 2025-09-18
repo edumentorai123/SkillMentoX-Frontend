@@ -1,12 +1,11 @@
 import React from 'react'
-import SessionsPage from './Sessions'
-
+import MentorChat from './chats'
 
 function page() {
   return (
     <div>
+        <MentorChat/>
 
-        <SessionsPage/>
       
     </div>
   )

@@ -121,7 +121,6 @@ const Hero: React.FC<HeroProps> = ({ _heroRef, _rightSideRef, studentName: propS
             ref={_heroRef}
             className="relative overflow-hidden bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen flex items-center scroll-animation"
         >
-            {/* Removed data-aos attribute to fix hydration issue */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 mt-0 pt-0">
                 <div className="grid lg:grid-cols-2 gap-16 items-center">
                     {/* Left Side */}
