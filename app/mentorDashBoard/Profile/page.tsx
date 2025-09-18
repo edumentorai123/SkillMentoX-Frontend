@@ -1,4 +1,4 @@
-addimport React from 'react'
+import React from 'react'
 import MentorProfilePage from './Profiles'
 
 function page() {
