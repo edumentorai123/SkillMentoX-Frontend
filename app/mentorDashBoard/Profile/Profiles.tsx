@@ -1,214 +1,368 @@
 "use client";
-import React, { useState } from "react";
-import {
-  Star,
-  MapPin,
-  Clock,
-  Users,
-  Award,
-  Calendar,
-  MessageCircle,
-  Heart,
-  Share2,
-  CheckCircle,
-  Globe,
-  Linkedin,
-  Github,
-  Twitter,
-} from "lucide-react";
+import React, { useState, useEffect } from "react";
 import Sidebar from "../Sidebar";
+import axiosClient from "@/app/lib/axiosClient";
 
-const MentorProfilePage = () => {
-  const [activeTab, setActiveTab] = useState("about");
-  const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
-  const [isBookingOpen, setIsBookingOpen] = useState(false);
+export default function ProfileSection() {
+  const [formData, setFormData] = useState({
+    firstName: "",
+    email: "",
+    specialization: "",
+    bio: "",
+    currentRole: "",
+    company: "",
+    yearsOfExperience: 0,
+    education: [],
+    certifications: [],
+    courses: [],
+    linkedin: "",
+    github: "",
+    portfolio: "",
+    gender: "",
+    phoneNumber: "",
+    documents: {},
+    verificationStatus: "",
+  });
 
-  const mentorData = {
-    name: "Dr. Sarah Chen",
-    title: "Senior Full-Stack Developer & AI Specialist",
-    company: "Google",
-    location: "San Francisco, CA",
-    avatar: "SC",
-    rating: 4.9,
-    totalStudents: 1240,
-    experience: 8,
-    responseTime: "< 2 hours",
-    languages: ["English", "Mandarin", "Spanish"],
-    totalSessions: 890,
-    expertise: [
-      "React",
-      "Python",
-      "Machine Learning",
-      "System Design",
-      "Cloud Architecture",
-    ],
-    bio: "Passionate educator with 8+ years at top tech companies. I specialize in helping developers transition into senior roles and master complex technical concepts.",
-    achievements: [
-      "Google Cloud Certified Professional",
-      "Published 15+ research papers",
-      "Speaker at 20+ tech conferences",
-      "Mentored 1000+ developers globally",
-    ],
-    socialLinks: {
-      linkedin: "#",
-      github: "#",
-      twitter: "#",
-    },
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchMentorData = async () => {
+      try {
+        setLoading(true);
+
+        const storedMentor = localStorage.getItem("auth");
+        if (!storedMentor) {
+          setError("No mentor data found. Please login again.");
+          setLoading(false);
+          return;
+        }
+
+        let mentorObj;
+        try {
+          mentorObj = JSON.parse(storedMentor);
+        } catch (parseError) {
+          setError("Invalid mentor data format. Please login again.");
+          setLoading(false);
+          return;
+        }
+
+        const mentorId = mentorObj?.user?.id;
+        if (!mentorId) {
+          setError("Invalid mentor data. Please login again.");
+          setLoading(false);
+          return;
+        }
+
+        const response = await axiosClient.get(`/api/mentor/profile`);
+        if (!response.data.data) {
+          throw new Error("No mentor data returned from API.");
+        }
+
+        const mentorData = response.data.data;
+        setFormData({
+          firstName: mentorData.fullName || "",
+          email: mentorData.email || "",
+          specialization: mentorData.headline || "",
+          bio: mentorData.bio || "",
+          currentRole: mentorData.currentRole || "",
+          company: mentorData.company || "",
+          yearsOfExperience: mentorData.yearsOfExperience || 0,
+          education: mentorData.education || [],
+          certifications: mentorData.certifications || [],
+          courses: mentorData.courses || [],
+          linkedin: mentorData.linkedin || "",
+          github: mentorData.github || "",
+          portfolio: mentorData.portfolio || "",
+          gender: mentorData.gender || "",
+          phoneNumber: mentorData.phoneNumber || "",
+          documents: mentorData.documents || {},
+          verificationStatus: mentorData.verificationStatus || "",
+        });
+        setError(null);
+      } catch (err: any) {
+        setError(err.response?.data?.message || "Failed to fetch mentor details.");
+        console.error("Error fetching mentor data:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMentorData();
+  }, []);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+    setSuccessMessage(null);
 
-  const availableSlots = [
-    { day: "Today", slots: ["2:00 PM", "4:30 PM", "6:00 PM"] },
-    { day: "Tomorrow", slots: ["10:00 AM", "1:00 PM", "3:30 PM", "5:00 PM"] },
-    { day: "Friday", slots: ["9:00 AM", "11:30 AM", "2:00 PM", "4:00 PM"] },
-  ];
+    try {
+      const payload = {
+        fullName: formData.firstName,
+        email: formData.email,
+        headline: formData.specialization,
+        bio: formData.bio,
+        currentRole: formData.currentRole,
+        company: formData.company,
+        yearsOfExperience: formData.yearsOfExperience,
+        education: formData.education,
+        certifications: formData.certifications,
+        courses: formData.courses,
+        linkedin: formData.linkedin,
+        github: formData.github,
+        portfolio: formData.portfolio,
+        gender: formData.gender,
+        phoneNumber: formData.phoneNumber,
+      };
+
+      const response = await axiosClient.post("/api/mentor/updateProfile", payload);
+      if (response.data.success) {
+        setSuccessMessage("Profile updated successfully.");
+      } else {
+        setError("Failed to update profile.");
+      }
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Failed to update profile.");
+      console.error("Error updating profile:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) return <div className="p-6">Loading...</div>;
+  if (error) return <div className="p-6 text-red-500">{error}</div>;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex">
-    
+    <div className="min-h-screen bg-gray-50 flex">
+      {/* Sidebar */}
+      <aside className="w-64 bg-white border-r border-gray-200 hidden md:block">
+        <Sidebar
+          sidebarCollapsed={sidebarCollapsed}
+          setSidebarCollapsed={setSidebarCollapsed}
+          mobileMenuOpen={mobileMenuOpen}
+          setMobileMenuOpen={setMobileMenuOpen}
+        />
+      </aside>
 
-        <Sidebar />
-  
+      <main className="flex-1 p-6 md:p-10 space-y-6">
+        {successMessage && (
+          <div className="mb-4 p-4 bg-green-100 text-green-800 rounded">{successMessage}</div>
+        )}
 
-      {/* Main content on the right */}
-      <main className="flex-1 px-6 py-8 overflow-y-auto">
-        {/* Hero Section */}
-        <div className="bg-white/70 backdrop-blur-sm rounded-3xl p-8 mb-8 border border-white/50 shadow-xl">
-          <div className="flex flex-col lg:flex-row gap-8">
-            {/* Left Column - Mentor Info */}
-            <div className="flex-1">
-              <div className="flex items-start gap-6 mb-6">
-                <div className="relative">
-                  <div className="w-32 h-32 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 rounded-2xl flex items-center justify-center text-white text-4xl font-bold shadow-2xl">
-                    {mentorData.avatar}
-                  </div>
-                  <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-green-500 rounded-full border-4 border-white flex items-center justify-center">
-                    <div className="w-3 h-3 bg-white rounded-full"></div>
-                  </div>
-                </div>
+        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+          <h2 className="text-xl font-semibold text-gray-900 mb-6">Profile Information</h2>
 
-                <div className="flex-1">
-                  <h1 className="text-3xl font-bold text-gray-800 mb-1">
-                    {mentorData.name}
-                  </h1>
-                  <p className="text-xl text-gray-600 mb-2">
-                    {mentorData.title}
-                  </p>
-                  <div className="flex items-center gap-2 text-gray-500 mb-3">
-                    <span className="font-medium">{mentorData.company}</span>
-                    <span>•</span>
-                    <MapPin className="w-4 h-4" />
-                    <span>{mentorData.location}</span>
-                  </div>
-
-                  <div className="flex items-center gap-6 mb-4">
-                    <div className="flex items-center gap-2">
-                      <Star className="w-5 h-5 text-yellow-500 fill-current" />
-                      <span className="font-bold text-lg">
-                        {mentorData.rating}
-                      </span>
-                      <span className="text-gray-500">
-                        ({mentorData.totalReviews} reviews)
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Users className="w-5 h-5 text-blue-500" />
-                      <span className="font-medium">
-                        {mentorData.totalStudents} students
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Expertise Tags */}
-                  <div className="flex flex-wrap gap-2 mb-6">
-                    {mentorData.expertise.map((skill, index) => (
-                      <span
-                        key={index}
-                        className="px-3 py-1 bg-gradient-to-r from-indigo-100 to-purple-100 text-indigo-700 rounded-full text-sm font-medium"
-                      >
-                        {skill}
-                      </span>
-                    ))}
-                  </div>
-
-                  {/* Social Links */}
-                  <div className="flex gap-3">
-                    <a
-                      href={mentorData.socialLinks.linkedin}
-                      className="p-2 rounded-lg bg-blue-100 hover:bg-blue-200 transition-colors"
-                    >
-                      <Linkedin className="w-5 h-5 text-blue-600" />
-                    </a>
-                    <a
-                      href={mentorData.socialLinks.github}
-                      className="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors"
-                    >
-                      <Github className="w-5 h-5 text-gray-700" />
-                    </a>
-                    <a
-                      href={mentorData.socialLinks.twitter}
-                      className="p-2 rounded-lg bg-blue-100 hover:bg-blue-200 transition-colors"
-                    >
-                      <Twitter className="w-5 h-5 text-blue-500" />
-                    </a>
-                  </div>
-                </div>
-              </div>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {/* First Name */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+              <input
+                type="text"
+                name="firstName"
+                value={formData.firstName}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Enter your first name"
+              />
             </div>
 
-         
-          </div>
+            {/* Email */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Enter your email"
+              />
+            </div>
+
+            {/* Specialization */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Specialization</label>
+              <input
+                type="text"
+                name="specialization"
+                value={formData.specialization}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Enter your specialization"
+              />
+            </div>
+
+            {/* Bio */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Bio</label>
+              <textarea
+                name="bio"
+                value={formData.bio}
+                onChange={handleChange}
+                rows={4}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Write a short bio"
+              ></textarea>
+            </div>
+
+            {/* Current Role */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Current Role</label>
+              <input
+                type="text"
+                name="currentRole"
+                value={formData.currentRole}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Enter your current role"
+              />
+            </div>
+
+            {/* Company */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Company</label>
+              <input
+                type="text"
+                name="company"
+                value={formData.company}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Enter your company"
+              />
+            </div>
+
+            {/* Years of Experience */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Years of Experience</label>
+              <input
+                type="number"
+                name="yearsOfExperience"
+                value={formData.yearsOfExperience}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Enter years of experience"
+              />
+            </div>
+
+            {/* LinkedIn */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">LinkedIn</label>
+              <input
+                type="text"
+                name="linkedin"
+                value={formData.linkedin}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Enter your LinkedIn URL"
+              />
+            </div>
+
+            {/* GitHub */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">GitHub</label>
+              <input
+                type="text"
+                name="github"
+                value={formData.github}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Enter your GitHub URL"
+              />
+            </div>
+
+            {/* Portfolio */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Portfolio</label>
+              <input
+                type="text"
+                name="portfolio"
+                value={formData.portfolio}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Enter your portfolio URL"
+              />
+            </div>
+
+            {/* Gender */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Gender</label>
+              <input
+                type="text"
+                name="gender"
+                value={formData.gender}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Enter your gender"
+              />
+            </div>
+
+            {/* Phone Number */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+              <input
+                type="text"
+                name="phoneNumber"
+                value={formData.phoneNumber}
+                onChange={handleChange}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="Enter your phone number"
+              />
+            </div>
+
+            {/* Verification Status */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Verification Status</label>
+              <input
+                type="text"
+                name="verificationStatus"
+                value={formData.verificationStatus}
+                readOnly
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-100"
+              />
+            </div>
+
+            {/* Save Button */}
+            <div className="flex space-x-3">
+              <button
+                type="submit"
+                className="px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-200"
+              >
+                Save Changes
+              </button>
+            </div>
+          </form>
         </div>
 
-        {/* Tab Navigation */}
-        <div className="flex gap-2 mb-8 bg-white/50 backdrop-blur-sm p-2 rounded-2xl border border-white/50">
-          {[
-            { id: "about", label: "About" },
-            { id: "courses", label: "Courses" },
-            { id: "experience", label: "Experience" },
-          ].map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`flex-1 px-6 py-3 rounded-xl transition-all duration-300 ${
-                activeTab === tab.id
-                  ? "bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-lg"
-                  : "text-gray-600 hover:bg-white/70"
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
-
-       
-        {activeTab === "about" && (
-          <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 border border-white/50 shadow-lg">
-            <h3 className="text-xl font-semibold mb-4 text-gray-800">
-              About Me
-            </h3>
-            <p className="text-gray-700 leading-relaxed mb-6">
-              {mentorData.bio}
-            </p>
-            <h4 className="font-semibold mb-3 text-gray-800">
-              Key Achievements
-            </h4>
-            <ul className="space-y-2">
-              {mentorData.achievements.map((ach, i) => (
-                <li
-                  key={i}
-                  className="flex items-center gap-3 text-gray-700"
+        {/* Skills & Expertise */}
+        <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Skills & Expertise</h3>
+          <div className="flex flex-wrap gap-2">
+            {formData.specialization ? (
+              formData.specialization.split(",").map((skill, index) => (
+                <span
+                  key={index}
+                  className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium"
                 >
-                  <CheckCircle className="w-5 h-5 text-green-500" />
-                  {ach}
-                </li>
-              ))}
-            </ul>
+                  {skill.trim()}
+                </span>
+              ))
+            ) : (
+              <p className="text-gray-500">No skills added yet.</p>
+            )}
           </div>
-        )}
+        </div>
       </main>
     </div>
   );
-};
-
-export default MentorProfilePage;
+}
