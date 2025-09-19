@@ -1,9 +1,7 @@
-
 "use client";
 import React, { useState, useMemo } from 'react';
 import { Search, Filter, Plus, MessageCircle, Check, Clock, AlertCircle, User, Calendar, Tag, Menu } from 'lucide-react';
 import Sidebar from '../Sidebar';
-
 
 const StudentDoubtsManager = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -12,55 +10,15 @@ const StudentDoubtsManager = () => {
   const [isReplyModalOpen, setIsReplyModalOpen] = useState(false);
   const [replyText, setReplyText] = useState('');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [doubts, setDoubts] = useState([]);
 
-  // Sample data
-  const [doubts, setDoubts] = useState([
-    {
-      id: 1,
-      studentName: "Alex Johnson",
-      avatar: "AJ",
-      questionTitle: "How to solve quadratic equations with complex roots?",
-      subject: "Mathematics",
-      status: "Pending",
-      datePosted: "2024-09-15T10:30:00",
-      fullQuestion: "I'm struggling with understanding how to find the roots of quadratic equations when the discriminant is negative. Could you explain the step-by-step process?",
-      replies: []
-    },
-    {
-      id: 2,
-      studentName: "Sarah Chen",
-      avatar: "SC",
-      questionTitle: "Difference between mitosis and meiosis",
-      subject: "Biology",
-      status: "In Progress",
-      datePosted: "2024-09-15T09:15:00",
-      fullQuestion: "What are the key differences between mitosis and meiosis? I understand they're both cell division processes but I'm confused about their specific purposes.",
-      replies: [
-        { mentor: "Dr. Smith", text: "Great question! Let me break this down for you...", time: "2024-09-15T11:00:00" }
-      ]
-    },
-    {
-      id: 3,
-      studentName: "Michael Brown",
-      avatar: "MB",
-      questionTitle: "Newton's laws of motion - practical applications",
-      subject: "Physics",
-      status: "Resolved",
-      datePosted: "2024-09-14T16:45:00",
-      fullQuestion: "Can someone provide real-world examples of Newton's three laws of motion? I need help understanding how they apply in everyday situations.",
-      replies: [
-        { mentor: "Prof. Wilson", text: "Here are some great examples...", time: "2024-09-14T17:00:00" },
-        { mentor: "Prof. Wilson", text: "Hope this helps! Let me know if you need clarification.", time: "2024-09-14T17:15:00" }
-      ]
-    },
-  ]);
 
-  // Filter and search logic
   const filteredDoubts = useMemo(() => {
     return doubts.filter(doubt => {
-      const matchesSearch = doubt.questionTitle.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           doubt.studentName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           doubt.subject.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesSearch = 
+        doubt.questionTitle?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        doubt.studentName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        doubt.subject?.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesFilter = filterStatus === 'All' || doubt.status === filterStatus;
       return matchesSearch && matchesFilter;
     });
@@ -74,7 +32,7 @@ const StudentDoubtsManager = () => {
       'Resolved': { color: 'bg-green-100 text-green-800', icon: Check }
     };
     
-    const config = statusConfig[status];
+    const config = statusConfig[status] || statusConfig['Pending'];
     const Icon = config.icon;
     
     return (
@@ -85,7 +43,7 @@ const StudentDoubtsManager = () => {
     );
   };
 
-  // Format date consistently
+
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const options = {
@@ -99,20 +57,20 @@ const StudentDoubtsManager = () => {
     return date.toLocaleString('en-US', options).replace(',', '');
   };
 
-  // Handle reply
+
   const handleReply = (doubtId) => {
     setSelectedDoubt(doubts.find(d => d.id === doubtId));
     setIsReplyModalOpen(true);
   };
 
-  // Handle mark as resolved
+
   const handleMarkResolved = (doubtId) => {
     setDoubts(prev => prev.map(doubt => 
       doubt.id === doubtId ? { ...doubt, status: 'Resolved' } : doubt
     ));
   };
 
-  // Submit reply
+ 
   const handleSubmitReply = () => {
     if (replyText.trim()) {
       setDoubts(prev => prev.map(doubt => 
@@ -120,7 +78,7 @@ const StudentDoubtsManager = () => {
           ? { 
               ...doubt, 
               status: doubt.status === 'Pending' ? 'In Progress' : doubt.status,
-              replies: [...doubt.replies, {
+              replies: [...(doubt.replies || []), {
                 mentor: "Current Mentor",
                 text: replyText,
                 time: new Date().toISOString()
@@ -133,7 +91,7 @@ const StudentDoubtsManager = () => {
     }
   };
 
-  // Calculate stats for right sidebar
+
   const stats = useMemo(() => {
     const studentCounts = doubts.reduce((acc, doubt) => {
       acc[doubt.studentName] = (acc[doubt.studentName] || 0) + 1;
@@ -218,62 +176,70 @@ const StudentDoubtsManager = () => {
             {/* Doubts List */}
             <div className="flex-1 overflow-y-auto pr-4">
               <div className="grid gap-3">
-                {filteredDoubts.map((doubt) => (
-                  <div key={doubt.id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 hover:shadow-md transition-shadow">
-                    <div className="flex items-start gap-3">
-                      <div className="flex-shrink-0">
-                        <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-medium text-sm">
-                          {doubt.avatar}
+                {filteredDoubts.length === 0 ? (
+                  <div className="text-center py-12">
+                    <MessageCircle className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                    <h3 className="text-lg font-medium text-gray-900 mb-2">No doubts found</h3>
+                    <p className="text-gray-600">Try adjusting your search or filter criteria.</p>
+                  </div>
+                ) : (
+                  filteredDoubts.map((doubt) => (
+                    <div key={doubt.id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 hover:shadow-md transition-shadow">
+                      <div className="flex items-start gap-3">
+                        <div className="flex-shrink-0">
+                          <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-medium text-sm">
+                            {doubt.avatar}
+                          </div>
                         </div>
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-start justify-between mb-2">
-                          <div>
-                            <h3 className="text-base font-semibold text-gray-900 mb-1">{doubt.questionTitle}</h3>
-                            <div className="flex items-center gap-2 text-xs text-gray-600">
-                              <span className="flex items-center gap-1">
-                                <User className="w-3 h-3" />
-                                {doubt.studentName}
-                              </span>
-                              <span className="flex items-center gap-1">
-                                <Calendar className="w-3 h-3" />
-                                {formatDate(doubt.datePosted)}
-                              </span>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-start justify-between mb-2">
+                            <div>
+                              <h3 className="text-base font-semibold text-gray-900 mb-1">{doubt.questionTitle}</h3>
+                              <div className="flex items-center gap-2 text-xs text-gray-600">
+                                <span className="flex items-center gap-1">
+                                  <User className="w-3 h-3" />
+                                  {doubt.studentName}
+                                </span>
+                                <span className="flex items-center gap-1">
+                                  <Calendar className="w-3 h-3" />
+                                  {formatDate(doubt.datePosted)}
+                                </span>
+                              </div>
                             </div>
+                            <StatusBadge status={doubt.status} />
                           </div>
-                          <StatusBadge status={doubt.status} />
-                        </div>
-                        <div className="flex items-center gap-2 mb-3">
-                          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                            <Tag className="w-3 h-3 mr-1" />
-                            {doubt.subject}
-                          </span>
-                        </div>
-                        <p className="text-gray-700 text-sm mb-3 line-clamp-2">{doubt.fullQuestion}</p>
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-3">
-                            <button
-                              onClick={() => handleReply(doubt.id)}
-                              className="flex items-center gap-1 text-blue-600 hover:text-blue-800 font-medium text-sm"
-                            >
-                              <MessageCircle className="w-4 h-4" />
-                              Reply ({doubt.replies.length})
-                            </button>
+                          <div className="flex items-center gap-2 mb-3">
+                            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                              <Tag className="w-3 h-3 mr-1" />
+                              {doubt.subject}
+                            </span>
                           </div>
-                          {doubt.status !== 'Resolved' && (
-                            <button
-                              onClick={() => handleMarkResolved(doubt.id)}
-                              className="flex items-center gap-1 text-green-600 hover:text-green-800 font-medium text-sm"
-                            >
-                              <Check className="w-4 h-4" />
-                              Mark as Resolved
-                            </button>
-                          )}
+                          <p className="text-gray-700 text-sm mb-3 line-clamp-2">{doubt.fullQuestion}</p>
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              <button
+                                onClick={() => handleReply(doubt.id)}
+                                className="flex items-center gap-1 text-blue-600 hover:text-blue-800 font-medium text-sm"
+                              >
+                                <MessageCircle className="w-4 h-4" />
+                                Reply ({(doubt.replies || []).length})
+                              </button>
+                            </div>
+                            {doubt.status !== 'Resolved' && (
+                              <button
+                                onClick={() => handleMarkResolved(doubt.id)}
+                                className="flex items-center gap-1 text-green-600 hover:text-green-800 font-medium text-sm"
+                              >
+                                <Check className="w-4 h-4" />
+                                Mark as Resolved
+                              </button>
+                            )}
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))
+                )}
               </div>
             </div>
 
@@ -283,19 +249,23 @@ const StudentDoubtsManager = () => {
               <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
                 <h3 className="text-base font-semibold text-gray-900 mb-3">Top Students</h3>
                 <div className="space-y-2">
-                  {stats.topStudents.map(([name, count], index) => (
-                    <div key={name} className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <div className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 text-xs font-medium">
-                          {name.split(' ').map(n => n[0]).join('')}
+                  {stats.topStudents.length === 0 ? (
+                    <p className="text-xs text-gray-600">No student data available</p>
+                  ) : (
+                    stats.topStudents.map(([name, count], index) => (
+                      <div key={name} className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 text-xs font-medium">
+                            {name.split(' ').map(n => n[0]).join('')}
+                          </div>
+                          <span className="text-xs font-medium text-gray-900">{name}</span>
                         </div>
-                        <span className="text-xs font-medium text-gray-900">{name}</span>
+                        <span className="text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded-full">
+                          {count} doubts
+                        </span>
                       </div>
-                      <span className="text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded-full">
-                        {count} doubts
-                      </span>
-                    </div>
-                  ))}
+                    ))
+                  )}
                 </div>
               </div>
 
@@ -381,7 +351,7 @@ const StudentDoubtsManager = () => {
                     <h3 className="font-medium text-gray-900 text-sm mb-2">{selectedDoubt.questionTitle}</h3>
                     <p className="text-gray-700 bg-gray-50 p-3 rounded-lg text-sm">{selectedDoubt.fullQuestion}</p>
                   </div>
-                  {selectedDoubt.replies.length > 0 && (
+                  {(selectedDoubt.replies || []).length > 0 && (
                     <div className="mb-4">
                       <h4 className="font-medium text-gray-900 text-sm mb-2">Previous Replies</h4>
                       <div className="space-y-2">

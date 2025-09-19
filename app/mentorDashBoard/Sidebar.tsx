@@ -32,7 +32,6 @@ export default function Sidebar({
     { href: "/mentorDashBoard", label: "Dashboard", icon: Activity },
     {href: "/mentorDashBoard/StudentDoubts",label: "Student Doubts",icon: MessageCircle,},
     { href: "/mentorDashBoard/MyStudent", label: "My Students",icon: GraduationCap,},
-    { href: "/mentorDashBoard/Sessions", label: "Sessions", icon: Calendar },
     { href: "/mentorDashBoard/Chat", label: "Chat", icon: TrendingUp },
     { href: "/mentorDashBoard/Profile", label: "Profile", icon: User },
   ];
