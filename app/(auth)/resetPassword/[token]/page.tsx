@@ -14,7 +14,7 @@ interface FormData {
 }
 
 const API_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:9999/api/auth";
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:9999";
 
 const ResetPassword: React.FC = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -40,7 +40,7 @@ const ResetPassword: React.FC = () => {
   const handleResetPassword: SubmitHandler<FormData> = async (data) => {
     try {
       const response = await axios.post<{ message: string; token: string }>(
-        `${API_URL}/reset-password/${token}`,
+        `${API_URL}/api/auth/reset-password/${token}`,
         {
           password: data.password,
           confirmPassword: data.confirmPassword,

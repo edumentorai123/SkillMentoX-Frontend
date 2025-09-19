@@ -15,7 +15,7 @@ interface FormData {
 }
 
 const API_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:9999/api/auth";
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:9999";
 
 const ForgotPassword: React.FC = () => {
   const router = useRouter();
@@ -32,7 +32,7 @@ const ForgotPassword: React.FC = () => {
   const handleForgotPassword: SubmitHandler<FormData> = async (data) => {
     try {
       const response = await axios.post<{ message: string }>(
-        `${API_URL}/forgot-password`,
+        `${API_URL}/api/auth/forgot-password`,
         { email: data.email }
       );
       toast.success(response.data.message);
