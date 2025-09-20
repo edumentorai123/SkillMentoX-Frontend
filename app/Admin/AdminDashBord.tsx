@@ -1,32 +1,48 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import {
-  Search,
-  Users,
-  UserCheck,
-  MessageSquare,
-  Flag,
-  BookOpen,
-  FileText,
-} from "lucide-react";
+import { Search, Users, UserCheck, MessageSquare } from "lucide-react";
 
-const AdminDashboard = () => {
-  const [activeTab, setActiveTab] = useState("Dashboard");
-  const [totalMentors, setTotalMentors] = useState(0);
-  const [totalUsers, setTotalUsers] = useState(0);
+// TypeScript interfaces
+interface StatCard {
+  title: string;
+  value: string | number;
+  changeType: string;
+  icon: React.ReactNode;
+}
 
+interface Mentor {
+  id: string;
+  name: string;
+  courses: string[];
+}
 
+interface StudentRequest {
+  _id: string;
+  student: { _id: string; email: string };
+  category: string;
+  status: string;
+  stack: string;
+  assignedMentor: string | null;
+  requestedAt: string;
+  updatedAt: string;
+}
+
+const AdminDashboard: React.FC = () => {
+  const [totalMentors, setTotalMentors] = useState<number>(0);
+  const [totalUsers, setTotalUsers] = useState<number>(0);
+  const [pendingRequestsCount, setPendingRequestsCount] = useState<number>(0);
+  const [studentRequests, setStudentRequests] = useState<StudentRequest[]>([]);
+  const [mentors, setMentors] = useState<Mentor[]>([]);
+
+  // ✅ Fetch total approved mentors count
   const fetchTotalMentors = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.get(
+      const res = await axios.get<{ count: number }>(
         "http://localhost:9999/api/admin/approved/count",
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
-      console.log("Mentors API response:", res.data);
       setTotalMentors(res.data.count);
     } catch (error: any) {
       console.error(
@@ -36,18 +52,15 @@ const AdminDashboard = () => {
     }
   };
 
-  // ✅ Fetch total registered users (verified only)
+  // ✅ Fetch total verified users
   const fetchTotalUsers = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.get(
+      const res = await axios.get<{ verifiedUsersCount: number }>(
         "http://localhost:9999/api/admin/totalUsers",
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
-      console.log("Users API response:", res.data);
-      setTotalUsers(res.data.verifiedUsersCount); // API gives { verifiedUsersCount: number }
+      setTotalUsers(res.data.verifiedUsersCount);
     } catch (error: any) {
       console.error(
         "Error fetching total users:",
@@ -56,31 +69,121 @@ const AdminDashboard = () => {
     }
   };
 
-  // ✅ Call APIs on component mount
+  // ✅ Fetch all student requests
+  const fetchStudentRequests = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await axios.get("http://localhost:9999/api/requests", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      console.log("API Response:", res.data);
+      if (res.data && Array.isArray(res.data.requests)) {
+        setStudentRequests(res.data.requests);
+        setPendingRequestsCount(res.data.requests.length);
+      } else {
+        setStudentRequests([]);
+        setPendingRequestsCount(0);
+        console.error("Unexpected API response format:", res.data);
+      }
+    } catch (error: any) {
+      console.error(
+        "Error fetching student requests:",
+        error.response?.data || error.message
+      );
+      setStudentRequests([]);
+      setPendingRequestsCount(0);
+    }
+  };
+
+  // ✅ Fetch Approved Mentors
+  const fetchApprovedMentors = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await axios.get(
+        "http://localhost:9999/api/admin/approved-mentors",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      console.log("Approved Mentors Response:", res.data);
+
+      if (res.data && Array.isArray(res.data.data)) {
+        const mentorsData = res.data.data.map((mentor: any) => ({
+          id: mentor._id,
+          name: mentor.fullName,
+          courses: mentor.courses.map((c: any) => c.courseName),
+        }));
+        setMentors(mentorsData);
+      } else {
+        setMentors([]);
+        console.error("Unexpected mentor API response:", res.data);
+      }
+    } catch (error: any) {
+      console.error(
+        "Error fetching mentors:",
+        error.response?.data || error.message
+      );
+    }
+  };
+
+  // ✅ Change request status (frontend + API)
+  const handleStatusChange = async (requestId: string, newStatus: string) => {
+    try {
+      const token = localStorage.getItem("token");
+      await axios.put(
+        `http://localhost:9999/api/admin/${requestId}/status`,
+        { status: newStatus },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      setStudentRequests((prev) =>
+        prev.map((req) =>
+          req._id === requestId ? { ...req, status: newStatus } : req
+        )
+      );
+      console.log(`Request ${requestId} status changed to ${newStatus}`);
+    } catch (error: any) {
+      console.error(
+        "Error updating request status:",
+        error.response?.data || error.message
+      );
+    }
+  };
+
+  // ✅ Assign mentor to request (frontend + API)
+  const handleMentorAssign = async (requestId: string, mentorId: string) => {
+    try {
+      const token = localStorage.getItem("token");
+      await axios.put(
+        `http://localhost:9999/api/admin/${requestId}/assign-mentor`,
+        { mentorId },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      setStudentRequests((prev) =>
+        prev.map((req) =>
+          req._id === requestId ? { ...req, assignedMentor: mentorId } : req
+        )
+      );
+      console.log(`Request ${requestId} assigned to mentor ${mentorId}`);
+    } catch (error: any) {
+      console.error(
+        "Error assigning mentor:",
+        error.response?.data || error.message
+      );
+    }
+  };
+
   useEffect(() => {
     fetchTotalMentors();
     fetchTotalUsers();
+    fetchStudentRequests();
+    fetchApprovedMentors();
   }, []);
 
-  const sidebarItems = [
-    {
-      name: "Dashboard",
-      icon: (
-        <div className="w-4 h-4 grid grid-cols-2 gap-0.5">
-          <div className="bg-current w-1.5 h-1.5"></div>
-          <div className="bg-current w-1.5 h-1.5"></div>
-          <div className="bg-current w-1.5 h-1.5"></div>
-          <div className="bg-current w-1.5 h-1.5"></div>
-        </div>
-      ),
-    },
-    { name: "Users", icon: <Users size={18} /> },
-    { name: "Mentors", icon: <UserCheck size={18} /> },
-    { name: "Requests", icon: <FileText size={18} /> },
-    { name: "Add Course", icon: <BookOpen size={18} /> },
-  ];
-
-  const statsCards = [
+  const statsCards: StatCard[] = [
     {
       title: "Total Registered Users",
       value: totalUsers,
@@ -94,24 +197,15 @@ const AdminDashboard = () => {
       icon: <UserCheck size={24} />,
     },
     {
-      title: "Total Sessions",
-      value: "164",
-      change: "",
-      changeType: "",
+      title: "Pending Students",
+      value: pendingRequestsCount,
+      changeType: "positive",
       icon: <MessageSquare size={24} />,
-    },
-    {
-      title: "Requests",
-      value: "12",
-      change: "",
-      changeType: "",
-      icon: <Flag size={24} />,
     },
   ];
 
   return (
     <div className="flex h-screen bg-gray-50">
-      {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Header */}
         <div className="bg-white shadow-sm border-b px-8 py-4">
@@ -119,20 +213,8 @@ const AdminDashboard = () => {
             <h2 className="text-2xl font-bold text-gray-800">
               Dashboard Overview
             </h2>
-            <div className="relative">
-              <Search
-                size={20}
-                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-              />
-              <input
-                type="text"
-                placeholder="Search users, Mentors or reports"
-                className="pl-10 pr-4 py-2 border border-gray-200 rounded-lg w-80 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-              />
-            </div>
           </div>
         </div>
-
         {/* Dashboard Content */}
         <div className="flex-1 overflow-y-auto p-8">
           {/* Stats Cards */}
@@ -144,17 +226,6 @@ const AdminDashboard = () => {
               >
                 <div className="flex items-center justify-between mb-4">
                   <div className="text-gray-600">{card.icon}</div>
-                  {card.change && (
-                    <span
-                      className={`text-sm font-semibold px-2 py-1 rounded-full ${
-                        card.changeType === "positive"
-                          ? "text-green-700 bg-green-100"
-                          : "text-red-700 bg-red-100"
-                      }`}
-                    >
-                      {card.change}
-                    </span>
-                  )}
                 </div>
                 <h3 className="text-3xl font-bold text-gray-800 mb-1">
                   {card.value}
@@ -162,6 +233,66 @@ const AdminDashboard = () => {
                 <p className="text-gray-600 text-sm">{card.title}</p>
               </div>
             ))}
+          </div>
+
+          {/* Student Requests */}
+          <div className="bg-white rounded-xl shadow-sm p-6">
+            <h3 className="text-xl font-bold text-gray-800 mb-4">
+              Pending Student Requests
+            </h3>
+            <div className="space-y-4">
+              {studentRequests.map((req) => (
+                <div
+                  key={req._id}
+                  className="border border-gray-200 rounded-lg p-4 flex justify-between items-center"
+                >
+                  <div>
+                    <h4 className="text-lg font-semibold text-gray-800">
+                      {req.student.email}
+                    </h4>
+                    <p className="text-gray-600">Category: {req.category}</p>
+                    <p className="text-gray-600">Stack: {req.stack}</p>
+                  </div>
+                  <div className="flex space-x-4">
+                    {/* Status Dropdown */}
+                    <select
+                      value={req.status}
+                      onChange={(e) =>
+                        handleStatusChange(req._id, e.target.value)
+                      }
+                      className="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                    >
+                      <option value="pending">Pending</option>
+                      <option value="approved">Approved</option>
+                      <option value="rejected">Rejected</option>
+                    </select>
+
+                    {/* Mentor Assignment */}
+                    <select
+                      value={req.assignedMentor || ""}
+                      onChange={(e) =>
+                        handleMentorAssign(req._id, e.target.value)
+                      }
+                      className="border border-gray-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                    >
+                      <option value="">Assign Mentor</option>
+                      {mentors
+                        .filter((mentor) => mentor.courses.includes(req.stack))
+                        .map((mentor) => (
+                          <option key={mentor.id} value={mentor.id}>
+                            {mentor.name}
+                          </option>
+                        ))}
+                    </select>
+                  </div>
+                </div>
+              ))}
+              {studentRequests.length === 0 && (
+                <p className="text-gray-500 text-sm">
+                  No pending student requests.
+                </p>
+              )}
+            </div>
           </div>
         </div>
       </div>
