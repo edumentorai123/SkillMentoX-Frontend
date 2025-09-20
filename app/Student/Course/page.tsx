@@ -1,9 +1,10 @@
-import Course from "./course";
+import CourseDashboard from "./course-fixed";
+
 
 const page = () => {
     return (
         <div>
-            <Course/>
+            <CourseDashboard/>
         </div>
     );
 }
