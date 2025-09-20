@@ -1,54 +1,173 @@
 "use client";
-
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useAppSelector } from "@/redux/hooks";
+import { useRouter, useSearchParams } from "next/navigation";
+import axios, { AxiosError } from "axios"; // Import AxiosError
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+// Define interface for userData
+interface UserData {
+    id?: string;
+    userId?: string;
+    email: string;
+    name?: string;
+    role?: string;
+    _id?: string;
+    isSubscribed?: boolean;
+}
 
 export default function SubscriptionPage() {
     const [loading, setLoading] = useState(false);
-
     const profile = useAppSelector((state) => state.profile);
     const { selectedCategory, selectedStack } = profile;
+    const router = useRouter();
+    const searchParams = useSearchParams();
+
+    const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL as string;
+
+    // Wrap handleSubscriptionSuccess in useCallback to stabilize it
+    const handleSubscriptionSuccess = useCallback(
+        async (sessionId: string) => {
+            setLoading(true);
+            try {
+                const token = localStorage.getItem("token");
+                const userId = JSON.parse(localStorage.getItem("user") || "{}").id;
+
+                if (!userId || !token) {
+                    toast.error("User not logged in. Please login again.", {
+                        position: "top-right",
+                        autoClose: 3000,
+                    });
+                    router.push("/loginForm");
+                    return;
+                }
+
+                // Verify subscription
+                const response = await axios.post(
+                    `${API_URL}/api/subscription/verify`,
+                    { userId, sessionId },
+                    {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }
+                );
+
+                console.log("Subscription response:", response.data);
+
+                // Update localStorage
+                updateLocalStorage(response.data.data, token);
+
+                toast.success("Subscription successful!", {
+                    position: "top-right",
+                    autoClose: 3000,
+                });
+                router.push("/Student");
+            } catch (error: unknown) {
+                const errorMessage =
+                    error instanceof AxiosError
+                        ? error.response?.data?.message || error.message
+                        : "An unexpected error occurred";
+                console.error("Subscription error:", errorMessage);
+                toast.error("Failed to process subscription. Please try again.", {
+                    position: "top-right",
+                    autoClose: 3000,
+                });
+            } finally {
+                setLoading(false);
+            }
+        },
+        [router, API_URL] // Dependencies for useCallback
+    );
+
+    useEffect(() => {
+        // Handle Stripe success callback
+        const sessionId = searchParams.get("session_id");
+        if (sessionId) {
+            handleSubscriptionSuccess(sessionId);
+        }
+    }, [searchParams, handleSubscriptionSuccess]); // Added handleSubscriptionSuccess to dependency array
+
+    const updateLocalStorage = (userData: UserData, token: string) => {
+        localStorage.clear();
+        localStorage.setItem("token", token);
+        localStorage.setItem(
+            "auth",
+            JSON.stringify({
+                token,
+                user: {
+                    id: userData.id || userData.userId,
+                    email: userData.email,
+                    firstName: userData.name ? userData.name.split(" ")[0] : "",
+                    lastName: userData.name ? userData.name.split(" ").slice(1).join(" ") : "",
+                    role: userData.role || "student",
+                },
+                hasProfile: !!userData._id,
+                isPremium: userData.isSubscribed || false,
+            })
+        );
+    };
 
     const handleSubscribe = async () => {
         if (!selectedCategory || !selectedStack) {
-            alert("Please select a course category and stack first!");
+            toast.error("Please select a course category and stack first!", {
+                position: "top-right",
+                autoClose: 3000,
+            });
             return;
         }
 
         setLoading(true);
 
         try {
+            const token = localStorage.getItem("token");
+            const userId = JSON.parse(localStorage.getItem("user") || "{}").id;
+
+            if (!userId || !token) {
+                toast.error("User not logged in. Please login again.", {
+                    position: "top-right",
+                    autoClose: 3000,
+                });
+                router.push("/loginForm");
+                return;
+            }
+
             localStorage.setItem("selectedCategory", selectedCategory);
             localStorage.setItem("selectedStack", selectedStack);
 
-            const res = await fetch(
-                `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/subscription/create-checkout-session`,
+            const res = await axios.post(
+                `${API_URL}/api/subscription/create-checkout-session`,
                 {
-                    method: "POST",
+                    userId,
+                    priceId: "price_1S67HdJPsups4VGUOVUiWQmH",
+                    subscriptionType: "monthly",
+                    category: selectedCategory,
+                    stack: selectedStack,
+                },
+                {
                     headers: {
                         "Content-Type": "application/json",
-                        Authorization: `Bearer ${localStorage.getItem("token")}`,
+                        Authorization: `Bearer ${token}`,
                     },
-                    body: JSON.stringify({
-                        priceId: "price_1S67HdJPsups4VGUOVUiWQmH",
-                        subscriptionType: "monthly",
-                        category: selectedCategory,
-                        stack: selectedStack,
-                    }),
                 }
             );
 
-            const data = await res.json();
+            const data = await res.data;
 
             if (data.url) {
                 window.location.href = data.url;
             } else {
                 console.error("No URL returned:", data);
-                alert("Failed to create checkout session");
+                toast.error("Failed to create checkout session", {
+                    position: "top-right",
+                    autoClose: 3000,
+                });
             }
         } catch (err) {
             console.error("Error:", err);
-            alert("Something went wrong");
+            toast.error("Something went wrong", {
+                position: "top-right",
+                autoClose: 3000,
+            });
         } finally {
             setLoading(false);
         }
@@ -85,6 +204,7 @@ export default function SubscriptionPage() {
                         {loading ? "Processing..." : "Subscribe Now"}
                     </button>
                 </div>
+                <ToastContainer />
             </div>
         </div>
     );
