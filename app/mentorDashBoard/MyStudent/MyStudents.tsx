@@ -1,23 +1,11 @@
 "use client";
-import React, { useState, useMemo } from 'react';
-import { Search, Filter, Mail, User, Calendar, Eye, Home, Users, BookOpen, Settings, LogOut } from 'lucide-react';
+import React, { useState, } from 'react';
+import { Search, Filter, Home, Users, BookOpen, Settings, LogOut } from 'lucide-react';
 import Sidebar from '../Sidebar';
 
 const StudentsPage = () => {
-  // Sample student data
-  const [students] = useState([
-    {
-      id: 1,
-      name: 'Alex Johnson',
-      email: 'alex.johnson@email.com',
-      course: 'Full Stack Development',
-      status: 'Active',
-      joinedDate: '2024-01-15',
-      avatar: 'AJ'
-    },
-    
-  
-  ]);
+ 
+
 
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
