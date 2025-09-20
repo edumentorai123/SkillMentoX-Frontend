@@ -32,12 +32,11 @@ interface Message {
   sender: "user" | "ai";
 }
 
-type ChatTab = "Ask AI" | "Groups" | "Mentor";
+type ChatTab = "Ask AI" | "Student"; // Updated to match available tabs
 
 interface ChatData {
   "Ask AI": Chat[];
-  Groups: Chat[];
-  Mentor: Chat[];
+  Student: Chat[];
 }
 
 const MentorChat = () => {
@@ -57,49 +56,10 @@ const MentorChat = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const chatData: ChatData = {
-    "Ask AI": [
-      {
-        id: 1,
-        title: "AI Assistant",
-        subtitle: "Your friendly AI helper",
-        avatar: "AI",
-        status: "online",
-      },
-      {
-        id: 2,
-        title: "Code Helper",
-        subtitle: "Get coding assistance",
-        avatar: "CH",
-        status: "online",
-      },
-    ],
-    Groups: [
-      {
-        id: 3,
-        title: "JavaScript Study Group",
-        subtitle: "5 members • Last active 2h ago",
-        avatar: "JS",
-        status: "group",
-      },
-      {
-        id: 4,
-        title: "React Developers",
-        subtitle: "12 members • Sarah is typing...",
-        avatar: "RD",
-        status: "group",
-      },
-      {
-        id: 5,
-        title: "Machine Learning Club",
-        subtitle: "8 members • Last active 1d ago",
-        avatar: "ML",
-        status: "group",
-      },
-    ],
-    Mentor: [
+    Student: [
       {
         id: 6,
-        title: "Dr. Sarah Johnson",
+        title: "Sarah Johnson",
         subtitle: "Computer Science Professor",
         avatar: "SJ",
         status: "online",
@@ -121,14 +81,12 @@ const MentorChat = () => {
     ],
   };
 
-  // Set initial selectedChat to the first chat in the active tab
   useEffect(() => {
-    if (!selectedChat && chatData[activeTab].length > 0) {
+    if (!selectedChat && chatData[activeTab]?.length > 0) {
       setSelectedChat(chatData[activeTab][0].id);
     }
-  }, [activeTab, selectedChat]);
+  }, [activeTab, selectedChat, chatData]);
 
-  // Auto-scroll to the latest message
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isAITyping]);
@@ -218,9 +176,7 @@ const MentorChat = () => {
 
   const getCurrentChat = (): Chat => {
     const allChats: Chat[] = [
-      ...chatData["Ask AI"],
-      ...chatData.Groups,
-      ...chatData.Mentor,
+      ...chatData["Student"],
     ];
     return (
       allChats.find((chat: Chat) => chat.id === selectedChat) || {
@@ -284,6 +240,7 @@ const MentorChat = () => {
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1887A1]"
+                  aria-label="Search chats"
                 />
                 {searchTerm && (
                   <button
@@ -303,8 +260,8 @@ const MentorChat = () => {
             </div>
           )}
 
-          <div className="flex bg-gray-200 rounded-lg p-1">
-            {(["Ask AI", "Groups", "Mentor"] as ChatTab[]).map((tab) => (
+          <div className="flex bg-gray-200 rounded-lg p-1" role="tablist">
+            {(["Student"] as ChatTab[]).map((tab) => (
               <button
                 key={tab}
                 onClick={() => {
@@ -318,6 +275,7 @@ const MentorChat = () => {
                 }`}
                 role="tab"
                 aria-selected={activeTab === tab}
+                aria-controls="chat-panel"
               >
                 {tab}
               </button>
@@ -338,7 +296,8 @@ const MentorChat = () => {
                 }`}
                 role="button"
                 tabIndex={0}
-                onKeyPress={(e) => e.key === "Enter" && setSelectedChat(chat.id)}
+                onKeyDown={(e) => e.key === "Enter" && setSelectedChat(chat.id)}
+                aria-label={`Select chat with ${chat.title}`}
               >
                 <div className="flex items-center gap-3">
                   <div className="relative">
@@ -359,14 +318,7 @@ const MentorChat = () => {
                       {chat.subtitle}
                     </p>
                   </div>
-                  {activeTab === "Groups" && (
-                    <Users
-                      size={16}
-                      className="text-gray-400"
-                      aria-hidden="true"
-                    />
-                  )}
-                  {activeTab === "Mentor" && (
+                  {activeTab === "Student" && (
                     <User
                       size={16}
                       className="text-gray-400"
@@ -383,7 +335,7 @@ const MentorChat = () => {
       </div>
 
       {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col" id="chat-panel">
         {/* Chat Header */}
         <div className="p-4 border-b border-gray-200 flex items-center justify-between bg-white">
           <div className="flex items-center gap-3">
@@ -415,7 +367,7 @@ const MentorChat = () => {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            {activeTab === "Mentor" && (
+            {activeTab === "Student" && (
               <>
                 <button
                   className="p-2 hover:bg-gray-100 rounded-full"
@@ -521,7 +473,6 @@ const MentorChat = () => {
                   />
                 </button>
 
-                {/* Emoji Picker */}
                 {showEmojiPicker && (
                   <div className="absolute bottom-12 left-0 z-10">
                     <EmojiPicker
@@ -543,7 +494,8 @@ const MentorChat = () => {
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder="Type your message"
                 className="flex-1 bg-transparent outline-none text-gray-700 placeholder-gray-500"
-                onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
+                onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
+                aria-label="Type your message"
               />
 
               <div className="flex items-center gap-2">
@@ -561,7 +513,6 @@ const MentorChat = () => {
                     />
                   </button>
 
-                  {/* Attachment Menu */}
                   {showAttachments && (
                     <div className="absolute bottom-12 right-0 bg-white border border-gray-200 rounded-lg shadow-lg py-2 z-10 min-w-48">
                       <button
