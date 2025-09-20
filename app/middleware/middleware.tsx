@@ -11,6 +11,7 @@ export function middleware(request: NextRequest) {
     const studentRoutes = [
         "/StudentHome",
         "/student",
+        "/Student",
         "/subscription",
         "/choose-mentor",
         "/mentor-pending",
@@ -19,31 +20,26 @@ export function middleware(request: NextRequest) {
     const mentorRoutes = ["/mentorHome", "/mentor"];
     const adminRoutes = ["/admin"];
 
-    // Always allow API routes, static files, and Next.js internals
     if (
         pathname.startsWith("/api") ||
         pathname.startsWith("/_next") ||
         pathname.startsWith("/favicon.ico") ||
-        pathname.includes(".")  // Static files like images, css, js
+        pathname.includes(".") 
     ) {
         return NextResponse.next();
     }
 
-    // Handle root route
     if (pathname === "/") {
         if (token && role) {
-            // Redirect authenticated users from root to their appropriate home
-            const redirectUrl = role === "student" ? "/StudentHome"
+            const redirectUrl = role === "student" ? "/Student"
                 : role === "mentor" ? "/mentorHome"
                     : role === "admin" ? "/admin"
                         : "/loginForm";
             return NextResponse.redirect(new URL(redirectUrl, request.url));
         }
-        // Allow unauthenticated users to see landing page
         return NextResponse.next();
     }
 
-    // Check if route is public
     const isPublicRoute = publicRoutes.some(route => pathname.startsWith(route));
 
     // No token - redirect to login if accessing protected route
@@ -70,7 +66,7 @@ export function middleware(request: NextRequest) {
             (role === "admin" && ![...adminRoutes, ...publicRoutes].some(route => pathname.startsWith(route)));
 
         if (isAccessingWrongRoute) {
-            const redirectUrl = role === "student" ? "/StudentHome"
+            const redirectUrl = role === "student" ? "/Student"
                 : role === "mentor" ? "/mentorHome"
                     : role === "admin" ? "/admin"
                         : "/loginForm";
