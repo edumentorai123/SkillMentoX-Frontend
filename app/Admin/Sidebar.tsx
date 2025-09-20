@@ -34,7 +34,7 @@ function Sidebar() {
     { name: "Users", icon: HelpCircle, href: "/Admin/Users" },
     { name: "Mentor", icon: MessageCircle, href: "/Admin/Mentor" },
     { name: "Request", icon: FileQuestion, href: "/Admin/Request" },
-    { name: "Add Course", icon: BookOpen, href: "/Admin/Add Course" },
+    { name: "Add Course", icon: BookOpen, href: "/Admin/Course" },
   ];
 
   return (
