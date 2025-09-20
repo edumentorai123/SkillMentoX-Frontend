@@ -18,6 +18,7 @@ interface AuthRedirectProps {
     children: React.ReactNode;
 }
 
+
 const PUBLIC_ROUTES = ["/loginForm", "/register", "/forgot-password"];
 const PROTECTED_ROUTES = ["/StudentProfile", "/subscription", "/choose-mentor", "/mentor-pending", "/StudentHome", "/Student", "/mentorHome", "/admin"];
 const ROLE_REDIRECTS: Record<string, string> = {
