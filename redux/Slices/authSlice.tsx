@@ -91,12 +91,10 @@ export const loginUser = createAsyncThunk(
                 isPremium: res.data.isPremium ?? false,
             };
 
-            // Store auth data
+         
             localStorage.setItem("auth", JSON.stringify(authData));
             localStorage.setItem("accessToken", res.data.token);
 
-            // Also store individual items for backward compatibility
-            // (Remove these after updating all components to use the new structure)
             localStorage.setItem("userName", userData.firstName + (userData.lastName ? ` ${userData.lastName}` : ''));
             localStorage.setItem("userRole", userData.role || '');
             localStorage.setItem("authToken", res.data.token);
@@ -128,7 +126,7 @@ const authSlice = createSlice({
             state.mentorSelected = false;
             state.mentorAccepted = false;
 
-            // Clear all auth-related localStorage items
+           
             localStorage.removeItem("auth");
             localStorage.removeItem("accessToken");
             localStorage.removeItem("userName");
@@ -165,7 +163,7 @@ const authSlice = createSlice({
             localStorage.setItem("auth", JSON.stringify(authData));
             localStorage.setItem("accessToken", action.payload.token);
 
-            // Also store individual items for backward compatibility
+       
             localStorage.setItem("userName", userData.firstName + (userData.lastName ? ` ${userData.lastName}` : ''));
             localStorage.setItem("userRole", userData.role || '');
             localStorage.setItem("authToken", action.payload.token);

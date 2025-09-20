@@ -1,4 +1,4 @@
-"use client"; 
+"use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -30,16 +30,25 @@ export default function Sidebar({
 
   const links = [
     { href: "/mentorDashBoard", label: "Dashboard", icon: Activity },
-    { href: "/mentorDashBoard/", label: "Student Doubts", icon: MessageCircle },
-    { href: "/mentorDashBoard/my-students", label: "My Students", icon: GraduationCap },
-    { href: "/mentorDashBoard/sessions", label: "Sessions", icon: Calendar },
-    { href: "/mentorDashBoard/chat", label: "Chat", icon: TrendingUp },
-    { href: "/mentorDashBoard/profile", label: "Profile", icon: User },
+    {href: "/mentorDashBoard/StudentDoubts",label: "Student Doubts",icon: MessageCircle,},
+    { href: "/mentorDashBoard/MyStudent", label: "My Students",icon: GraduationCap,},
+    { href: "/mentorDashBoard/Chat", label: "Chat", icon: TrendingUp },
+    { href: "/mentorDashBoard/Profile", label: "Profile", icon: User },
   ];
+
+
+  const isLinkActive = (href: string) => {
+    if (href === "/mentorDashBoard") {
+
+      return pathname === "/mentorDashBoard";
+    }
+   
+    return pathname.startsWith(href);
+  };
 
   return (
     <>
-      {/* Mobile Sidebar */}
+    
       {mobileMenuOpen && (
         <div
           className="fixed inset-0 bg-black bg-opacity-50 z-50 lg:hidden"
@@ -73,7 +82,7 @@ export default function Sidebar({
 
             <nav className="mt-8 space-y-1">
               {links.map(({ href, label, icon: Icon }) => {
-                const active = pathname.startsWith(href);
+                const active = isLinkActive(href);
                 return (
                   <Link
                     key={href}
@@ -130,7 +139,7 @@ export default function Sidebar({
 
         <nav className="mt-8 space-y-1">
           {links.map(({ href, label, icon: Icon }) => {
-            const active = pathname.startsWith(href);
+            const active = isLinkActive(href);
             return (
               <Link
                 key={href}

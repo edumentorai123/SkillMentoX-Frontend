@@ -436,7 +436,6 @@ const Dashboard = () => {
     const daysOfWeek = ["M", "T", "W", "T", "F", "S", "S"];
 
     return (
-
         <div className="min-h-screen bg-gradient-to-br from-[#1887A1] to-[#0D4C5B] relative overflow-hidden">
             {/* Animated Background Elements */}
             <div className="absolute inset-0">
@@ -466,7 +465,6 @@ const Dashboard = () => {
                             })}
                         </p>
                     </div>
-
 
                     <div className="flex items-center space-x-2 sm:space-x-4 animate-slide-left">
 
@@ -625,53 +623,40 @@ const Dashboard = () => {
                                 </span>
                             </div>
 
-                            {/* Circular Progress Chart */}
-                            <div className="flex items-center justify-center mb-6">
-
-                                <div className="relative">
-                                    <svg
-                                        className="w-28 h-28 sm:w-32 sm:h-32 transform -rotate-90"
-                                        viewBox="0 0 120 120"
-                                    >
-                                        <circle
-                                            cx="60"
-                                            cy="60"
-                                            r="50"
-                                            stroke="#f1f5f9"
-                                            strokeWidth="6"
-                                            fill="none"
-                                        />
-                                        <circle
-                                            cx="60"
-                                            cy="60"
-                                            r="50"
-                                            stroke="url(#progressGradient)"
-                                            strokeWidth="6"
-                                            fill="none"
-                                            strokeDasharray={`${animateProgress ? 78 * 3.14 : 0} ${(100 - 78) * 3.14}`}
-                                            strokeLinecap="round"
-                                            className="transition-all duration-2000 ease-out"
-                                        />
-                                        <defs>
-                                            <linearGradient
-                                                id="progressGradient"
-                                                x1="0%"
-                                                y1="0%"
-                                                x2="100%"
-                                                y2="0%"
-                                            >
-                                                <stop offset="0%" stopColor="#1887A1" />
-                                                <stop offset="50%" stopColor="#14B8A6" />
-                                                <stop offset="100%" stopColor="#0D4C5B" />
-                                            </linearGradient>
-                                        </defs>
-                                    </svg>
-                                    <div className="absolute inset-0 flex items-center justify-center">
-                                        <div className="text-center">
-                                            <span className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-[#1887A1] to-[#0D4C5B] bg-clip-text text-transparent">
-                                                78%
-                                            </span>
-                                            <p className="text-xs text-gray-600 font-medium">Complete</p>
+                            {progress ? (
+                                <>
+                                    {/* Circular Progress Chart */}
+                                    <div className="flex items-center justify-center mb-6">
+                                        <div className="relative">
+                                            <svg className="w-28 h-28 sm:w-32 sm:h-32 transform -rotate-90" viewBox="0 0 120 120">
+                                                <circle cx="60" cy="60" r="50" stroke="#f1f5f9" strokeWidth="6" fill="none" />
+                                                <circle
+                                                    cx="60"
+                                                    cy="60"
+                                                    r="50"
+                                                    stroke="url(#progressGradient)"
+                                                    strokeWidth="6"
+                                                    fill="none"
+                                                    strokeDasharray={`${animateProgress ? progress.completionPercentage * 3.14 : 0} ${(100 - progress.completionPercentage) * 3.14}`}
+                                                    strokeLinecap="round"
+                                                    className="transition-all duration-2000 ease-out"
+                                                />
+                                                <defs>
+                                                    <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                                        <stop offset="0%" stopColor="#1887A1" />
+                                                        <stop offset="50%" stopColor="#14B8A6" />
+                                                        <stop offset="100%" stopColor="#0D4C5B" />
+                                                    </linearGradient>
+                                                </defs>
+                                            </svg>
+                                            <div className="absolute inset-0 flex items-center justify-center">
+                                                <div className="text-center">
+                                                    <span className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-[#1887A1] to-[#0D4C5B] bg-clip-text text-transparent">
+                                                        {progress.completionPercentage}%
+                                                    </span>
+                                                    <p className="text-xs text-gray-600 font-medium">Complete</p>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
 

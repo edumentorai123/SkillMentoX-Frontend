@@ -38,33 +38,41 @@ const MentorHomePage: React.FC = () => {
   const router = useRouter();
   const dispatch = useDispatch();
 
-  // Authentication check with improved error handling
-  useEffect(() => {
-    let isMounted = true; // Prevent state updates if component unmounts
+
+  useEffect(()=>{
     
+  })
+
+  useEffect(() => {
+    let isMounted = true;
+
     const checkAuthentication = async () => {
       try {
-        // Check if we're in browser environment
-        if (typeof window === 'undefined') {
+        if (typeof window === "undefined") {
           return;
         }
 
-        // Add small delay to prevent immediate redirects and race conditions
-        await new Promise(resolve => setTimeout(resolve, 100));
+        await new Promise((resolve) => setTimeout(resolve, 100));
 
         const storedName = localStorage.getItem("userName");
         const storedRole = localStorage.getItem("userRole");
         const authToken = localStorage.getItem("authToken");
 
-        console.log("Auth Check - Name:", storedName, "Role:", storedRole, "Token:", !!authToken);
+        console.log(
+          "Auth Check - Name:",
+          storedName,
+          "Role:",
+          storedRole,
+          "Token:",
+          !!authToken
+        );
 
-        // Check if user data exists
         if (!storedName || !storedRole) {
           console.log("Missing user credentials, redirecting to login");
           if (isMounted) {
             setAuthError("Please login to continue");
             setIsRedirecting(true);
-            // Use setTimeout to prevent redirect loops
+
             setTimeout(() => {
               if (isMounted) {
                 router.replace("/loginForm");
@@ -74,7 +82,6 @@ const MentorHomePage: React.FC = () => {
           return;
         }
 
-        // Check if user is a mentor
         if (storedRole !== "mentor") {
           console.log("User role is not mentor, redirecting to student home");
           if (isMounted) {
@@ -89,13 +96,11 @@ const MentorHomePage: React.FC = () => {
           return;
         }
 
-        // Authentication successful
         if (isMounted) {
           setUserName(storedName);
           setLoading(false);
           setAuthError(null);
         }
-
       } catch (error) {
         console.error("Authentication check failed:", error);
         if (isMounted) {
@@ -113,13 +118,11 @@ const MentorHomePage: React.FC = () => {
 
     checkAuthentication();
 
-    // Cleanup function
     return () => {
       isMounted = false;
     };
   }, [router]);
 
-  // Time and active status effect
   useEffect(() => {
     const timer = setInterval(() => {
       const now = new Date();
@@ -131,15 +134,13 @@ const MentorHomePage: React.FC = () => {
     return () => clearInterval(timer);
   }, []);
 
-  // Improved logout handler
   const handleLogout = async () => {
     try {
       setIsDropdownOpen(false);
-      
-      // Clear Redux state (this will also clear localStorage)
+
       dispatch(logout());
-      
-      // Optional: Call logout API
+
+  
       try {
         await fetch("/api/auth/logout", {
           method: "POST",
@@ -152,7 +153,6 @@ const MentorHomePage: React.FC = () => {
 
       // Redirect to login
       router.replace("/loginForm");
-      
     } catch (error) {
       console.error("Logout failed:", error);
       // Force redirect even if logout fails
@@ -312,7 +312,8 @@ const MentorHomePage: React.FC = () => {
             {isRedirecting ? "Redirecting..." : "Loading Your Mentor Home..."}
           </div>
           <p className="text-sm text-gray-600 max-w-xs text-center">
-            {authError || "Preparing your personalized experience for guiding students to success."}
+            {authError ||
+              "Preparing your personalized experience for guiding students to success."}
           </p>
           {isRedirecting && (
             <div className="text-xs text-gray-500 mt-2">
@@ -345,7 +346,7 @@ const MentorHomePage: React.FC = () => {
                 </span>
               </div>
               <a
-                href="#dashboard"
+                href="mentorDashBoard"
                 className="text-gray-600 hover:text-[#1887A1] transition-colors duration-200 font-medium"
               >
                 Dashboard
@@ -384,7 +385,7 @@ const MentorHomePage: React.FC = () => {
         </div>
       </nav>
 
-      {/* Hero Section */}
+
       <section className="relative overflow-hidden bg-gradient-to-r from-[#1887A1] to-[#0D4C5B] text-white">
         <div className="absolute inset-0 bg-black/10"></div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
@@ -402,7 +403,8 @@ const MentorHomePage: React.FC = () => {
               </span>
             </h2>
             <p className="text-xl md:text-2xl text-blue-100 mb-8 max-w-4xl mx-auto animate-fade-in-delay">
-              Comprehensive overview of your duties and commitments as a mentor in our educational platform
+              Comprehensive overview of your duties and commitments as a mentor
+              in our educational platform
             </p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto mt-12">
               <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 text-center transform hover:scale-105 transition-all duration-300 animate-bounce-gentle">
@@ -412,7 +414,9 @@ const MentorHomePage: React.FC = () => {
                 <div className="text-sm text-blue-100">Active Hours Daily</div>
               </div>
               <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 text-center transform hover:scale-105 transition-all duration-300 animate-bounce-gentle-delay">
-                <div className="text-2xl font-bold text-yellow-400">Weekend</div>
+                <div className="text-2xl font-bold text-yellow-400">
+                  Weekend
+                </div>
                 <div className="text-sm text-blue-100">Weekly Reviews</div>
               </div>
               <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 text-center transform hover:scale-105 transition-all duration-300 animate-bounce-gentle-delay-2">
@@ -425,7 +429,7 @@ const MentorHomePage: React.FC = () => {
         <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-white to-transparent"></div>
       </section>
 
-      {/* Mentor Responsibilities Grid */}
+    
       <section className="py-20 -mt-10 relative z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -437,7 +441,8 @@ const MentorHomePage: React.FC = () => {
               Responsibilities
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto animate-fade-in-delay">
-              Every responsibility is designed to ensure exceptional student outcomes and educational excellence
+              Every responsibility is designed to ensure exceptional student
+              outcomes and educational excellence
             </p>
           </div>
 
@@ -490,7 +495,7 @@ const MentorHomePage: React.FC = () => {
         </div>
       </section>
 
-      {/* Active Hours Highlight */}
+
       <section className="py-20 bg-gradient-to-r from-[#1887A1] to-[#0D4C5B]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="bg-white/10 backdrop-blur-md rounded-3xl p-12 animate-float">
@@ -510,19 +515,26 @@ const MentorHomePage: React.FC = () => {
               Current Time: {currentTime.toLocaleTimeString()}
             </div>
             <div
-              className={`inline-flex items-center px-6 py-3 rounded-full font-semibold text-lg transition-all duration-500 ${isActive ? "bg-green-500 text-white animate-pulse-success" : "bg-red-500 text-white animate-pulse-warning"
-                }`}
+              className={`inline-flex items-center px-6 py-3 rounded-full font-semibold text-lg transition-all duration-500 ${
+                isActive
+                  ? "bg-green-500 text-white animate-pulse-success"
+                  : "bg-red-500 text-white animate-pulse-warning"
+              }`}
             >
               <div
-                className={`w-3 h-3 rounded-full mr-3 ${isActive ? "bg-green-200" : "bg-red-200"} animate-pulse`}
+                className={`w-3 h-3 rounded-full mr-3 ${
+                  isActive ? "bg-green-200" : "bg-red-200"
+                } animate-pulse`}
               ></div>
-              {isActive ? "Currently Active & Available" : "Outside Active Hours"}
+              {isActive
+                ? "Currently Active & Available"
+                : "Outside Active Hours"}
             </div>
           </div>
         </div>
       </section>
 
-      {/* Footer */}
+   
       <footer className="bg-gray-900 text-white py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
@@ -535,11 +547,13 @@ const MentorHomePage: React.FC = () => {
               </span>
             </div>
             <p className="text-gray-400 mb-8">
-              Excellence in mentorship through dedicated responsibility and commitment
+              Excellence in mentorship through dedicated responsibility and
+              commitment
             </p>
             <div className="border-t border-gray-800 pt-8">
               <p className="text-gray-500">
-                © 2025 SkillMentorX. Transforming education through responsible mentorship.
+                © 2025 SkillMentorX. Transforming education through responsible
+                mentorship.
               </p>
             </div>
           </div>
@@ -570,7 +584,8 @@ const MentorHomePage: React.FC = () => {
         }
 
         @keyframes bounce-gentle {
-          0%, 100% {
+          0%,
+          100% {
             transform: translateY(0);
           }
           50% {
@@ -579,7 +594,8 @@ const MentorHomePage: React.FC = () => {
         }
 
         @keyframes float {
-          0%, 100% {
+          0%,
+          100% {
             transform: translateY(0px);
           }
           50% {
@@ -588,7 +604,8 @@ const MentorHomePage: React.FC = () => {
         }
 
         @keyframes pulse-slow {
-          0%, 100% {
+          0%,
+          100% {
             opacity: 1;
           }
           50% {
@@ -597,7 +614,8 @@ const MentorHomePage: React.FC = () => {
         }
 
         @keyframes pulse-success {
-          0%, 100% {
+          0%,
+          100% {
             box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4);
           }
           50% {
@@ -606,7 +624,8 @@ const MentorHomePage: React.FC = () => {
         }
 
         @keyframes pulse-warning {
-          0%, 100% {
+          0%,
+          100% {
             box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4);
           }
           50% {

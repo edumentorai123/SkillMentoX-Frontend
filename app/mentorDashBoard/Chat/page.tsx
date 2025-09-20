@@ -1,11 +1,11 @@
 import React from 'react'
-import MentorDashboard from './MentorDashboard'
+import MentorChat from './chats'
 
 function page() {
   return (
     <div>
+        <MentorChat/>
 
-      <MentorDashboard/>
       
     </div>
   )

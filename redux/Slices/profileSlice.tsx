@@ -42,7 +42,7 @@ export const calcProfileStrength = (profile: ProfileState): number => {
   if (profile.phone) strength += 10;
   if (profile.avatarPreview) strength += 15;
   if (profile.educationLevel) strength += 15;
-  if (profile.selectedCategory) strength += 10;  
+  if (profile.selectedCategory) strength += 10;
   if (profile.selectedStack) strength += 10;
 
   return Math.min(strength, 100);
@@ -112,7 +112,6 @@ const profileSlice = createSlice({
       });
   },
 });
-
 
 export const {
   setRole,

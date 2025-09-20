@@ -21,7 +21,6 @@ const MentorForm = () => {
     handleSubmit,
     formState: { errors },
     reset,
-    watch,
   } = useForm<MentorFormData>({
     defaultValues: {
       fullName: "",
@@ -195,7 +194,7 @@ const MentorForm = () => {
 
   const onSubmit = async (data: MentorFormData) => {
     try {
-      const isValid = data.courses.every((course, index) => {
+      const isValid = data.courses.every((course) => {
         const category = course.category;
         const courseName = course.courseName;
         if (category && courseName) {

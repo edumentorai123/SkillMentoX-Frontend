@@ -1,10 +1,8 @@
 import React from "react";
-import { useFieldArray } from "react-hook-form";
 import { EducationProps } from "../types";
 
 const Education: React.FC<EducationProps> = ({ 
-  register, 
-  control, 
+  register,  
   errors, 
   educationFields, 
   appendEducation, 

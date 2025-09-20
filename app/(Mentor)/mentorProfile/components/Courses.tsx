@@ -1,10 +1,8 @@
 import React from "react";
-import { useFieldArray } from "react-hook-form";
 import { CoursesProps } from "../types";
 
 const Courses: React.FC<CoursesProps> = ({
   register,
-  control,
   errors,
   courseCategories,
   courseNames = {},

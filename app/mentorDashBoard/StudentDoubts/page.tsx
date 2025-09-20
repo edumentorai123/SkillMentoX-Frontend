@@ -1,11 +1,12 @@
 import React from 'react'
-import MentorDashboard from './MentorDashboard'
+import StudentDoubtsPage from './StudentDoutes'
 
 function page() {
   return (
-    <div>
 
-      <MentorDashboard/>
+      <div>
+   
+   <StudentDoubtsPage/>
       
     </div>
   )
