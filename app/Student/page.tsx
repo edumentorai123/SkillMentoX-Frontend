@@ -1,13 +1,13 @@
 
-import React from 'react'
 import Dashboard from './Dashboard'
+import AuthRedirect from '../AuthRedirect/AuthRedirect'
 
 
 const Page = () => {
   return (
-    <div>
+    <AuthRedirect>
     <Dashboard/>
-    </div>
+    </AuthRedirect>
   )
 }
 

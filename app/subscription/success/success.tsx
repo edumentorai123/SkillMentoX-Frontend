@@ -23,7 +23,6 @@ export default function SuccessPage() {
                 return;
             }
 
-            // Get category & stack from URL query or localStorage
             const category = categoryParam || localStorage.getItem("selectedCategory");
             const stack = stackParam || localStorage.getItem("selectedStack");
 
