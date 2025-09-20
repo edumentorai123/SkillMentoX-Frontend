@@ -49,7 +49,7 @@ function Sidebar() {
   };
 
   const getActiveMenu = useMemo(() => {
-    return (currentPath: string) => {  // Added string type annotation
+    return (currentPath: string) => {
       if (currentPath === "/Student" || currentPath === "/Student/DashBord") {
         return "DashBoard";
       } else if (currentPath === "/Student/MyDouts") {
@@ -122,14 +122,15 @@ function Sidebar() {
           )}
           {isCollapsed && (
             <div className="flex justify-center pb-2 border-b border-gray-200">
-              <div className="relative w-12 h-12 rounded-lg bg-gradient-to-br from-[#1887A1]/10 to-[#0D4C5B]/10 p-2 hover:shadow-lg transition-all duration-300 hover:scale-105">
+              <div className="relative w-20 h-20 rounded-lg overflow-hidden">
                 <Image
                   src="/skillmentorX.tm.png"
                   alt="SMX Logo"
-                  width={32}
-                  height={32}
-                  className="object-contain w-full h-full filter drop-shadow-sm"
-                  priority
+                  fill
+                  sizes="80px"
+                  style={{ objectFit: "cover", objectPosition: "center" }}
+                  className="filter drop-shadow-sm transition-transform duration-300 hover:scale-105"
+                  priority={false}
                 />
               </div>
             </div>
@@ -204,7 +205,6 @@ function Sidebar() {
         </nav>
       </div>
 
-      {/* Content Spacer - This ensures content doesn't overlap with fixed sidebar */}
       <div className={`hidden md:block ${sidebarWidth} flex-shrink-0 transition-all duration-300`} />
     </>
   );
