@@ -75,7 +75,7 @@ export const loginUser = createAsyncThunk(
                 hasProfile?: boolean;
                 isPremium?: boolean;
             }>(
-                `${process.env.NEXT_PUBLIC_API_URL as string}/login`,
+                `${process.env.NEXT_PUBLIC_BACKEND_URL as string}/login`,
                 { email, password }
             );
 
@@ -91,7 +91,7 @@ export const loginUser = createAsyncThunk(
                 isPremium: res.data.isPremium ?? false,
             };
 
-         
+
             localStorage.setItem("auth", JSON.stringify(authData));
             localStorage.setItem("accessToken", res.data.token);
 
@@ -126,13 +126,17 @@ const authSlice = createSlice({
             state.mentorSelected = false;
             state.mentorAccepted = false;
 
-           
-            localStorage.removeItem("auth");
-            localStorage.removeItem("accessToken");
-            localStorage.removeItem("userName");
-            localStorage.removeItem("userRole");
-            localStorage.removeItem("authToken");
-            localStorage.removeItem("userId");
+
+        localStorage.removeItem("auth");
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("userName");
+        localStorage.removeItem("userRole");
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("userId");
+
+        // Clear cookies on logout
+        document.cookie = "token=; Max-Age=0; path=/; sameSite=strict";
+        document.cookie = "role=; Max-Age=0; path=/; sameSite=strict";
         },
         setCredentials: (
             state,
@@ -163,7 +167,7 @@ const authSlice = createSlice({
             localStorage.setItem("auth", JSON.stringify(authData));
             localStorage.setItem("accessToken", action.payload.token);
 
-       
+
             localStorage.setItem("userName", userData.firstName + (userData.lastName ? ` ${userData.lastName}` : ''));
             localStorage.setItem("userRole", userData.role || '');
             localStorage.setItem("authToken", action.payload.token);

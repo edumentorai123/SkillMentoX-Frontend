@@ -39,7 +39,13 @@ const Step2BasicInfo: React.FC = () => {
     field: K,
     value: string
   ) => {
-    dispatch(updateField({ field, value }))
+    // Format phone number to remove extra spaces and special characters
+    if (field === 'phone') {
+      const formattedPhone = value.replace(/[^\d+\-\s()]/g, '').replace(/\s+/g, ' ').trim();
+      dispatch(updateField({ field, value: formattedPhone }))
+    } else {
+      dispatch(updateField({ field, value }))
+    }
   }
 
   if (!profile) {

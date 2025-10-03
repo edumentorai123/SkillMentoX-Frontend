@@ -86,6 +86,7 @@ const Navbar: React.FC<NavbarProps> = ({ studentName: propStudentName }) => {
                                     src="/skillmentorX.tm.png"
                                     alt="Company Logo"
                                     fill
+                                    sizes="(max-width: 640px) 64px, (max-width: 1024px) 80px, 96px"
                                     className="object-contain"
                                     priority
                                 />

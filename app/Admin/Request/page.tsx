@@ -1,9 +1,9 @@
 
-import RequestsPage from "./showRequest";
+import StudentRequestsPage from "../StudentRequests/StudentRequests";
 export default function ProfilePage() {
   return (
     <div>
-      <RequestsPage />
+      <StudentRequestsPage />
     </div>
   );
 }
