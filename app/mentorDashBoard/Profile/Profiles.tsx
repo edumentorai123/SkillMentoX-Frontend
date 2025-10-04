@@ -3,8 +3,27 @@ import React, { useState, useEffect } from "react";
 import Sidebar from "../Sidebar";
 import axiosClient from "@/app/lib/axiosClient";
 
+interface FormData {
+  firstName: string;
+  email: string;
+  specialization: string;
+  bio: string;
+  currentRole: string;
+  company: string;
+  yearsOfExperience: number;
+  education: any[];
+  certifications: any[];
+  courses: any[];
+  linkedin: string;
+  github: string;
+  portfolio: string;
+  gender: string;
+  phoneNumber: string;
+  documents: Record<string, any>;
+}
+
 export default function ProfileSection() {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     firstName: "",
     email: "",
     specialization: "",
@@ -21,12 +40,10 @@ export default function ProfileSection() {
     gender: "",
     phoneNumber: "",
     documents: {},
-   
   });
 
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -53,13 +70,19 @@ export default function ProfileSection() {
         }
 
         const mentorId = mentorObj?.user?.id;
-        if (!mentorId) {
-          setError("Invalid mentor data. Please login again.");
+        const token = mentorObj?.token;
+        if (!mentorId || !token) {
+          setError("Invalid mentor data or token. Please login again.");
           setLoading(false);
           return;
         }
 
-        const response = await axiosClient.get(`/api/mentor/profile`);
+        const response = await axiosClient.get(`/api/mentor/profile`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
         if (!response.data.data) {
           throw new Error("No mentor data returned from API.");
         }
@@ -81,12 +104,13 @@ export default function ProfileSection() {
           portfolio: mentorData.portfolio || "",
           gender: mentorData.gender || "",
           phoneNumber: mentorData.phoneNumber || "",
-          documents: mentorData.documents || {}
-         
+          documents: mentorData.documents || {},
         });
         setError(null);
       } catch (err: any) {
-        setError(err.response?.data?.message || "Failed to fetch mentor details.");
+        setError(
+          err.response?.data?.message || "Failed to fetch mentor details."
+        );
         console.error("Error fetching mentor data:", err);
       } finally {
         setLoading(false);
@@ -96,11 +120,6 @@ export default function ProfileSection() {
     fetchMentorData();
   }, []);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -108,6 +127,17 @@ export default function ProfileSection() {
     setSuccessMessage(null);
 
     try {
+      const storedMentor = localStorage.getItem("auth");
+      const mentorObj = storedMentor ? JSON.parse(storedMentor) : null;
+      const mentorId = mentorObj?.user?.id;
+      const token = mentorObj?.token;
+
+      if (!mentorId || !token) {
+        setError("Invalid mentor data or token. Please login again.");
+        setLoading(false);
+        return;
+      }
+
       const payload = {
         fullName: formData.firstName,
         email: formData.email,
@@ -121,12 +151,22 @@ export default function ProfileSection() {
         courses: formData.courses,
         linkedin: formData.linkedin,
         github: formData.github,
-        portfolio: formData.portfolio,
+        // portfolio: formData.portfolio, // Uncomment if backend supports it
         gender: formData.gender,
         phoneNumber: formData.phoneNumber,
+        documents: formData.documents,
       };
+      const response = await axiosClient.put(
+        `/api/mentor/updateMentorProfile`,
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
-      const response = await axiosClient.post("/api/mentor/updateProfile", payload);
       if (response.data.success) {
         setSuccessMessage("Profile updated successfully.");
       } else {
@@ -140,12 +180,22 @@ export default function ProfileSection() {
     }
   };
 
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    if (name === "yearsOfExperience") {
+      setFormData((prev) => ({ ...prev, [name]: parseInt(value) || 0 }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
+  };
+
   if (loading) return <div className="p-6">Loading...</div>;
   if (error) return <div className="p-6 text-red-500">{error}</div>;
 
   return (
     <div className="h-screen bg-gray-50 flex overflow-hidden">
-      {/* Sidebar - Fixed and Sticky */}
       <aside className="w-64 bg-white border-r border-gray-200 hidden md:block flex-shrink-0 sticky top-0 h-full overflow-y-auto">
         <Sidebar
           sidebarCollapsed={sidebarCollapsed}
@@ -155,20 +205,24 @@ export default function ProfileSection() {
         />
       </aside>
 
-      {/* Main Content - Scrollable */}
       <main className="flex-1 overflow-y-auto">
         <div className="p-6 md:p-10 space-y-6">
           {successMessage && (
-            <div className="mb-4 p-4 bg-green-100 text-green-800 rounded">{successMessage}</div>
+            <div className="mb-4 p-4 bg-green-100 text-green-800 rounded">
+              {successMessage}
+            </div>
           )}
 
           <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-            <h2 className="text-xl font-semibold text-gray-900 mb-6">Profile Information</h2>
+            <h2 className="text-xl font-semibold text-gray-900 mb-6">
+              Profile Information
+            </h2>
 
             <form onSubmit={handleSubmit} className="space-y-4">
-              {/* First Name */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  First Name
+                </label>
                 <input
                   type="text"
                   name="firstName"
@@ -176,12 +230,14 @@ export default function ProfileSection() {
                   onChange={handleChange}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   placeholder="Enter your first name"
+                  required
                 />
               </div>
 
-              {/* Email */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Email
+                </label>
                 <input
                   type="email"
                   name="email"
@@ -189,12 +245,14 @@ export default function ProfileSection() {
                   onChange={handleChange}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   placeholder="Enter your email"
+                  required
                 />
               </div>
 
-              {/* Specialization */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Specialization</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Specialization
+                </label>
                 <input
                   type="text"
                   name="specialization"
@@ -205,9 +263,10 @@ export default function ProfileSection() {
                 />
               </div>
 
-              {/* Bio */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Bio</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Bio
+                </label>
                 <textarea
                   name="bio"
                   value={formData.bio}
@@ -218,9 +277,10 @@ export default function ProfileSection() {
                 ></textarea>
               </div>
 
-              {/* Current Role */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Current Role</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Current Role
+                </label>
                 <input
                   type="text"
                   name="currentRole"
@@ -231,9 +291,10 @@ export default function ProfileSection() {
                 />
               </div>
 
-              {/* Company */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Company</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Company
+                </label>
                 <input
                   type="text"
                   name="company"
@@ -244,9 +305,10 @@ export default function ProfileSection() {
                 />
               </div>
 
-              {/* Years of Experience */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Years of Experience</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Years of Experience
+                </label>
                 <input
                   type="number"
                   name="yearsOfExperience"
@@ -254,14 +316,16 @@ export default function ProfileSection() {
                   onChange={handleChange}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   placeholder="Enter years of experience"
+                  min="0"
                 />
               </div>
 
-              {/* LinkedIn */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">LinkedIn</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  LinkedIn
+                </label>
                 <input
-                  type="text"
+                  type="url"
                   name="linkedin"
                   value={formData.linkedin}
                   onChange={handleChange}
@@ -270,11 +334,12 @@ export default function ProfileSection() {
                 />
               </div>
 
-              {/* GitHub */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">GitHub</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  GitHub
+                </label>
                 <input
-                  type="text"
+                  type="url"
                   name="github"
                   value={formData.github}
                   onChange={handleChange}
@@ -283,11 +348,12 @@ export default function ProfileSection() {
                 />
               </div>
 
-              {/* Portfolio */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Portfolio</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Portfolio
+                </label>
                 <input
-                  type="text"
+                  type="url"
                   name="portfolio"
                   value={formData.portfolio}
                   onChange={handleChange}
@@ -296,9 +362,10 @@ export default function ProfileSection() {
                 />
               </div>
 
-              {/* Gender */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Gender</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Gender
+                </label>
                 <input
                   type="text"
                   name="gender"
@@ -309,11 +376,12 @@ export default function ProfileSection() {
                 />
               </div>
 
-              {/* Phone Number */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Phone Number
+                </label>
                 <input
-                  type="text"
+                  type="tel"
                   name="phoneNumber"
                   value={formData.phoneNumber}
                   onChange={handleChange}
@@ -322,21 +390,26 @@ export default function ProfileSection() {
                 />
               </div>
 
-              {/* Save Button */}
               <div className="flex space-x-3">
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-200"
+                  disabled={loading}
+                  className={`px-4 py-2 rounded-lg text-white transition-all duration-200 ${
+                    loading
+                      ? "bg-gray-400 cursor-not-allowed"
+                      : "bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800"
+                  }`}
                 >
-                  Save Changes
+                  {loading ? "Saving..." : "Save Changes"}
                 </button>
               </div>
             </form>
           </div>
 
-          {/* Skills & Expertise */}
           <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Skills & Expertise</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+              Skills & Expertise
+            </h3>
             <div className="flex flex-wrap gap-2">
               {formData.specialization ? (
                 formData.specialization.split(",").map((skill, index) => (

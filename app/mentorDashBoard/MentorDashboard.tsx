@@ -1,6 +1,9 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import {LayoutDashboard,Users,Calendar,
+import {
+  LayoutDashboard,
+  Users,
+  Calendar,
   MessageCircle,
   User,
   Bell,
@@ -13,15 +16,13 @@ import {LayoutDashboard,Users,Calendar,
   MessageSquare,
 } from "lucide-react";
 import Sidebar from "./Sidebar";
-import axios from "axios";
 import axiosClient from "../lib/axiosClient";
 
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
   const [mentorName, setMentorName] = useState("mentor");
   const [loading, setLoading] = useState(true);
-  const [ totalStudents, setTotalStudents] = useState(124);
-
+  const [totalStudents, setTotalStudents] = useState(124);
 
   useEffect(() => {
     const fetchTotalStudents = async () => {
@@ -32,7 +33,7 @@ const Dashboard = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-        setTotalStudents(response.data.length); 
+        setTotalStudents(response.data.length);
       } catch (err) {
         console.error("Error fetching students:", err);
       } finally {
@@ -43,7 +44,6 @@ const Dashboard = () => {
     fetchTotalStudents();
   }, []);
 
-  
   useEffect(() => {
     const fetchMentorDetails = async () => {
       try {
@@ -56,7 +56,8 @@ const Dashboard = () => {
           : "mentor";
         setMentorName(initialName);
 
-        const response = await axiosClient.get(`/mentor/getMentorDetails${mentorId}`,
+        const response = await axiosClient.get(
+          `/mentor/getMentorDetails${mentorId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -75,11 +76,10 @@ const Dashboard = () => {
     fetchMentorDetails();
   }, []);
 
-
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 font-sans">
       <div className="fixed top-0 left-0 h-full w-64 bg-white shadow-lg z-50">
-        <Sidebar/>
+        <Sidebar />
       </div>
       <div className="flex-1 ml-64 flex flex-col">
         <header className="bg-white/80 backdrop-blur-xl border-b border-slate-200/50 shadow-sm sticky top-0 z-40">
@@ -116,7 +116,7 @@ const Dashboard = () => {
             <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] border border-white/20">
               <div className="flex items-center justify-between">
                 <div>
-                <p className="text-slate-500 text-sm font-medium">
+                  <p className="text-slate-500 text-sm font-medium">
                     Total Students
                   </p>
                   <p className="text-3xl font-bold text-slate-800 mt-2">
@@ -129,8 +129,6 @@ const Dashboard = () => {
                 </div>
               </div>
             </div>
-
-           
 
             {/* Card 3 */}
             <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] border border-white/20">
@@ -161,7 +159,6 @@ const Dashboard = () => {
                   <button className="text-teal-600 hover:text-teal-700 font-medium">
                     View All
                   </button>
-                  
                 </div>
               </div>
             </div>
