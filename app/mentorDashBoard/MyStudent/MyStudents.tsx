@@ -5,17 +5,12 @@ import Sidebar from '../Sidebar';
 
 const StudentsPage = () => {
  
-
-
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false); 
 
-
   
-
-
   const getStatusBadge = (status: string) => {
     const baseClasses = 'px-3 py-1 rounded-full text-sm font-medium';
     switch (status) {
@@ -50,34 +45,35 @@ const StudentsPage = () => {
 
   return (
     <div className="min-h-screen bg-slate-50 flex">
-      {/* Pass required props to Sidebar */}
+      
       <Sidebar
         sidebarCollapsed={sidebarCollapsed}
         setSidebarCollapsed={setSidebarCollapsed}
         mobileMenuOpen={mobileMenuOpen}
         setMobileMenuOpen={setMobileMenuOpen}
       />
-      {/* Main Content */}
+     
       <div className="flex-1">
-        {/* Mobile Sidebar Toggle */}
+        
         <div className="md:hidden p-4 bg-white shadow-sm border-b">
           <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)} // Updated to use setMobileMenuOpen
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)} 
             className="p-2 rounded-lg bg-teal-600 text-white"
           >
             <Users className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Header Section */}
+   
         <div className="bg-white shadow-sm border-b">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             <div className="mb-6">
+
               <h1 className="text-3xl font-bold text-gray-900 mb-2">My Students</h1>
               <p className="text-gray-600">Manage and track your students in one place</p>
             </div>
             
-            {/* Search and Filter Controls */}
+           
             <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
               <div className="relative flex-1 max-w-md">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
@@ -106,9 +102,7 @@ const StudentsPage = () => {
             </div>
           </div>
         </div>
-
-     
-      </div>
+        </div>
     </div>
   );
 };

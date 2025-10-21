@@ -9,16 +9,17 @@ import axiosClient from "../lib/axiosClient";
 import axios from "axios";
 
 interface User {
-    role: string | null;
-    id?: string;
-    email?: string;
-    firstName?: string;
-    lastName?: string | null | undefined;
+  role: string | null;
+  id?: string;
+  email?: string;
+  firstName?: string;
+  lastName?: string | null | undefined;
 }
 
 interface AuthRedirectProps {
-    children: React.ReactNode;
+  children: React.ReactNode;
 }
+
 
 export default function AuthRedirect({ children }: AuthRedirectProps) {
     const router = useRouter();
