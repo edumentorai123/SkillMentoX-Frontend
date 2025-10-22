@@ -50,7 +50,6 @@ const RegisterForm: React.FC = () => {
     register,
     handleSubmit,
     formState: { errors },
-    reset,
     watch,
   } = useForm<FormData>({
     defaultValues: {
@@ -92,10 +91,11 @@ const RegisterForm: React.FC = () => {
       setUserId(response.data.userId);
       setShowOTPField(true);
       toast.success("Verification code sent to your email!");
-    } catch (error: any) {
-      toast.error(
-        error.response?.data?.message || "Failed to send verification code"
-      );
+    } catch (error: unknown) {
+      const message = axios.isAxiosError(error)
+        ? error.response?.data?.message || "Failed to send verification code"
+        : "An unexpected error occurred";
+      toast.error(message);
     }
   };
 
@@ -137,8 +137,11 @@ const RegisterForm: React.FC = () => {
       localStorage.setItem("token", response.data.token);
       toast.success("Email verified successfully!");
       setTimeout(() => router.push("/loginForm"), 1000);
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || "OTP verification failed");
+    } catch (error: unknown) {
+      const message = axios.isAxiosError(error)
+        ? error.response?.data?.message || "OTP verification failed"
+        : "An unexpected error occurred";
+      toast.error(message);
     }
   };
 
@@ -156,8 +159,11 @@ const RegisterForm: React.FC = () => {
       setUserId(response.data.userId);
       setOtp(["", "", "", "", "", ""]);
       toast.success("New OTP sent to your email!");
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || "Failed to resend OTP");
+    } catch (error: unknown) {
+      const message = axios.isAxiosError(error)
+        ? error.response?.data?.message || "Failed to resend OTP"
+        : "An unexpected error occurred";
+      toast.error(message);
     }
   };
 

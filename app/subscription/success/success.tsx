@@ -36,8 +36,27 @@ export default function SuccessPage() {
             try {
                 console.log("Verifying payment session:", sessionId);
 
+                const token = localStorage.getItem("token") || localStorage.getItem("accessToken") || localStorage.getItem("authToken");
+                const authData = JSON.parse(localStorage.getItem("auth") || "{}");
+                const userId = authData.user?.id;
+
+                if (!userId || !token) {
+                    console.error("Missing userId or token:", { userId, token: !!token });
+                    setErrorMsg("User not logged in. Please login again.");
+                    setStatus("failed");
+                    return;
+                }
+
                 const res = await fetch(
-                    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/subscription/verify-session?session_id=${sessionId}`
+                    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/subscription/verify-session`,
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${token}`,
+                        },
+                        body: JSON.stringify({ sessionId, userId }),
+                    }
                 );
                 const data = await res.json();
                 console.log("Payment verification response:", data);
@@ -51,7 +70,7 @@ export default function SuccessPage() {
                         return;
                     }
 
-                    const requestRes = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/requests`, {
+                    const requestRes = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/students`, {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
@@ -64,12 +83,29 @@ export default function SuccessPage() {
                     console.log("Request creation response:", requestData);
 
                     if (requestRes.ok) {
-                        // Clear stored course selection
                         localStorage.removeItem("selectedCategory");
                         localStorage.removeItem("selectedStack");
 
+                        const authData = JSON.parse(localStorage.getItem("auth") || "{}");
+                        if (authData.user) {
+                            authData.user.isSubscribed = true;
+                            localStorage.setItem("auth", JSON.stringify(authData));
+                        }
+
                         setStatus("success");
-                        setTimeout(() => router.push("/Student"), 4000);
+
+                        const redirectToDashboard = () => {
+                            console.log("Attempting to redirect to dashboard...");
+
+                            router.push("/Student");
+
+                            setTimeout(() => {
+                                console.log("Fallback redirect attempt...");
+                                window.location.href = "/Student";
+                            }, 1000);
+                        };
+
+                        setTimeout(redirectToDashboard, 1000);
                     } else {
                         console.error("Request creation failed:", requestData);
                         setErrorMsg(requestData.message || "Failed to create request.");
@@ -105,7 +141,13 @@ export default function SuccessPage() {
                     <div className="text-green-500 text-6xl mb-4">🎉</div>
                     <h1 className="text-3xl font-bold mb-2">Payment Successful!</h1>
                     <p className="text-gray-700 mb-4">Your request has been created 🎯</p>
-                    <p className="text-gray-500">Redirecting to your dashboard...</p>
+                    <p className="text-gray-500 mb-2">Redirecting to your dashboard in 1 second...</p>
+                    <button
+                        onClick={() => window.location.href = "/Student"}
+                        className="px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition mt-2"
+                    >
+                        Go to Dashboard Now
+                    </button>
                 </div>
             )}
 

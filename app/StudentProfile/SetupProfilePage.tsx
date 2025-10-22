@@ -36,7 +36,6 @@ const SetupProfilePage: React.FC = () => {
   const auth = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
   const [isInitializing, setIsInitializing] = useState(true);
-  const [isCheckingProfile, setIsCheckingProfile] = useState(false);
   const profileCheckExecuted = useRef(false);
   const router = useRouter();
 
@@ -70,7 +69,6 @@ const SetupProfilePage: React.FC = () => {
     initializeAOS();
   }, []);
 
-  // Check for existing profile and handle navigation
   useEffect(() => {
     const initializeComponent = async () => {
       const userId = auth.user?.id;
@@ -90,7 +88,6 @@ const SetupProfilePage: React.FC = () => {
       }
 
       profileCheckExecuted.current = true;
-      setIsCheckingProfile(true);
 
       try {
         console.log("Checking if profile exists for userId:", userId);
@@ -135,7 +132,6 @@ const SetupProfilePage: React.FC = () => {
           });
         }
       } finally {
-        setIsCheckingProfile(false);
         setIsInitializing(false);
       }
     };
@@ -217,6 +213,7 @@ const SetupProfilePage: React.FC = () => {
         return;
       }
 
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { currentStep, status, ...payload } = profile;
 
       console.log("Submitting profile with payload:", payload);

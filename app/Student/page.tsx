@@ -1,5 +1,5 @@
-import Dashboard from "./Dashboard";
-import AuthRedirect from "../AuthRedirect/AuthRedirect";
+import Dashboard from './Dashboard/Dashboard'
+import AuthRedirect from '../AuthRedirect/AuthRedirect'
 
 const Page = () => {
   return (

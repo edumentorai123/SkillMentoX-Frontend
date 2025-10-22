@@ -49,8 +49,11 @@ const ResetPassword: React.FC = () => {
       localStorage.setItem("token", response.data.token);
       toast.success(response.data.message);
       setTimeout(() => router.push("/loginForm"), 2000);
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || "Failed to reset password");
+    } catch (error: unknown) {
+      const message = axios.isAxiosError(error)
+        ? error.response?.data?.message || "Failed to reset password"
+        : "An unexpected error occurred";
+      toast.error(message);
     }
   };
 
