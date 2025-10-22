@@ -38,11 +38,35 @@ export interface MentorProfileResponse {
   };
 }
 
+import { UseFormRegister, Control, FieldErrors, UseFormWatch } from 'react-hook-form';
+import { UseFieldArrayAppend, UseFieldArrayRemove } from 'react-hook-form';
+
+export type MentorFormType = {
+  fullName: string;
+  headline: string;
+  bio: string;
+  currentRole: string;
+  company: string;
+  yearsOfExperience?: number;
+  email: string;
+  phoneNumber: string;
+  gender: string;
+  linkedin: string;
+  github: string;
+  portfolio: string;
+  education: { degree: string; institution: string; year: string }[];
+  certifications: { value: string }[];
+  courses: { category: string; courseName: string }[];
+  idProof?: FileList;
+  qualificationProof?: FileList;
+  cv?: FileList;
+};
+
 export interface FormProps {
-  register: any;
-  control: any;
-  errors: any;
-  watch?: any;
+  register: UseFormRegister<MentorFormType>;
+  control: Control<MentorFormType>;
+  errors: FieldErrors<MentorFormType>;
+  watch?: UseFormWatch<MentorFormType>;
   existingDocuments?: {
     idProof: string;
     qualificationProof: string;
@@ -57,24 +81,24 @@ export interface FormProps {
   courseCategories?: CourseCategory;
   courseNames?: { [key: string]: string[] };
   loadingCategories?: boolean;
-  categoryValues?: any;
+  categoryValues?: { category: string; courseName: string }[];
 }
 
 // Add new interfaces for specific components
 export interface EducationProps extends FormProps {
-  educationFields: any[];
-  appendEducation: (value: any) => void;
-  removeEducation: (index: number) => void;
+  educationFields: { id: string; degree: string; institution: string; year: string }[];
+  appendEducation: UseFieldArrayAppend<MentorFormType, "education">;
+  removeEducation: UseFieldArrayRemove;
 }
 
 export interface CertificationsProps extends FormProps {
-  certificationFields: any[];
-  appendCertification: (value: any) => void;
-  removeCertification: (index: number) => void;
+  certificationFields: { id: string; value: string }[];
+  appendCertification: UseFieldArrayAppend<MentorFormType, "certifications">;
+  removeCertification: UseFieldArrayRemove;
 }
 
 export interface CoursesProps extends FormProps {
-  courseFields: any[];
-  appendCourse: (value: any) => void;
-  removeCourse: (index: number) => void;
+  courseFields: { id: string; category: string; courseName: string }[];
+  appendCourse: UseFieldArrayAppend<MentorFormType, "courses">;
+  removeCourse: UseFieldArrayRemove;
 }

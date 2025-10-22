@@ -168,20 +168,16 @@ const MentorForm = () => {
           keepDirty: false,
           keepTouched: false,
         });
-      } catch (err: any) {
-        if (err.response?.status === 404) {
-          setMessage({
-            type: "error",
-            text: "Profile not found. Please create a profile.",
-          });
-        } else {
-          setMessage({
-            type: "error",
-            text:
-              err.response?.data?.message ||
-              "An error occurred while fetching profile",
-          });
-        }
+      } catch (err: unknown) {
+        const message = axios.isAxiosError(err)
+          ? err.response?.status === 404
+            ? "Profile not found. Please create a profile."
+            : err.response?.data?.message || "An error occurred while fetching profile"
+          : "An unexpected error occurred";
+        setMessage({
+          type: "error",
+          text: message,
+        });
       }
     };
     fetchProfile();
@@ -263,10 +259,13 @@ const MentorForm = () => {
       setTimeout(() => {
         router.push("/mentorHome");
       }, 1500);
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const message = axios.isAxiosError(err)
+        ? err.response?.data?.message || "An error occurred"
+        : "An unexpected error occurred";
       setMessage({
         type: "error",
-        text: err.response?.data?.message || "An error occurred",
+        text: message,
       });
       setTimeout(() => setMessage(null), 500);
     }
@@ -475,19 +474,17 @@ const MentorForm = () => {
         {message && (
           <div className="mb-8">
             <div
-              className={`relative px-6 py-4 rounded-xl border ${
-                message.type === "success"
-                  ? "bg-[#4AB8C1]/10 border-[#1887A1]/50 text-[#1887A1]"
-                  : "bg-red-50 border-red-200 text-red-800"
-              }`}
+              className={`relative px-6 py-4 rounded-xl border ${message.type === "success"
+                ? "bg-[#4AB8C1]/10 border-[#1887A1]/50 text-[#1887A1]"
+                : "bg-red-50 border-red-200 text-red-800"
+                }`}
             >
               <div className="flex items-center">
                 <div
-                  className={`w-5 h-5 mr-3 ${
-                    message.type === "success"
-                      ? "text-[#1887A1]"
-                      : "text-red-600"
-                  }`}
+                  className={`w-5 h-5 mr-3 ${message.type === "success"
+                    ? "text-[#1887A1]"
+                    : "text-red-600"
+                    }`}
                 >
                   {message.type === "success" ? (
                     <svg fill="currentColor" viewBox="0 0 20 20">
