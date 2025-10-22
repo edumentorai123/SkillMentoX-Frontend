@@ -37,10 +37,11 @@ const ForgotPassword: React.FC = () => {
       );
       toast.success(response.data.message);
       setTimeout(() => router.push("/loginForm"), 2000); // Redirect to login after 2 seconds
-    } catch (error: any) {
-      toast.error(
-        error.response?.data?.message || "Failed to send reset link"
-      );
+    } catch (error) {
+      const message = axios.isAxiosError(error)
+        ? error.response?.data?.message || "Failed to send reset link"
+        : "An unexpected error occurred";
+      toast.error(message);
     }
   };
 
@@ -121,7 +122,7 @@ const ForgotPassword: React.FC = () => {
               </h2>
               <p className="text-purple-100 text-lg mb-8 leading-relaxed">
                 Get back to your learning journey with a secure new password.
-                We're here to help you every step of the way!
+                We&apos;re here to help you every step of the way!
               </p>
               <div className="space-y-4">
                 {[

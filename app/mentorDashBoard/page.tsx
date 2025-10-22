@@ -1,14 +1,14 @@
-import MentorDashboardWrapper from "./MentorDashboardWrapper";
-import StudentMentorDashboard from "./StudentMentorDashboard";
+import React from 'react'
+import MentorDashboard from './MentorDashboard'
 
-const page = () => {
+function page() {
   return (
     <div>
-      <MentorDashboardWrapper>
-      <StudentMentorDashboard/>
-      </MentorDashboardWrapper>
+
+      <MentorDashboard/>
+      
     </div>
-  );
+  )
 }
 
-export default page;
+export default page

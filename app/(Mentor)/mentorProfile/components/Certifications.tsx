@@ -1,10 +1,8 @@
 import React from "react";
-import { useFieldArray } from "react-hook-form";
 import { CertificationsProps } from "../types";
 
 const Certifications: React.FC<CertificationsProps> = ({ 
   register, 
-  control, 
   errors, 
   certificationFields, 
   appendCertification, 

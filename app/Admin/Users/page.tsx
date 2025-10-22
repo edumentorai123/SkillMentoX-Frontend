@@ -19,8 +19,8 @@ import "react-toastify/dist/ReactToastify.css";
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:9999";
 
 interface User {
-  id: string;
-  name?: string;
+  _id: string;
+  firstName?: string;
   email?: string;
   role?: string;
   status?: string;
@@ -93,8 +93,8 @@ const UsersPage = () => {
       );
       setUsers((prev) =>
         prev.map((user) =>
-          selectedUsers.includes(user.id)
-            ? responses.find((res) => res.data.data.id === user.id)?.data.data || user
+          selectedUsers.includes(user._id)
+            ? responses.find((res) => res.data.data.id === user._id)?.data.data || user
             : user
         )
       );
@@ -127,8 +127,8 @@ const UsersPage = () => {
       );
       setUsers((prev) =>
         prev.map((user) =>
-          selectedUsers.includes(user.id)
-            ? responses.find((res) => res.data.data.id === user.id)?.data.data || user
+          selectedUsers.includes(user._id)
+            ? responses.find((res) => res.data.data.id === user._id)?.data.data || user
             : user
         )
       );
@@ -153,7 +153,7 @@ const UsersPage = () => {
   const filters = ["All", "Student", "Mentor", "Admin", "Active", "Inactive", "Suspended"];
 
   const filteredUsers = users.filter((user) => {
-    const name = user.name?.toLowerCase() || "";
+    const name = user.firstName?.toLowerCase() || "";
     const email = user.email?.toLowerCase() || "";
     const matchesSearch =
       name.includes(searchTerm.toLowerCase()) ||
@@ -297,7 +297,7 @@ const UsersPage = () => {
                       className="rounded border-gray-300"
                       onChange={(e) =>
                         setSelectedUsers(
-                          e.target.checked ? filteredUsers.map((u) => u.id) : []
+                          e.target.checked ? filteredUsers.map((u) => u._id) : []
                         )
                       }
                     />
@@ -327,23 +327,23 @@ const UsersPage = () => {
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {filteredUsers.map((user) => (
-                  <tr key={user.id} className="hover:bg-gray-50">
+                  <tr key={user._id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <input
                         type="checkbox"
                         className="rounded border-gray-300"
-                        checked={selectedUsers.includes(user.id)}
-                        onChange={() => handleUserSelect(user.id)}
+                        checked={selectedUsers.includes(user._id)}
+                        onChange={() => handleUserSelect(user._id)}
                       />
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <div className="w-10 h-10 bg-[#1887A1] rounded-full flex items-center justify-center text-white font-medium">
-                          {user.avatar || user.name?.charAt(0)?.toUpperCase() || "U"}
+                          {user.avatar || user.firstName?.charAt(0)?.toUpperCase() || "U"}
                         </div>
                         <div className="ml-4">
                           <div className="text-sm font-medium text-gray-900">
-                            {user.name || "Unknown"}
+                            {user.firstName || "Unknown"}
                           </div>
                           <div className="text-sm text-gray-500">
                             {user.email || "No email"}
@@ -415,7 +415,7 @@ const UsersPage = () => {
             </table>
           </div>
 
-          {/* Pagination */}
+          
           <div className="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
             <div className="flex-1 flex justify-between sm:hidden">
               <button
@@ -477,7 +477,7 @@ const UsersPage = () => {
           </div>
         </div>
 
-        {/* Selected Users Actions */}
+        
         {selectedUsers.length > 0 && (
           <div className="fixed bottom-6 right-6 bg-white rounded-lg shadow-lg border border-gray-200 p-4">
             <div className="flex items-center space-x-4">

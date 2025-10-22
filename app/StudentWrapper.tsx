@@ -1,6 +1,6 @@
 "use client";
 import { usePathname } from "next/navigation";
-import Sidebar from "./Student/Sidebar";
+import Sidebar from "./Student/Sidebar/Sidebar";
 
 export default function SidebarWrapper() {
     const pathname = usePathname();

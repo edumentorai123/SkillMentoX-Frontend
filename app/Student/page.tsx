@@ -1,14 +1,12 @@
-
-import Dashboard from './Dashboard'
+import Dashboard from './Dashboard/Dashboard'
 import AuthRedirect from '../AuthRedirect/AuthRedirect'
-
 
 const Page = () => {
   return (
     <AuthRedirect>
-    <Dashboard/>
+      <Dashboard />
     </AuthRedirect>
-  )
-}
+  );
+};
 
-export default Page
+export default Page;

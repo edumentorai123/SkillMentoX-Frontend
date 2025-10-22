@@ -14,6 +14,7 @@ export interface ProfileState {
   selectedStack: string;
   status: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
+  userId?: string;
 }
 
 const initialState: ProfileState = {
@@ -42,7 +43,7 @@ export const calcProfileStrength = (profile: ProfileState): number => {
   if (profile.phone) strength += 10;
   if (profile.avatarPreview) strength += 15;
   if (profile.educationLevel) strength += 15;
-  if (profile.selectedCategory) strength += 10;  
+  if (profile.selectedCategory) strength += 10;
   if (profile.selectedStack) strength += 10;
 
   return Math.min(strength, 100);
@@ -52,15 +53,38 @@ export const createProfileApi = createAsyncThunk(
   "profile/createProfile",
   async (profileData: Partial<ProfileState>, { rejectWithValue }) => {
     try {
+      const token = localStorage.getItem("accessToken") ||
+                    localStorage.getItem("token") ||
+                    localStorage.getItem("authToken");
+
+      const profilePayload: Partial<ProfileState> & { avatar?: string } = { ...profileData };
+      if (profilePayload.avatarPreview !== undefined && profilePayload.avatarPreview !== null) {
+        profilePayload.avatar = profilePayload.avatarPreview;
+        delete profilePayload.avatarPreview;
+      } else {
+        delete profilePayload.avatarPreview;
+      }
+      delete profilePayload.userId;
+      delete profilePayload.role;
+      delete profilePayload.currentStep;
+      delete profilePayload.status;
+      delete profilePayload.error;
+
       const response = await axios.post(
         `${API_URL}/api/students/createprofile`,
-        profileData
+        profilePayload,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json"
+          }
+        }
       );
       return response.data;
     } catch (err) {
       let errorMessage = "Failed to create profile";
       if (axios.isAxiosError(err)) {
-        errorMessage = err.response?.data || err.message;
+        errorMessage = err.response?.data?.message || err.response?.data?.error || err.response?.data || err.message;
       }
       return rejectWithValue(errorMessage);
     }
@@ -112,7 +136,6 @@ const profileSlice = createSlice({
       });
   },
 });
-
 
 export const {
   setRole,

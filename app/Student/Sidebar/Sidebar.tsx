@@ -67,15 +67,21 @@ function Sidebar() {
     };
   }, []);
 
-  const activeMenu = useMemo(() => getActiveMenu(pathname), [pathname, getActiveMenu]);
+  const activeMenu = useMemo(
+    () => getActiveMenu(pathname),
+    [pathname, getActiveMenu]
+  );
 
-  const menuItems = useMemo(() => [
-    { name: "DashBoard", icon: LayoutDashboard, href: "/Student" },
-    { name: "My Doubts", icon: HelpCircle, href: "/Student/MyDouts" },
-    { name: "Chats", icon: MessageCircle, href: "/Student/Chat" },
-    { name: "Quizzes", icon: FileQuestion, href: "/Student/Quiezz" },
-    { name: "Course", icon: BookOpen, href: "/Student/Course" },
-  ], []);
+  const menuItems = useMemo(
+    () => [
+      { name: "DashBoard", icon: LayoutDashboard, href: "/Student" },
+      { name: "My Doubts", icon: HelpCircle, href: "/Student/MyDouts" },
+      { name: "Chats", icon: MessageCircle, href: "/Student/Chat" },
+      { name: "Quizzes", icon: FileQuestion, href: "/Student/Quiezz" },
+      { name: "Course", icon: BookOpen, href: "/Student/Course" },
+    ],
+    []
+  );
 
   const sidebarWidth = isCollapsed ? "w-20" : "w-64";
 
@@ -87,10 +93,13 @@ function Sidebar() {
         className="md:hidden fixed top-4 left-4 z-50 p-2 rounded-lg bg-[#1887A1] text-white shadow-lg hover:bg-[#0D4C5B] transition-all duration-200 transform hover:scale-105"
         aria-label="Toggle menu"
       >
-        {isMobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+        {isMobileOpen ? (
+          <X className="w-6 h-6" />
+        ) : (
+          <Menu className="w-6 h-6" />
+        )}
       </button>
 
-      {/* Mobile Overlay */}
       {isMobileOpen && (
         <div
           className="md:hidden fixed inset-0 bg-black bg-opacity-50 z-30 transition-opacity duration-300"
@@ -98,11 +107,10 @@ function Sidebar() {
         />
       )}
 
-      {/* Fixed Sidebar */}
       <div
         className={`
-          ${isMobile ? 'fixed' : 'fixed'} 
-          ${isMobile && !isMobileOpen ? '-translate-x-full' : 'translate-x-0'}
+          ${isMobile ? "fixed" : "fixed"} 
+          ${isMobile && !isMobileOpen ? "-translate-x-full" : "translate-x-0"}
           ${sidebarWidth}
           h-screen top-0 left-0 flex flex-col bg-white shadow-xl z-40
           transition-all duration-300 ease-in-out
@@ -111,7 +119,7 @@ function Sidebar() {
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-        {/* Header - Enhanced Logo Section */}
+        
         <div className="relative p-6 bg-white">
           {!isCollapsed && (
             <div className="transition-opacity duration-200">
@@ -137,7 +145,7 @@ function Sidebar() {
           )}
         </div>
 
-        {/* Navigation */}
+
         <nav className="flex-1 p-4 overflow-y-auto">
           <ul className="space-y-2">
             {menuItems.map((item, index) => {
@@ -156,11 +164,16 @@ function Sidebar() {
                       group relative w-full px-4 py-3 rounded-xl font-medium 
                       transition-all duration-300 ease-out
                       flex items-center
-                      ${isCollapsed ? 'justify-center px-2' : 'justify-start space-x-3'}
+                      ${
+                        isCollapsed
+                          ? "justify-center px-2"
+                          : "justify-start space-x-3"
+                      }
                       transform hover:scale-[1.02] active:scale-[0.98]
-                      ${isActive
-                        ? "bg-gradient-to-r from-[#1887A1] to-[#0D4C5B] text-white shadow-lg shadow-[#1887A1]/25"
-                        : "text-[#0D4C5B] hover:bg-gradient-to-r hover:from-[#1887A1]/10 hover:to-[#0D4C5B]/10 hover:text-[#0D4C5B] hover:shadow-md"
+                      ${
+                        isActive
+                          ? "bg-gradient-to-r from-[#1887A1] to-[#0D4C5B] text-white shadow-lg shadow-[#1887A1]/25"
+                          : "text-[#0D4C5B] hover:bg-gradient-to-r hover:from-[#1887A1]/10 hover:to-[#0D4C5B]/10 hover:text-[#0D4C5B] hover:shadow-md"
                       }
                     `}
                     prefetch={false}
@@ -170,7 +183,11 @@ function Sidebar() {
                       <IconComponent
                         className={`
                           w-5 h-5 flex-shrink-0 transition-all duration-300
-                          ${isActive ? 'drop-shadow-sm' : 'group-hover:scale-110'}
+                          ${
+                            isActive
+                              ? "drop-shadow-sm"
+                              : "group-hover:scale-110"
+                          }
                         `}
                       />
                       {/* Active indicator dot */}
@@ -205,7 +222,9 @@ function Sidebar() {
         </nav>
       </div>
 
-      <div className={`hidden md:block ${sidebarWidth} flex-shrink-0 transition-all duration-300`} />
+      <div
+        className={`hidden md:block ${sidebarWidth} flex-shrink-0 transition-all duration-300`}
+      />
     </>
   );
 }

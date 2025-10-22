@@ -11,7 +11,6 @@ export function middleware(request: NextRequest) {
     const studentRoutes = [
         "/StudentHome",
         "/student",
-        "/Student",
         "/subscription",
         "/choose-mentor",
         "/mentor-pending",

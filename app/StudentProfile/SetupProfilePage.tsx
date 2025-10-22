@@ -1,5 +1,6 @@
 "use client";
-import React, { useEffect, useState } from "react";
+
+import React, { useEffect, useState, useRef } from "react";
 import { useAppSelector, useAppDispatch } from "@/redux/hooks";
 import ProgressHeader from "./ProgressHeader";
 import Step2BasicInfo from "./Step2BasicInfo";
@@ -20,7 +21,6 @@ declare global {
   }
 }
 
-// Define interface for userData
 interface UserData {
   id?: string;
   userId?: string;
@@ -33,14 +33,24 @@ interface UserData {
 
 const SetupProfilePage: React.FC = () => {
   const profile = useAppSelector((state) => state.profile);
+  const auth = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
   const [isInitializing, setIsInitializing] = useState(true);
+  const profileCheckExecuted = useRef(false);
   const router = useRouter();
 
   const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL as string;
 
+  // Set default role on mount
   useEffect(() => {
-    const initializeComponent = async () => {
+    if (profile?.role === null) {
+      dispatch(setRole("student"));
+    }
+  }, [dispatch, profile?.role]);
+
+  // Initialize AOS
+  useEffect(() => {
+    const initializeAOS = async () => {
       if (typeof window !== "undefined") {
         try {
           const AOSModule = await import("aos");
@@ -55,53 +65,86 @@ const SetupProfilePage: React.FC = () => {
           console.warn("Failed to load AOS:", error);
         }
       }
+    };
+    initializeAOS();
+  }, []);
 
-      if (profile?.role === null) {
-        dispatch(setRole("student"));
+  useEffect(() => {
+    const initializeComponent = async () => {
+      const userId = auth.user?.id;
+      const token = localStorage.getItem("token") || localStorage.getItem("accessToken") || localStorage.getItem("authToken");
+
+      if (!userId || !token) {
+        console.log("Missing userId or token, redirecting to login");
+        router.push("/loginForm");
+        setIsInitializing(false);
+        return;
       }
 
-      // Check if profile already exists
-      const storedUser = localStorage.getItem("user");
-      const userId = storedUser ? JSON.parse(storedUser).id : null;
-      const token = localStorage.getItem("token");
+      if (profileCheckExecuted.current) {
+        console.log("Profile check already executed, skipping");
+        setIsInitializing(false);
+        return;
+      }
 
-      if (userId && token) {
-        try {
-          const response = await axios.get(
-            `${API_URL}/api/students/getprofile/${userId}`,
-            {
-              headers: { Authorization: `Bearer ${token}` },
-            }
-          );
-          if (response.data.data) {
-            // Update localStorage with existing profile
-            localStorage.setItem("user", JSON.stringify(response.data.data));
-            const authData = JSON.parse(localStorage.getItem("auth") || "{}");
-            localStorage.setItem(
-              "auth",
-              JSON.stringify({
-                ...authData,
-                hasProfile: true,
-                isPremium: response.data.data.isSubscribed || authData.isPremium,
-              })
-            );
-            // Navigate based on subscription status
-            if (response.data.data.isSubscribed) {
-              router.push("/Student");
-            } else {
-              router.push("/subscription");
-            }
+      profileCheckExecuted.current = true;
+
+      try {
+        console.log("Checking if profile exists for userId:", userId);
+        const response = await axios.get(
+          `${API_URL}/api/students/getprofile/${userId}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
           }
-        } catch (error) {
-          console.error("Profile check error:", error);
-        }
-      }
+        );
 
-      setIsInitializing(false);
+        if (response.data.data) {
+          console.log("Profile found, updating localStorage");
+          const userData = response.data.data;
+          localStorage.setItem("user", JSON.stringify(userData));
+          const authData = JSON.parse(localStorage.getItem("auth") || "{}");
+          localStorage.setItem(
+            "auth",
+            JSON.stringify({
+              ...authData,
+              hasProfile: true,
+              isPremium: userData.isSubscribed || authData.isPremium || false,
+            })
+          );
+
+          // Redirect based on subscription status
+          if (userData.isSubscribed) {
+            console.log("User is subscribed, redirecting to /Student");
+            router.push("/Student");
+          } else {
+            console.log("User is not subscribed, redirecting to /subscription");
+            router.push("/subscription");
+          }
+        }
+      } catch (error) {
+        if (axios.isAxiosError(error) && error.response?.status === 404) {
+          console.log("Profile not found - user needs to create profile");
+        } else {
+          console.error("Profile check error:", error);
+          toast.error("Error checking profile. Please try again.", {
+            position: "top-right",
+            autoClose: 3000,
+          });
+        }
+      } finally {
+        setIsInitializing(false);
+      }
     };
 
     initializeComponent();
-  }, [profile?.role, dispatch, router, API_URL]); // Added API_URL to dependency array
+  }, [auth.user?.id, dispatch, router, API_URL]);
+
+  // Cleanup effect
+  useEffect(() => {
+    return () => {
+      profileCheckExecuted.current = false;
+    };
+  }, []);
 
   const getStepValidation = (): boolean => {
     if (!profile) return false;
@@ -128,7 +171,7 @@ const SetupProfilePage: React.FC = () => {
   };
 
   const updateLocalStorage = (userData: UserData, token: string) => {
-    localStorage.clear();
+    // Avoid clearing all localStorage to preserve other keys
     localStorage.setItem("token", token);
     localStorage.setItem(
       "auth",
@@ -145,15 +188,21 @@ const SetupProfilePage: React.FC = () => {
         isPremium: userData.isSubscribed || false,
       })
     );
+    localStorage.setItem("user", JSON.stringify({
+      id: userData.id || userData.userId,
+      email: userData.email,
+      name: userData.name,
+      role: userData.role || "student",
+      isSubscribed: userData.isSubscribed || false,
+    }));
   };
 
   const handleProfileSubmit = async () => {
     if (!profile) return;
 
     try {
-      const storedUser = localStorage.getItem("user");
-      const userId = storedUser ? JSON.parse(storedUser).id : null;
-      const token = localStorage.getItem("token");
+      const userId = auth.user?.id;
+      const token = localStorage.getItem("token") || localStorage.getItem("accessToken") || localStorage.getItem("authToken");
 
       if (!userId || !token) {
         toast.error("User not logged in. Please login again.", {
@@ -164,54 +213,58 @@ const SetupProfilePage: React.FC = () => {
         return;
       }
 
-      const payload = {
-        ...profile,
-        userId,
-      };
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { currentStep, status, ...payload } = profile;
 
-      // Use createProfileApi thunk
+      console.log("Submitting profile with payload:", payload);
+
       const response = await dispatch(createProfileApi(payload)).unwrap();
 
-      console.log("Profile saved to DB:", response);
+      console.log("Profile creation response:", response);
 
-      // Update localStorage
       updateLocalStorage(response.data, token);
 
-      toast.success(`Profile submitted successfully!\nName: ${profile.name}`, {
-        position: "top-right",
-        autoClose: 3000,
-      });
+      dispatch({ type: "auth/setHasProfile", payload: true });
 
-      // Check subscription status
-      const subscriptionResponse = await axios.get(
-        `${API_URL}/api/subscription/status/${userId}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-
-      if (subscriptionResponse.data.data.isSubscribed) {
-        const authData = JSON.parse(localStorage.getItem("auth") || "{}");
-        localStorage.setItem(
-          "auth",
-          JSON.stringify({
-            ...authData,
-            isPremium: true,
-          })
+      // Verify profile creation before redirecting
+      try {
+        const verifyResponse = await axios.get(
+          `${API_URL}/api/students/getprofile/${userId}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
         );
-        router.push("/Student");
-      } else {
-        router.push("/subscription");
+        if (verifyResponse.data.data) {
+          console.log("Profile verified, redirecting to /subscription");
+          toast.success(`Profile submitted successfully!\nName: ${profile.name}`, {
+            position: "top-right",
+            autoClose: 3000,
+          });
+          router.push("/subscription");
+        } else {
+          throw new Error("Profile verification failed");
+        }
+      } catch (verifyError) {
+        console.error("Failed to verify profile after submission:", verifyError);
+        toast.error("Profile created but verification failed. Please try again.", {
+          position: "top-right",
+          autoClose: 3000,
+        });
       }
     } catch (error: unknown) {
-      const errorMessage =
-        error instanceof AxiosError
-          ? error.response?.data?.message || error.message
-          : "An unexpected error occurred";
+      console.error("Full error object:", error);
+      let errorMessage = "An unexpected error occurred";
+      if (error instanceof AxiosError) {
+        errorMessage = error.response?.data?.message || error.response?.data?.error || error.message;
+      } else if (typeof error === 'string') {
+        errorMessage = error;
+      } else if (error && typeof error === 'object' && 'message' in error) {
+        errorMessage = (error as { message: string }).message;
+      }
       console.error("Failed to submit profile:", errorMessage);
-      toast.error("Failed to submit profile. Please try again.", {
+      toast.error(`Failed to submit profile: ${errorMessage}`, {
         position: "top-right",
-        autoClose: 3000,
+        autoClose: 5000,
       });
     }
   };
