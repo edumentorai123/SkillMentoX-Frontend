@@ -9,15 +9,15 @@ import axiosClient from "../lib/axiosClient";
 import axios from "axios";
 
 interface User {
-  role: string | null;
-  id?: string;
-  email?: string;
-  firstName?: string;
-  lastName?: string | null | undefined;
+    role: string | null;
+    id?: string;
+    email?: string;
+    firstName?: string;
+    lastName?: string | null | undefined;
 }
 
 interface AuthRedirectProps {
-  children: React.ReactNode;
+    children: React.ReactNode;
 }
 
 
@@ -37,7 +37,7 @@ export default function AuthRedirect({ children }: AuthRedirectProps) {
         } => ({
             user: state.auth.user,
             loading: state.auth.loading,
-            hasProfile: state.auth.hasProfile,
+            hasProfile: state.auth.hasProfile ?? false,
         }),
         shallowEqual
     );
@@ -125,11 +125,7 @@ export default function AuthRedirect({ children }: AuthRedirectProps) {
                 return pathname;
             }
 
-            // If profile check is still in progress, wait
-            if (hasProfile === undefined) {
-                console.log("Profile check in progress, waiting...");
-                return pathname;
-            }
+
 
             if (!hasVisitedHome) {
                 console.log("Student has not visited StudentHome, redirecting");
