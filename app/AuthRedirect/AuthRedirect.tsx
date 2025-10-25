@@ -85,7 +85,7 @@ export default function AuthRedirect({ children }: AuthRedirectProps) {
         console.log("getTargetRoute called - userId:", userId, "token:", token ? "present" : "missing", "role:", user?.role, "hasProfile:", hasProfile);
 
         if (userId && !isValidObjectId(userId)) {
-            console.log("❌ Corrupted userId detected:", userId);
+            console.log(" Corrupted userId detected:", userId);
             clearCorruptedAuth();
             return "/loginForm";
         }
@@ -259,8 +259,8 @@ export default function AuthRedirect({ children }: AuthRedirectProps) {
             return;
         }
 
-        console.log("🔄 getTargetRoute useEffect triggered", { user, hasProfile, pathname });
-        redirectExecuted.current = true; // Mark as executed
+        console.log(" getTargetRoute useEffect triggered", { user, hasProfile, pathname });
+        redirectExecuted.current = true;
         setIsRedirecting(true);
         getTargetRoute().then((target) => {
             console.log("Target route determined:", target, "Current path:", pathname);
@@ -285,7 +285,7 @@ export default function AuthRedirect({ children }: AuthRedirectProps) {
                 console.warn("Redirect timeout reached, resetting isRedirecting");
                 setIsRedirecting(false);
             }
-        }, 5000); // 5 second timeout
+        }, 5000);
 
         return () => clearTimeout(redirectTimeout);
     }, [isRedirecting]);
