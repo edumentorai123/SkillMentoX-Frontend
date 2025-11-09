@@ -31,7 +31,7 @@ interface ErrorResponse {
 }
 
 const API_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:9999/api/auth";
+  process.env.NEXT_PUBLIC_API_URL as string;
 
 
 const LoginForm: React.FC = () => {
