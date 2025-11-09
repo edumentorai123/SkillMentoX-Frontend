@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import axios from "axios";
+import axiosClient from "@/lib/axiosClient";
 
 export interface ProfileState {
   currentStep: 2 | 3 | 4;
@@ -54,8 +54,8 @@ export const createProfileApi = createAsyncThunk(
   async (profileData: Partial<ProfileState>, { rejectWithValue }) => {
     try {
       const token = localStorage.getItem("accessToken") ||
-                    localStorage.getItem("token") ||
-                    localStorage.getItem("authToken");
+        localStorage.getItem("token") ||
+        localStorage.getItem("authToken");
 
       const profilePayload: Partial<ProfileState> & { avatar?: string } = { ...profileData };
       if (profilePayload.avatarPreview !== undefined && profilePayload.avatarPreview !== null) {
@@ -70,21 +70,16 @@ export const createProfileApi = createAsyncThunk(
       delete profilePayload.status;
       delete profilePayload.error;
 
-      const response = await axios.post(
-        `${API_URL}/api/students/createprofile`,
-        profilePayload,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json"
-          }
-        }
+      const response = await axiosClient.post(
+        "/api/students/createprofile",
+        profilePayload
       );
       return response.data;
     } catch (err) {
       let errorMessage = "Failed to create profile";
-      if (axios.isAxiosError(err)) {
-        errorMessage = err.response?.data?.message || err.response?.data?.error || err.response?.data || err.message;
+      if (err && typeof err === 'object' && 'isAxiosError' in err && err.isAxiosError) {
+        const axiosError = err as { response?: { data?: { message?: string; error?: string } }; message?: string };
+        errorMessage = axiosError.response?.data?.message || axiosError.response?.data?.error || axiosError.message || "Failed to create profile";
       }
       return rejectWithValue(errorMessage);
     }
