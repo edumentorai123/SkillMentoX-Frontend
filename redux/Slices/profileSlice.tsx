@@ -1,5 +1,5 @@
+import axiosClient from "@/app/lib/axiosClient";
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import axiosClient from "@/lib/axiosClient";
 
 export interface ProfileState {
   currentStep: 2 | 3 | 4;
