@@ -35,7 +35,7 @@ interface VerifyOTPResponse {
 }
 
 const API_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:9999/api/auth";
+  process.env.NEXT_PUBLIC_BACKEND_URL as string;
 
 const RegisterForm: React.FC = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -80,7 +80,7 @@ const RegisterForm: React.FC = () => {
     }
 
     try {
-      const response = await axios.post<OTPResponse>(`${API_URL}/register`, {
+      const response = await axios.post<OTPResponse>(`${API_URL}/api/auth/register`, {
         email,
         firstName: watch("firstName"),
         lastName: watch("lastName"),
@@ -130,7 +130,7 @@ const RegisterForm: React.FC = () => {
 
     try {
       const response = await axios.post<VerifyOTPResponse>(
-        `${API_URL}/verify-otp`,
+        `${API_URL}/api/auth/verify-otp`,
         { userId, otp: otpCode }
       );
       setIsVerified(true);
@@ -152,7 +152,7 @@ const RegisterForm: React.FC = () => {
     }
 
     try {
-      const response = await axios.post<OTPResponse>(`${API_URL}/resend-otp`, {
+      const response = await axios.post<OTPResponse>(`${API_URL}/api/auth/resend-otp`, {
         userId,
         email,
       });
