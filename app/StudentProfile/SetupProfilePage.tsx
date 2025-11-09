@@ -122,7 +122,13 @@ const SetupProfilePage: React.FC = () => {
           }
         }
       } catch (error) {
-        if (axios.isAxiosError(error) && error.response?.status === 404) {
+        if (axios.isAxiosError(error) && error.response?.status === 401) {
+          console.log("Unauthorized, redirecting to login");
+          localStorage.removeItem("token");
+          localStorage.removeItem("auth");
+          localStorage.removeItem("user");
+          router.push("/loginForm");
+        } else if (axios.isAxiosError(error) && error.response?.status === 404) {
           console.log("Profile not found - user needs to create profile");
         } else {
           console.error("Profile check error:", error);
@@ -245,11 +251,19 @@ const SetupProfilePage: React.FC = () => {
           throw new Error("Profile verification failed");
         }
       } catch (verifyError) {
-        console.error("Failed to verify profile after submission:", verifyError);
-        toast.error("Profile created but verification failed. Please try again.", {
-          position: "top-right",
-          autoClose: 3000,
-        });
+        if (axios.isAxiosError(verifyError) && verifyError.response?.status === 401) {
+          console.log("Unauthorized during verification, redirecting to login");
+          localStorage.removeItem("token");
+          localStorage.removeItem("auth");
+          localStorage.removeItem("user");
+          router.push("/loginForm");
+        } else {
+          console.error("Failed to verify profile after submission:", verifyError);
+          toast.error("Profile created but verification failed. Please try again.", {
+            position: "top-right",
+            autoClose: 3000,
+          });
+        }
       }
     } catch (error: unknown) {
       console.error("Full error object:", error);
