@@ -31,7 +31,7 @@ interface ErrorResponse {
 }
 
 const API_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:9999/api/auth";
+  process.env.NEXT_PUBLIC_API_URL as string;
 
 
 const LoginForm: React.FC = () => {
@@ -58,7 +58,7 @@ const LoginForm: React.FC = () => {
         message: string;
         token: string;
         user: User;
-      }>(`${API_URL}/login`, { email: data.email, password: data.password });
+      }>(`${API_URL}/api/auth/login`, { email: data.email, password: data.password });
 
       toast.success(response.data.message);
 
