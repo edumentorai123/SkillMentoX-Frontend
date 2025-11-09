@@ -31,7 +31,7 @@ interface ErrorResponse {
 }
 
 const API_URL =
-  process.env.NEXT_PUBLIC_API_URL as string;
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:9999/api/auth";
 
 
 const LoginForm: React.FC = () => {
@@ -98,7 +98,7 @@ const LoginForm: React.FC = () => {
         } else {
           router.push("/registerForm");
         }
-      }, 100); 
+      }, 100);
       return () => clearTimeout(timer);
     }
   }, [user, token, router]);
