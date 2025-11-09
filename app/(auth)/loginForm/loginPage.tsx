@@ -5,7 +5,8 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-import axios, { AxiosError } from "axios";
+import axiosClient from "../../lib/axiosClient";
+import { AxiosError } from "axios";
 import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -30,9 +31,6 @@ interface ErrorResponse {
   message?: string;
 }
 
-const API_URL =
-  process.env.NEXT_PUBLIC_API_URL as string;
-
 
 const LoginForm: React.FC = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -54,11 +52,11 @@ const LoginForm: React.FC = () => {
 
   const handleLogin: SubmitHandler<FormData> = async (data) => {
     try {
-      const response = await axios.post<{
+      const response = await axiosClient.post<{
         message: string;
         token: string;
         user: User;
-      }>(`${API_URL}/api/auth/login`, { email: data.email, password: data.password });
+      }>("/api/auth/login", { email: data.email, password: data.password });
 
       toast.success(response.data.message);
 
@@ -76,7 +74,7 @@ const LoginForm: React.FC = () => {
         `${response.data.user.firstName} ${response.data.user.lastName}`
       );
     } catch (error: unknown) {
-      if (axios.isAxiosError(error)) {
+      if (error && typeof error === 'object' && 'isAxiosError' in error && error.isAxiosError) {
         const axiosError = error as AxiosError<ErrorResponse>;
         toast.error(axiosError.response?.data?.message || "Login failed");
       } else {
