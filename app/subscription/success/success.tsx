@@ -174,6 +174,7 @@ export default function SuccessPage() {
                     localStorage.removeItem("selectedStack");
                 }
 
+                
                 setStatus("success");
                 router.replace("/Student");
 
