@@ -7,7 +7,7 @@ export const store = configureStore({
     profile: profileReducer,
     auth: authSlice,
     
-     
+    
     },
 });
 

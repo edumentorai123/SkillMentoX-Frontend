@@ -2,7 +2,7 @@ import axiosClient from "@/app/lib/axiosClient";
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios, { AxiosError } from "axios";
 
-interface User {
+export interface User {
     id: string;
     email: string;
     firstName: string;
@@ -10,7 +10,7 @@ interface User {
     role: "student" | "mentor" | "admin" | null;
 }
 
-interface AuthState {
+export interface AuthState {
     user: User | null;
     token: string | null;
     hasProfile: boolean;
