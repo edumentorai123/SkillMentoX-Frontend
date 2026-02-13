@@ -10,16 +10,36 @@ import AOS from 'aos'
 import HowItWorks from "@/Components/landing/Howitworks";
 
 
+import { useRouter } from "next/navigation";
+
 const Home = () => {
+  const router = useRouter(); 
   const heroRef = useRef<HTMLDivElement>(null);
   const rightSideRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // Check for existing session
+    const storedUser = localStorage.getItem("user");
+    const storedToken = localStorage.getItem("token");
+    
+    if (storedUser && storedToken) {
+      try {
+        const userObj = JSON.parse(storedUser);
+        if (userObj.role === "student") {
+          router.push("/Student");
+          return; // Stop AOS init if redirecting
+        }
+        // Add other roles if needed
+      } catch (e) {
+        console.error("Error parsing user data", e);
+      }
+    }
+
     AOS.init({
       duration: 1000,
       once: true, 
     });
-  }, []);
+  }, [router]);
 
   return (
     <div className="min-h-screen bg-white">

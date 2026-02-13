@@ -84,11 +84,34 @@ const LoginForm: React.FC = () => {
   };
 
   useEffect(() => {
+    // Check localStorage first (persistence)
+    const storedUser = localStorage.getItem("user");
+    const storedToken = localStorage.getItem("token");
+    
+    if (storedUser && storedToken) {
+        try {
+            const userObj = JSON.parse(storedUser);
+            if (userObj.role === "student") {
+                router.push("/Student");
+                return;
+            } else if (userObj.role === "mentor") {
+                router.push("/mentorHome");
+                return;
+            } else if (userObj.role === "admin") {
+                router.push("/Admin");
+                return;
+            }
+        } catch (e) {
+            console.error("Invalid user data in localStorage");
+        }
+    }
+
+    // Check Redux state (just logged in)
     if (token && user && user.role) {
       const timer = setTimeout(() => {
         const role = user.role;
         if (role === "student") {
-          router.push("/StudentHome");
+          router.push("/Student"); // Changed from /StudentHome
         } else if (role === "mentor") {
           router.push("/mentorHome");
         } else if (role === "admin") {

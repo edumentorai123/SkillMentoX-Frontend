@@ -41,12 +41,31 @@ const CourseDashboard = () => {
     useEffect(() => {
         const fetchCourses = async () => {
             try {
-                const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/courses`);
-                if (!response.ok) throw new Error('Failed to fetch courses');
+                const token = localStorage.getItem("token") || localStorage.getItem("accessToken") || localStorage.getItem("authToken");
+                
+                if (!token) {
+                    throw new Error("No authentication token found");
+                }
+
+                const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/courses`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.message || 'Failed to fetch courses');
+                }
+
                 const data = await response.json();
-                setCourses(data);
+                // Backend returns { success: true, data: [...] }
+                const courseList = data.data || [];
+                
+                setCourses(courseList);
                 setLoading(false);
             } catch (err) {
+                console.error("Fetch courses error:", err);
                 const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred';
                 setError(errorMessage);
                 setLoading(false);

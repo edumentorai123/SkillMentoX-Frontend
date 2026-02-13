@@ -58,14 +58,14 @@ const MentorHomePage: React.FC = () => {
         const storedRole = localStorage.getItem("userRole");
         const authToken = localStorage.getItem("authToken");
 
-        console.log(
-          "Auth Check - Name:",
-          storedName,
-          "Role:",
-          storedRole,
-          "Token:",
-          !!authToken
-        );
+        // console.log(
+        //   "Auth Check - Name:",
+        //   storedName,
+        //   "Role:",
+        //   storedRole,
+        //   "Token:",
+        //   !!authToken
+        // );
 
         if (!storedName || !storedRole) {
           console.log("Missing user credentials, redirecting to login");
