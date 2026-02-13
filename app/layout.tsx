@@ -34,7 +34,7 @@ export const metadata: Metadata = {
     siteName: "SkillMentorX",
     images: [
       {
-        url: "/SkillMentroX.png",
+        url: "/skillmentorX.tm.png",
         width: 1200,
         height: 630,
       },
@@ -44,9 +44,13 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "SkillMentorX – AI + Mentorship Platform",
     description: "Learning platform with AI chat and mentor support.",
-    images: ["/SkillMentroX.png"],
+    images: ["/skillmentorX.tm.png"],
   },
-  icons: [{ url: "/SkillMentroX.png", type: "image/png" }],
+  icons: {
+    icon: "/skillmentorX.tm.png",
+    shortcut: "/skillmentorX.tm.png",
+    apple: "/skillmentorX.tm.png",
+  },
   verification: {
     google: "PASTE_YOUR_GOOGLE_VERIFICATION_CODE_HERE",
   },

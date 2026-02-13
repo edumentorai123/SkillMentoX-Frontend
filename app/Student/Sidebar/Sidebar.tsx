@@ -120,7 +120,7 @@ function Sidebar() {
         onMouseLeave={handleMouseLeave}
       >
         
-        <div className="relative p-6 bg-white">
+        <div className={`relative ${isCollapsed ? "p-4" : "p-6"} bg-white transition-all duration-300`}>
           {!isCollapsed && (
             <div className="transition-opacity duration-200">
               <h1 className="text-2xl font-bold text-[#1887A1] pb-2 border-b border-gray-200">
@@ -130,14 +130,14 @@ function Sidebar() {
           )}
           {isCollapsed && (
             <div className="flex justify-center pb-2 border-b border-gray-200">
-              <div className="relative w-20 h-20 rounded-lg overflow-hidden">
+              <div className="relative w-12 h-12 rounded-lg overflow-hidden">
                 <Image
                   src="/skillmentorX.tm.png"
                   alt="SMX Logo"
                   fill
-                  sizes="80px"
+                  sizes="48px"
                   style={{ objectFit: "cover", objectPosition: "center" }}
-                  className="filter drop-shadow-sm transition-transform duration-300 hover:scale-105"
+                  className="filter drop-shadow-sm transition-transform duration-300 hover:scale-110"
                   priority={false}
                 />
               </div>
