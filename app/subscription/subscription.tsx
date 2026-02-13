@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
-import { useAppSelector } from "@/redux/hooks";
+import { useAppSelector, useAppDispatch } from "@/redux/hooks";
+import { updateField } from "@/redux/Slices/profileSlice";
 import { useRouter, useSearchParams } from "next/navigation";
 import axios, { AxiosError } from "axios";
 import { toast, ToastContainer } from "react-toastify";
@@ -17,6 +18,7 @@ interface UserData {
 }
 
 export default function SubscriptionPage() {
+    const dispatch = useAppDispatch();
     const [loading, setLoading] = useState(false);
     const [hasProfile, setHasProfile] = useState<boolean | null>(null);
     const profile = useAppSelector((state) => state.profile);
@@ -55,6 +57,15 @@ export default function SubscriptionPage() {
                 if (response.data && response.data.data) {
                     console.log("Profile found in subscription check:", response.data.data);
                     setHasProfile(true);
+                    
+                    // Dispatch profile data to Redux
+                    const profileData = response.data.data;
+                    if (profileData.selectedCategory) {
+                        dispatch(updateField({ field: "selectedCategory", value: profileData.selectedCategory }));
+                    }
+                    if (profileData.selectedStack) {
+                        dispatch(updateField({ field: "selectedStack", value: profileData.selectedStack }));
+                    }
 
                     // Update localStorage with profile data
                     const updatedAuthData = {
