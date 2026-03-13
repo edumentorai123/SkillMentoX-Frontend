@@ -84,43 +84,47 @@ const LoginForm: React.FC = () => {
   };
 
   useEffect(() => {
-    // Check localStorage first (persistence)
-    const storedUser = localStorage.getItem("user");
-    const storedToken = localStorage.getItem("token");
+    // Check for existing session (both storage and cookies)
+    const storedUser = localStorage.getItem("user") || localStorage.getItem("auth");
+    const storedToken = localStorage.getItem("token") || localStorage.getItem("accessToken");
+    const hasCookies = document.cookie.includes("token=") && document.cookie.includes("role=");
     
     if (storedUser && storedToken) {
         try {
-            const userObj = JSON.parse(storedUser);
-            if (userObj.role === "student") {
-                router.push("/Student");
+            const userObj = typeof storedUser === 'string' && storedUser.startsWith('{') 
+              ? JSON.parse(storedUser) 
+              : null;
+            
+            // Extract role correctly from different storage formats
+            const role = userObj?.role || (userObj?.user?.role) || localStorage.getItem("userRole");
+            
+            if (role === "student") {
+                router.replace("/Student");
                 return;
-            } else if (userObj.role === "mentor") {
-                router.push("/mentorHome");
+            } else if (role === "mentor") {
+                router.replace("/mentorHome");
                 return;
-            } else if (userObj.role === "admin") {
-                router.push("/Admin");
+            } else if (role === "admin") {
+                router.replace("/Admin");
                 return;
             }
         } catch (e) {
-            console.error("Invalid user data in localStorage");
+            console.error("Invalid user data in storage");
         }
     }
 
     // Check Redux state (just logged in)
-    if (token && user && user.role) {
-      const timer = setTimeout(() => {
+    if (token && user?.role) {
         const role = user.role;
         if (role === "student") {
-          router.push("/Student"); // Changed from /StudentHome
+          router.replace("/Student");
         } else if (role === "mentor") {
-          router.push("/mentorHome");
+          router.replace("/mentorHome");
         } else if (role === "admin") {
-          router.push("/Admin");
+          router.replace("/Admin");
         } else {
-          router.push("/registerForm");
+          router.replace("/registerForm");
         }
-      }, 100);
-      return () => clearTimeout(timer);
     }
   }, [user, token, router]);
 

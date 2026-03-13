@@ -11,10 +11,11 @@ export function middleware(request: NextRequest) {
     const studentRoutes = [
         "/StudentHome",
         "/student",
+        "/Student",
         "/subscription",
         "/choose-mentor",
         "/mentor-pending",
-        "/Studentprofile"
+        "/StudentProfile"
     ];
     const mentorRoutes = ["/mentorHome", "/mentor"];
     const adminRoutes = ["/admin"];

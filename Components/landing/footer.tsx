@@ -46,8 +46,18 @@ const Footer = () => {
             </ul>
           </div>
         </div>
-        <div className="border-t border-gray-800 mt-12 pt-8 text-center">
+        <div className="border-t border-gray-800 mt-12 pt-8 text-center space-y-2">
           <p className="text-gray-400">© 2025 SkillMentroX. All rights reserved based on your learning worldwide.</p>
+          <p className="text-gray-500 text-sm">
+            Developed by{" "}
+            <Link 
+              href="https://faisal-faizypk.vercel.app/" 
+              target="_blank" 
+              className="text-[#1887A1] hover:underline"
+            >
+              Mohammed Faisal
+            </Link>
+          </p>
         </div>
       </div>
     </footer>

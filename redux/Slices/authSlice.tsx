@@ -99,6 +99,10 @@ export const loginUser = createAsyncThunk(
             localStorage.setItem("userRole", userData.role || '');
             localStorage.setItem("authToken", res.data.token);
 
+            // Set cookies for middleware
+            document.cookie = `token=${res.data.token}; path=/; max-age=86400; sameSite=strict`;
+            document.cookie = `role=${userData.role}; path=/; max-age=86400; sameSite=strict`;
+
             console.log("Login successful - User:", userData.firstName, "Role:", userData.role);
 
             return authData;
@@ -171,6 +175,10 @@ const authSlice = createSlice({
             localStorage.setItem("userName", userData.firstName + (userData.lastName ? ` ${userData.lastName}` : ''));
             localStorage.setItem("userRole", userData.role || '');
             localStorage.setItem("authToken", action.payload.token);
+
+            // Set cookies for middleware
+            document.cookie = `token=${action.payload.token}; path=/; max-age=86400; sameSite=strict`;
+            document.cookie = `role=${userData.role}; path=/; max-age=86400; sameSite=strict`;
         },
         loadUserFromStorage: (state) => {
             const stored = localStorage.getItem("auth");
@@ -250,6 +258,10 @@ const authSlice = createSlice({
                     localStorage.setItem("userName", fullName);
                     localStorage.setItem("userRole", action.payload.user.role || '');
                     localStorage.setItem("authToken", action.payload.token);
+
+                    // Set cookies for middleware
+                    document.cookie = `token=${action.payload.token}; path=/; max-age=86400; sameSite=strict`;
+                    document.cookie = `role=${action.payload.user.role}; path=/; max-age=86400; sameSite=strict`;
 
                     console.log("Auth state updated - User:", action.payload.user.firstName, "Role:", action.payload.user.role);
                 }

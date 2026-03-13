@@ -7,11 +7,11 @@ import type { Metadata, Viewport } from "next";
 const outfit = Outfit({
   variable: "--font-outfit",
   subsets: ["latin"],
-  display: "swap", // Better performance for SEO
+  display: "swap",
 });
 
 export const viewport: Viewport = {
-  themeColor: "#4F46E5", // Elegant indigo brand color
+  themeColor: "#4F46E5",
   width: "device-width",
   initialScale: 1,
   maximumScale: 5,
@@ -26,10 +26,12 @@ export const metadata: Metadata = {
   description:
     "Empower your learning journey with SkillMentorX. A modern AI-driven mentorship platform offering real-time guidance, student dashboards, and expert human mentorship.",
   applicationName: "SkillMentorX",
-  authors: [{ name: "SkillMentorX Team" }],
+  authors: [{ name: "Mohammed Faisal", url: "https://faisal-faizypk.vercel.app/" }],
   generator: "Next.js",
   keywords: [
     "SkillMentorX",
+    "Mohammed Faisal",
+    "SkillMentorX Founder",
     "AI Mentorship",
     "Personalized Learning",
     "Student Success Dashboard",
@@ -39,7 +41,7 @@ export const metadata: Metadata = {
     "Online Education 2.0",
   ],
   referrer: "origin-when-cross-origin",
-  creator: "SkillMentorX",
+  creator: "Mohammed Faisal",
   publisher: "SkillMentorX",
   formatDetection: {
     email: false,
@@ -112,6 +114,7 @@ export default function RootLayout({
     sameAs: [
       "https://twitter.com/skillmentorx",
       "https://github.com/skillmentorx",
+      "https://faisal-faizypk.vercel.app/",
     ],
   };
 

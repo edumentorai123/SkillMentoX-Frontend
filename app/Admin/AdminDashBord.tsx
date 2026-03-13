@@ -32,7 +32,7 @@ const AdminDashboard = () => {
     { name: "Users", icon: <Users size={18} /> },
     { name: "Mentors", icon: <UserCheck size={18} /> },
     { name: "Requests", icon: <FileText size={18} /> },
-    { name: "add coursed", icon: <BookOpen size={18} /> },
+    { name: "Add Courses", icon: <BookOpen size={18} /> },
   ];
 
   const statsCards = [
@@ -43,7 +43,7 @@ const AdminDashboard = () => {
       changeType: "positive",
       icon: <Users size={24} />,
     },
-     {
+    {
       title: "Total Mentors",
       value: "24",
       change: "+5",
@@ -119,8 +119,6 @@ const AdminDashboard = () => {
 
   return (
     <div className="flex h-screen bg-gray-50">
-   
-
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Header */}
@@ -134,7 +132,7 @@ const AdminDashboard = () => {
                 size={20}
                 className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
               />
-              
+
               <input
                 type="text"
                 placeholder="Search users, Mentors or reports"
@@ -296,6 +294,22 @@ const AdminDashboard = () => {
               </div>
             </div>
           </div>
+          <div className="mt-8 text-center border-t border-gray-200 pt-8">
+            <p className="text-gray-500 text-sm">
+              © 2025 SkillMentorX Admin Hub. All rights reserved.
+            </p>
+            <p className="text-gray-400 text-xs mt-1">
+              Built by{" "}
+              <a
+                href="https://faisal-faizypk.vercel.app/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-teal-600 hover:underline"
+              >
+                Mohammed Faisal
+              </a>
+            </p>
+          </div>
         </div>
       </div>
     </div>
@@ -303,6 +317,3 @@ const AdminDashboard = () => {
 };
 
 export default AdminDashboard;
-
-
-

@@ -7,7 +7,7 @@ export default function SidebarWrapper() {
 
     const sidebarRoutes = [
         "/Student",
-        "/Student/DashBord",
+        "/Student/Dashboard",
         "/Student/MyDouts",
         "/Student/Quiezz",
         "/Student/Course",
