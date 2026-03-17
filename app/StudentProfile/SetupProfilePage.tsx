@@ -71,12 +71,25 @@ const SetupProfilePage: React.FC = () => {
 
   useEffect(() => {
     const initializeComponent = async () => {
-      const userId = auth.user?.id;
       const token = localStorage.getItem("token") || localStorage.getItem("accessToken") || localStorage.getItem("authToken");
+      let userId = auth.user?.id;
 
-      if (!userId || !token) {
-        console.log("Missing userId or token, redirecting to login");
-        router.push("/loginForm");
+      // If auth.user is not in Redux, try to get it from localStorage
+      if (!userId) {
+        const storedAuth = localStorage.getItem("auth");
+        if (storedAuth) {
+          try {
+            const parsed = JSON.parse(storedAuth);
+            userId = parsed.user?.id || parsed.user?._id;
+          } catch (e) {
+            console.error("Error parsing stored auth", e);
+          }
+        }
+      }
+
+      if (!token || !userId) {
+        console.log("No session found, redirecting to login");
+        router.replace("/loginForm");
         setIsInitializing(false);
         return;
       }
@@ -115,10 +128,10 @@ const SetupProfilePage: React.FC = () => {
           // Redirect based on subscription status
           if (userData.isSubscribed) {
             console.log("User is subscribed, redirecting to /Student");
-            router.push("/Student");
+            router.replace("/Student");
           } else {
             console.log("User is not subscribed, redirecting to /subscription");
-            router.push("/subscription");
+            router.replace("/subscription");
           }
         }
       } catch (error) {
@@ -127,7 +140,7 @@ const SetupProfilePage: React.FC = () => {
           localStorage.removeItem("token");
           localStorage.removeItem("auth");
           localStorage.removeItem("user");
-          router.push("/loginForm");
+          router.replace("/loginForm");
         } else if (axios.isAxiosError(error) && error.response?.status === 404) {
           console.log("Profile not found - user needs to create profile");
         } else {
@@ -215,7 +228,7 @@ const SetupProfilePage: React.FC = () => {
           position: "top-right",
           autoClose: 3000,
         });
-        router.push("/loginForm");
+        router.replace("/loginForm");
         return;
       }
 
@@ -246,7 +259,7 @@ const SetupProfilePage: React.FC = () => {
             position: "top-right",
             autoClose: 3000,
           });
-          router.push("/subscription");
+          router.replace("/subscription");
         } else {
           throw new Error("Profile verification failed");
         }
@@ -256,7 +269,7 @@ const SetupProfilePage: React.FC = () => {
           localStorage.removeItem("token");
           localStorage.removeItem("auth");
           localStorage.removeItem("user");
-          router.push("/loginForm");
+          router.replace("/loginForm");
         } else {
           console.error("Failed to verify profile after submission:", verifyError);
           toast.error("Profile created but verification failed. Please try again.", {

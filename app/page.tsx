@@ -19,19 +19,26 @@ const Home = () => {
 
   useEffect(() => {
     // Check for existing session
-    const storedUser = localStorage.getItem("user");
-    const storedToken = localStorage.getItem("token");
+    const storedAuth = localStorage.getItem("auth");
+    const storedToken = localStorage.getItem("token") || localStorage.getItem("accessToken");
     
-    if (storedUser && storedToken) {
+    if (storedAuth && storedToken) {
       try {
-        const userObj = JSON.parse(storedUser);
-        if (userObj.role === "student") {
-          router.push("/Student");
-          return; // Stop AOS init if redirecting
+        const authObj = JSON.parse(storedAuth);
+        const role = authObj.user?.role || localStorage.getItem("userRole");
+        
+        if (role === "student") {
+          router.replace("/Student");
+          return;
+        } else if (role === "mentor") {
+          router.replace("/mentorHome");
+          return;
+        } else if (role === "admin") {
+          router.replace("/Admin");
+          return;
         }
-        // Add other roles if needed
       } catch (e) {
-        console.error("Error parsing user data", e);
+        console.error("Error parsing auth data", e);
       }
     }
 

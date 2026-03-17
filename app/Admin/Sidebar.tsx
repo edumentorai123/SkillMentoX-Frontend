@@ -13,7 +13,7 @@ function Sidebar() {
   const pathname = usePathname();
 
   const getActiveMenu = (currentPath: string) => {
-    if (currentPath === "/Admin" || currentPath === "/Admin/DashBord") {
+    if (currentPath === "/Admin") {
       return "DashBoard";
     } else if (currentPath === "/Admin/Users") {
       return "Users";

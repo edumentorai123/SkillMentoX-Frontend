@@ -19,6 +19,7 @@ function Sidebar() {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
+  
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
@@ -50,7 +51,7 @@ function Sidebar() {
 
   const getActiveMenu = useMemo(() => {
     return (currentPath: string) => {
-      if (currentPath === "/Student" || currentPath === "/Student/DashBord") {
+      if (currentPath === "/Student" || currentPath === "/Student/Dashboard") {
         return "DashBoard";
       } else if (currentPath === "/Student/MyDouts") {
         return "My Doubts";
@@ -158,7 +159,7 @@ function Sidebar() {
                   className="transform transition-all duration-200"
                   style={{ animationDelay: `${index * 50}ms` }}
                 >
-                  <Link
+                    <Link
                     href={item.href}
                     className={`
                       group relative w-full px-4 py-3 rounded-xl font-medium 
@@ -176,7 +177,6 @@ function Sidebar() {
                           : "text-[#0D4C5B] hover:bg-gradient-to-r hover:from-[#1887A1]/10 hover:to-[#0D4C5B]/10 hover:text-[#0D4C5B] hover:shadow-md"
                       }
                     `}
-                    prefetch={false}
                     replace={false}
                   >
                     <div className="relative">

@@ -48,10 +48,8 @@ export default function AuthRedirect({ children }: AuthRedirectProps) {
     const profileCheckExecuted = useRef(false);
 
     useEffect(() => {
-        const timer = setTimeout(() => {
-            setIsInitialized(true);
-        }, 100);
-        return () => clearTimeout(timer);
+        // Immediate initialization
+        setIsInitialized(true);
     }, []);
 
     useEffect(() => {
@@ -81,170 +79,43 @@ export default function AuthRedirect({ children }: AuthRedirectProps) {
 
     const getTargetRoute = useCallback(async () => {
         const token = localStorage.getItem("accessToken") || localStorage.getItem("token") || localStorage.getItem("authToken");
-        const userId = user?.id;
-        console.log("getTargetRoute called - userId:", userId, "token:", token ? "present" : "missing", "role:", user?.role, "hasProfile:", hasProfile);
+        
+        // If we have token/cookies, we largely trust the server middleware for the initial redirect.
+        // This client-side guard is mainly to catch session expiry or missing local data.
+        
+        let localUser = user;
+        if (!localUser) {
+            const stored = localStorage.getItem("auth");
+            if (stored) {
+                try {
+                    const parsed = JSON.parse(stored);
+                    localUser = parsed.user;
+                } catch (e) {
+                    console.error("Error parsing stored auth");
+                }
+            }
+        }
 
-        if (userId && !isValidObjectId(userId)) {
-            console.log(" Corrupted userId detected:", userId);
-            clearCorruptedAuth();
+        if (!token || !localUser?.role) {
+            console.log("No valid session found in AuthRedirect, sending to login");
             return "/loginForm";
         }
 
-        if (!userId || !token || !user?.role) {
-            console.log("Missing userId, token, or role, redirecting to login");
-            return "/loginForm";
-        }
+        const role = localUser.role;
 
-        if (user.role === "student" && pathname === "/StudentHome") {
-            console.log("Already on StudentHome, no redirect needed");
-            return pathname;
-        }
-        if (user.role === "mentor" && pathname === "/mentorHome") {
-            console.log("Already on mentorHome, no redirect needed");
-            return pathname;
-        }
-        if (user.role === "student" && pathname === "/StudentProfile") {
-            console.log("Already on StudentProfile, no redirect needed");
-            return pathname;
-        }
-        if (user.role === "mentor" && pathname === "/mentorProfile") {
-            console.log("Already on mentorProfile, no redirect needed");
-            return pathname;
-        }
-
-        if (user.role === "student") {
-            const hasVisitedHome = sessionStorage.getItem("visitedHome") === "true";
-
-            // If already on a valid student page, don't redirect
-            if (pathname === "/StudentHome" || pathname === "/Student") {
-                console.log("Already on StudentHome/Student, no redirect needed");
-                return pathname;
+        // Route protection based on roles
+        if (role === "student") {
+            if (pathname.startsWith("/mentorHome") || pathname.startsWith("/admin")) {
+                return "/Student";
             }
-            if (pathname === "/subscription") {
-                console.log("On subscription page, allowing user to complete subscription flow");
-                return pathname;
-            }
-
-
-
-            if (!hasVisitedHome) {
-                console.log("Student has not visited StudentHome, redirecting");
-                return "/StudentHome";
-            }
-
-            if (hasProfile === true) {
-                console.log("Student has profile, redirecting to StudentHome");
-                return "/StudentHome";
-            }
-
-            if (hasProfile === false) {
-                console.log("Student has no profile, redirecting to StudentProfile");
-                return "/StudentProfile";
-            }
-
-            // Fallback: if hasProfile is still undefined after all checks, do profile check
-            if (profileCheckExecuted.current) {
-                console.log("Profile check already executed, redirecting to StudentProfile");
-                return "/StudentProfile";
-            }
-
-            profileCheckExecuted.current = true;
-            const cacheKey = `student_${userId}`;
-            const now = Date.now();
-
-            try {
-                const cached = profileCheckCache.current.get(cacheKey);
-                if (cached && now - cached.timestamp < CACHE_DURATION) {
-                    console.log("Using cached profile check result:", cached.result);
-                    const isProfileFound = cached.result === "/StudentHome";
-                    dispatch({ type: "auth/setHasProfile", payload: isProfileFound });
-                    return cached.result;
-                }
-
-                console.log("Fetching profile for userId:", userId);
-                const res = await axiosClient.get(`${API_URL}/api/students/getprofile/${userId}`);
-
-                if (res.data && res.data.data) {
-                    console.log("Profile found, updating localStorage");
-                    profileCheckCache.current.set(cacheKey, { result: "/StudentHome", timestamp: now });
-                    dispatch({ type: "auth/setHasProfile", payload: true });
-
-                    // Update localStorage with profile data
-                    const authData = JSON.parse(localStorage.getItem("auth") || "{}");
-                    authData.hasProfile = true;
-                    localStorage.setItem("auth", JSON.stringify(authData));
-
-                    return "/StudentHome";
-                } else {
-                    throw new Error("No profile data returned");
-                }
-            } catch (err) {
-                if (axios.isAxiosError(err) && err.response?.status === 404) {
-                    console.log("Student profile not found, redirecting to StudentProfile");
-                    profileCheckCache.current.set(cacheKey, { result: "/StudentProfile", timestamp: now });
-                    dispatch({ type: "auth/setHasProfile", payload: false });
-
-                    // Update localStorage
-                    const authData = JSON.parse(localStorage.getItem("auth") || "{}");
-                    authData.hasProfile = false;
-                    localStorage.setItem("auth", JSON.stringify(authData));
-
-                    return "/StudentProfile";
-                }
-                console.error("Profile check error for student:", err);
-                return "/loginForm";
-            }
-        }
-
-        if (user.role === "mentor") {
-            // If already on a valid mentor page, don't redirect
-            if (pathname === "/mentorHome") {
-                console.log("Already on mentorHome, no redirect needed");
-                return pathname;
-            }
-            if (pathname === "/mentorProfile") {
-                console.log("On mentorProfile page, allowing user to complete profile setup");
-                return pathname;
-            }
-
-            if (hasProfile) {
-                console.log("Mentor has profile, redirecting to mentorHome");
+        } else if (role === "mentor") {
+            if (pathname.startsWith("/Student") || pathname.startsWith("/StudentHome") || pathname.startsWith("/admin")) {
                 return "/mentorHome";
             }
-            const cacheKey = `mentor_${userId}`;
-            const now = Date.now();
-            try {
-                const cached = profileCheckCache.current.get(cacheKey);
-                if (cached && now - cached.timestamp < CACHE_DURATION) {
-                    console.log("Using cached profile check result:", cached.result);
-                    return cached.result;
-                }
-                const res = await axiosClient.get(`${API_URL}/api/mentor/getprofile/${userId}`);
-                if (res.data) {
-                    profileCheckCache.current.set(cacheKey, { result: "/mentorHome", timestamp: now });
-                    dispatch({ type: "auth/setHasProfile", payload: true });
-                    return "/mentorHome";
-                }
-                throw new Error("No profile data returned");
-            } catch (err) {
-                if (axios.isAxiosError(err) && err.response?.status === 404) {
-                    console.log("Mentor profile not found, redirecting to mentorProfile");
-                    profileCheckCache.current.set(cacheKey, { result: "/mentorProfile", timestamp: now });
-                    return "/mentorProfile";
-                }
-                console.error("Profile check error for mentor:", err);
-                return "/loginForm";
-            }
         }
 
-        if (user.role === "admin") {
-            console.log("Admin user, redirecting to admin dashboard");
-            return "/admin";
-        }
-
-        console.log("Unknown role, redirecting to login");
-        return "/loginForm";
-    }, [user, API_URL, hasProfile, clearCorruptedAuth, pathname, dispatch]);
+        return pathname; // Default stay on current path
+    }, [user, pathname]);
 
     useEffect(() => {
         if (!isInitialized || loading || isRedirecting || redirectExecuted.current) {

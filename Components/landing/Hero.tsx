@@ -108,7 +108,10 @@ const Hero: React.FC<HeroProps> = ({ _heroRef, _rightSideRef }) => {
       ref={_heroRef}
       className="relative overflow-hidden bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen flex items-center scroll-animation"
     >
-      <div data-aos="fade-up" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 mt-0 pt-0">
+      <div
+        data-aos="fade-up"
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 mt-0 pt-0"
+      >
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           {/* Left Side */}
           <div className="space-y-8">
@@ -121,9 +124,10 @@ const Hero: React.FC<HeroProps> = ({ _heroRef, _rightSideRef }) => {
                 Mentorship
               </h1>
               <p className="text-xl text-gray-600 leading-relaxed max-w-xl">
-                Combine the power of artificial intelligence with human expertise.
-                Get personalized learning paths, instant AI tutoring, and connect
-                with experienced mentors to accelerate your learning journey.
+                Combine the power of artificial intelligence with human
+                expertise. Get personalized learning paths, instant AI tutoring,
+                and connect with experienced mentors to accelerate your learning
+                journey.
               </p>
             </div>
 
@@ -156,24 +160,26 @@ const Hero: React.FC<HeroProps> = ({ _heroRef, _rightSideRef }) => {
                 {slides.map((slide, index) => (
                   <div
                     key={slide.id}
-                    className={`absolute inset-0 transition-all duration-700 ease-in-out ${index === activeIndex
+                    className={`absolute inset-0 transition-all duration-700 ease-in-out ${
+                      index === activeIndex
                         ? "opacity-100 translate-x-0"
                         : index < activeIndex
                           ? "opacity-0 -translate-x-full"
                           : "opacity-0 translate-x-full"
-                      }`}
+                    }`}
                   >
                     <div className="h-full p-6 flex flex-col">
                       {/* Header - Fixed height for consistency */}
                       <div className="flex items-center justify-between mb-4 h-8">
                         <div className="flex items-center space-x-3">
                           <div
-                            className={`w-3 h-3 rounded-full ${slide.status === "online"
+                            className={`w-3 h-3 rounded-full ${
+                              slide.status === "online"
                                 ? "bg-green-500"
                                 : slide.status === "available"
                                   ? "bg-blue-500"
                                   : "bg-gray-400"
-                              } animate-pulse`}
+                            } animate-pulse`}
                           ></div>
                           <span className="text-sm font-medium text-gray-600">
                             {slide.status === "online"
@@ -194,7 +200,10 @@ const Hero: React.FC<HeroProps> = ({ _heroRef, _rightSideRef }) => {
                         <div
                           className={`w-20 h-20 bg-gradient-to-br ${slide.color} rounded-3xl flex items-center justify-center shadow-lg transform hover:scale-110 transition-transform duration-300`}
                         >
-                          <slide.icon className="w-10 h-10 text-white" />
+                          <slide.icon
+                            className="w-10 h-10 text-white"
+                            aria-hidden="true"
+                          />
                         </div>
 
                         {/* Title and Description */}
@@ -229,18 +238,24 @@ const Hero: React.FC<HeroProps> = ({ _heroRef, _rightSideRef }) => {
                               <div className="flex items-center justify-center space-x-4 pt-2">
                                 <div className="flex items-center space-x-1">
                                   <Clock className="w-3 h-3 text-gray-400" />
-                                  <span className="text-xs text-gray-500">2h left</span>
+                                  <span className="text-xs text-gray-500">
+                                    2h left
+                                  </span>
                                 </div>
                                 <div className="flex items-center space-x-1">
                                   <TrendingUp className="w-3 h-3 text-green-500" />
-                                  <span className="text-xs text-green-600">On track</span>
+                                  <span className="text-xs text-green-600">
+                                    On track
+                                  </span>
                                 </div>
                               </div>
                             </div>
                           ) : slide.achievements !== undefined ? (
                             <div className="text-center space-y-4">
                               <div className="flex justify-center space-x-2">
-                                <div className={`w-12 h-12 bg-gradient-to-br ${slide.color} rounded-xl flex items-center justify-center transform hover:scale-110 transition-transform duration-200`}>
+                                <div
+                                  className={`w-12 h-12 bg-gradient-to-br ${slide.color} rounded-xl flex items-center justify-center transform hover:scale-110 transition-transform duration-200`}
+                                >
                                   <GraduationCap className="w-6 h-6 text-white" />
                                 </div>
                                 <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl flex items-center justify-center transform hover:scale-110 transition-transform duration-200">
@@ -256,17 +271,19 @@ const Hero: React.FC<HeroProps> = ({ _heroRef, _rightSideRef }) => {
                             </div>
                           ) : (
                             <div className="space-y-2">
-                              {slide.features.slice(0, 3).map((feature, idx) => (
-                                <div
-                                  key={idx}
-                                  className="flex items-center space-x-2 bg-gray-50 rounded-lg p-2"
-                                >
-                                  <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
-                                  <span className="text-xs text-gray-700 font-medium">
-                                    {feature}
-                                  </span>
-                                </div>
-                              ))}
+                              {slide.features
+                                .slice(0, 3)
+                                .map((feature, idx) => (
+                                  <div
+                                    key={idx}
+                                    className="flex items-center space-x-2 bg-gray-50 rounded-lg p-2"
+                                  >
+                                    <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                                    <span className="text-xs text-gray-700 font-medium">
+                                      {feature}
+                                    </span>
+                                  </div>
+                                ))}
                             </div>
                           )}
                         </div>
@@ -276,11 +293,15 @@ const Hero: React.FC<HeroProps> = ({ _heroRef, _rightSideRef }) => {
                       <div className="absolute bottom-13 left-6 right-6 flex items-center justify-between pt-4 border-t border-gray-100">
                         <div className="flex items-center space-x-2">
                           <MessageCircle className="w-3 h-3 text-gray-400" />
-                          <span className="text-xs text-gray-500">Interactive</span>
+                          <span className="text-xs text-gray-500">
+                            Interactive
+                          </span>
                         </div>
                         <div className="flex items-center space-x-2">
                           <Calendar className="w-3 h-3 text-gray-400" />
-                          <span className="text-xs text-gray-500">Updated daily</span>
+                          <span className="text-xs text-gray-500">
+                            Updated daily
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -293,19 +314,30 @@ const Hero: React.FC<HeroProps> = ({ _heroRef, _rightSideRef }) => {
                 <button
                   onClick={handlePrev}
                   className="p-2 bg-white/95 backdrop-blur-sm rounded-full hover:bg-white transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-110 border border-gray-200 cursor-pointer"
+                  aria-label="Previous slide"
                 >
-                  <ChevronLeft className="w-4 h-4 text-gray-700" />
+                  <ChevronLeft
+                    className="w-4 h-4 text-gray-700"
+                    aria-hidden="true"
+                  />
                 </button>
 
-                <div className="flex space-x-1 bg-white/95 backdrop-blur-sm rounded-full px-2 py-1 shadow-lg border border-gray-200">
+                <div
+                  className="flex space-x-1 bg-white/95 backdrop-blur-sm rounded-full px-2 py-1 shadow-lg border border-gray-200"
+                  role="tablist"
+                >
                   {slides.map((_, index) => (
                     <button
                       key={index}
                       onClick={() => handleDotClick(index)}
-                      className={`h-2 rounded-full transition-all duration-300 transform hover:scale-125 ${activeIndex === index
+                      className={`h-2 rounded-full transition-all duration-300 transform hover:scale-125 ${
+                        activeIndex === index
                           ? "bg-blue-600 w-6"
                           : "bg-gray-300 w-2 hover:bg-gray-400 cursor-pointer"
-                        }`}
+                      }`}
+                      aria-label={`Go to slide ${index + 1}`}
+                      role="tab"
+                      aria-selected={activeIndex === index}
                     />
                   ))}
                 </div>
@@ -313,8 +345,12 @@ const Hero: React.FC<HeroProps> = ({ _heroRef, _rightSideRef }) => {
                 <button
                   onClick={handleNext}
                   className="p-2 bg-white/95 backdrop-blur-sm rounded-full cursor-pointer hover:bg-white transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-110 border border-gray-200"
+                  aria-label="Next slide"
                 >
-                  <ChevronRight className="w-4 h-4 text-gray-700 " />
+                  <ChevronRight
+                    className="w-4 h-4 text-gray-700 "
+                    aria-hidden="true"
+                  />
                 </button>
               </div>
 

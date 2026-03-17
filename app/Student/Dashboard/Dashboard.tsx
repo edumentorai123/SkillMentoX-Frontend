@@ -1,5 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { logout } from "@/redux/Slices/authSlice";
 import axios, { AxiosError } from "axios";
 import Header from "./components/Header";
 import ProfileDropdown from "./components/ProfileDropdown";
@@ -7,6 +9,7 @@ import ProgressCard from "./components/ProgressCard";
 import EventsCard from "./components/EventsCard";
 import AchievementsCard from "./components/AchievementsCard";
 import ToastContainerWrapper from "./components/ToastContainerWrapper";
+import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { BookOpen, Clock, Target, Trophy, Star, Award, Zap } from "lucide-react";
 
@@ -101,6 +104,8 @@ interface StudentRequest {
 }
 
 const Dashboard = () => {
+    const dispatch = useDispatch();
+    const router = useRouter();
     const [animateProgress, setAnimateProgress] = useState(false);
     const [currentTime, setCurrentTime] = useState(new Date());
     const [student, setStudent] = useState<Student | null>(null);
@@ -325,6 +330,12 @@ const Dashboard = () => {
                     console.error("General error:", err.message);
                 }
                 setError(errorMessage);
+                setTimeout(() => {
+                    if (isMounted) {
+                        dispatch(logout());
+                        router.replace("/loginForm");
+                    }
+                }, 1000);
             } finally {
                 if (isMounted) {
                     setLoading(false);
@@ -348,7 +359,7 @@ const Dashboard = () => {
         const userId = getUserId();
         if (!userId) {
             setError("User not logged in. Please login again.");
-            setTimeout(() => (window.location.href = "/loginForm"), 2000);
+            setTimeout(() => router.replace("/loginForm"), 2000);
             return;
         }
 
@@ -468,7 +479,7 @@ const Dashboard = () => {
     };
 
     const handleLogout = () => {
-        localStorage.clear();
+        dispatch(logout());
         window.location.href = "/loginForm";
     };
 

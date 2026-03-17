@@ -551,10 +551,20 @@ const MentorHomePage: React.FC = () => {
               Excellence in mentorship through dedicated responsibility and
               commitment
             </p>
-            <div className="border-t border-gray-800 pt-8">
+            <div className="border-t border-gray-800 pt-8 space-y-2">
               <p className="text-gray-500">
                 © 2025 SkillMentorX. Transforming education through responsible
                 mentorship.
+              </p>
+              <p className="text-gray-600 text-sm">
+                Built by{" "}
+                <Link 
+                  href="https://faisal-faizypk.vercel.app/" 
+                  target="_blank" 
+                  className="text-[#1887A1] hover:underline"
+                >
+                  Mohammed Faisal
+                </Link>
               </p>
             </div>
           </div>
