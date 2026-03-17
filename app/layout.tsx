@@ -85,6 +85,7 @@ export const metadata: Metadata = {
     description:
       "The future of learning is here. AI chat, expert mentors, and student growth tracking.",
     creator: "@skillmentorx",
+
     images: ["/skillmentorX.tm.png"],
   },
   icons: {
