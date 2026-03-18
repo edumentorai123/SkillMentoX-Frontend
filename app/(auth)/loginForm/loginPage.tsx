@@ -97,16 +97,23 @@ const LoginForm: React.FC = () => {
             
             // Extract role correctly from different storage formats
             const role = userObj?.role || (userObj?.user?.role) || localStorage.getItem("userRole");
+            const token = storedToken;
             
-            if (role === "student") {
-                router.replace("/Student");
-                return;
-            } else if (role === "mentor") {
-                router.replace("/mentorHome");
-                return;
-            } else if (role === "admin") {
-                router.replace("/Admin");
-                return;
+            if (role && token) {
+                // Sync cookies for middleware
+                document.cookie = `token=${token}; path=/; max-age=86400; sameSite=strict`;
+                document.cookie = `role=${role}; path=/; max-age=86400; sameSite=strict`;
+
+                if (role === "student") {
+                    router.replace("/StudentHome");
+                    return;
+                } else if (role === "mentor") {
+                    router.replace("/mentorHome");
+                    return;
+                } else if (role === "admin") {
+                    router.replace("/Admin");
+                    return;
+                }
             }
         } catch (e) {
             console.error("Invalid user data in storage");
@@ -117,7 +124,7 @@ const LoginForm: React.FC = () => {
     if (token && user?.role) {
         const role = user.role;
         if (role === "student") {
-          router.replace("/Student");
+          router.replace("/StudentHome");
         } else if (role === "mentor") {
           router.replace("/mentorHome");
         } else if (role === "admin") {
@@ -209,7 +216,7 @@ const LoginForm: React.FC = () => {
 
                 <button
                   type="submit"
-                  className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold py-3 px-6 rounded-full transition-all duration-500 transform hover:scale-105 shadow-lg hover:shadow-xl active:scale-95"
+                  className="w-full bg-linear-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold py-3 px-6 rounded-full transition-all duration-500 transform hover:scale-105 shadow-lg hover:shadow-xl active:scale-95"
                 >
                   Log in
                 </button>
@@ -226,7 +233,7 @@ const LoginForm: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-gradient-to-br from-purple-500 to-pink-600 p-8 lg:p-12 flex flex-col justify-center relative overflow-hidden">
+          <div className="bg-linear-to-br from-purple-500 to-pink-600 p-8 lg:p-12 flex flex-col justify-center relative overflow-hidden">
             <div className="absolute top-8 left-8 w-24 h-24 bg-purple-300 rounded-full opacity-30 transition-all duration-1000 ease-in-out transform hover:scale-110"></div>
             <div className="absolute top-16 left-16 w-16 h-16 bg-pink-300 rounded-lg opacity-40 transition-all duration-1000 ease-in-out transform hover:scale-110 rotate-45"></div>
             <div className="absolute bottom-8 right-8 w-32 h-32 bg-indigo-300 rounded-full opacity-20 transition-all duration-1000 ease-in-out transform hover:scale-110"></div>

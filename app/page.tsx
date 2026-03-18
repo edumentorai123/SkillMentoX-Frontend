@@ -28,7 +28,8 @@ const Home = () => {
         const role = authObj.user?.role || localStorage.getItem("userRole");
         
         if (role === "student") {
-          router.replace("/Student");
+          const isPremiumUser = authObj.isPremium === true || localStorage.getItem("isPremium") === "true";
+          router.replace(isPremiumUser ? "/Student" : "/StudentHome");
           return;
         } else if (role === "mentor") {
           router.replace("/mentorHome");

@@ -149,7 +149,7 @@ const AdminDashboard = () => {
             {statsCards.map((card, index) => (
               <div
                 key={index}
-                className="bg-gradient-to-br from-cyan-50 to-blue-50 rounded-xl p-6 border border-cyan-100"
+                className="bg-linear-to-br from-cyan-50 to-blue-50 rounded-xl p-6 border border-cyan-100"
               >
                 <div className="flex items-center justify-between mb-4">
                   <div className="text-gray-600">{card.icon}</div>
@@ -175,7 +175,7 @@ const AdminDashboard = () => {
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Weekly Chart */}
-            <div className="lg:col-span-2 bg-gradient-to-br from-cyan-50 to-blue-50 rounded-xl p-6 border border-cyan-100">
+            <div className="lg:col-span-2 bg-linear-to-br from-cyan-50 to-blue-50 rounded-xl p-6 border border-cyan-100">
               <h3 className="text-lg font-semibold text-gray-800 mb-6">
                 Weekly Activity
               </h3>
@@ -186,7 +186,7 @@ const AdminDashboard = () => {
                     className="flex flex-col items-center flex-1"
                   >
                     <div
-                      className="w-full bg-gradient-to-t from-blue-500 to-blue-400 rounded-t-md transition-all duration-500 hover:from-blue-600 hover:to-blue-500"
+                      className="w-full bg-linear-to-t from-blue-500 to-blue-400 rounded-t-md transition-all duration-500 hover:from-blue-600 hover:to-blue-500"
                       style={{
                         height: `${(data.value / maxValue) * 160}px`,
                         minHeight: "20px",
@@ -209,7 +209,7 @@ const AdminDashboard = () => {
             </div>
 
             {/* User Roles Distribution */}
-            <div className="bg-gradient-to-br from-cyan-50 to-blue-50 rounded-xl p-6 border border-cyan-100">
+            <div className="bg-linear-to-br from-cyan-50 to-blue-50 rounded-xl p-6 border border-cyan-100">
               <h3 className="text-lg font-semibold text-gray-800 mb-6">
                 User Roles Distribution
               </h3>
@@ -265,7 +265,7 @@ const AdminDashboard = () => {
 
           {/* Recent Activity */}
           <div className="mt-8">
-            <div className="bg-gradient-to-br from-cyan-50 to-blue-50 rounded-xl p-6 border border-cyan-100">
+            <div className="bg-linear-to-br from-cyan-50 to-blue-50 rounded-xl p-6 border border-cyan-100">
               <h3 className="text-lg font-semibold text-gray-800 mb-6">
                 Recent Activity
               </h3>
@@ -279,7 +279,7 @@ const AdminDashboard = () => {
                         : "bg-white/30"
                     }`}
                   >
-                    <div className="flex-shrink-0 mt-1">{activity.icon}</div>
+                    <div className="shrink-0 mt-1">{activity.icon}</div>
                     <div className="flex-1 min-w-0">
                       <h4 className="text-sm font-semibold text-gray-800 mb-1">
                         {activity.title}

@@ -37,10 +37,12 @@ export default function SuccessPage() {
                 if (!data.success) throw new Error(data.message || "Payment verification failed");
 
                 // Update subscription locally
-                const authData = JSON.parse(localStorage.getItem("auth") || "{}");
-                if (authData.user) {
-                    authData.user.isSubscribed = true;
+                const authDataString = localStorage.getItem("auth");
+                if (authDataString) {
+                    const authData = JSON.parse(authDataString);
+                    authData.isPremium = true;
                     localStorage.setItem("auth", JSON.stringify(authData));
+                    localStorage.setItem("isPremium", "true");
                 }
 
                 // Optional: call backend to create request with category/stack
@@ -78,7 +80,7 @@ export default function SuccessPage() {
 
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-r from-blue-100 to-white p-4">
+        <div className="flex flex-col items-center justify-center min-h-screen bg-linear-to-r from-blue-100 to-white p-4">
             {status === "loading" && (
                 <div className="flex flex-col items-center">
                     <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 mb-6"></div>

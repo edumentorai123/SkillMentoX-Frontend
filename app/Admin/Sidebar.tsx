@@ -61,7 +61,7 @@ function Sidebar() {
                         : "text-teal-700 hover:bg-teal-50 hover:text-teal-800"
                     }`}
                   >
-                    <IconComponent className="w-5 h-5 flex-shrink-0" />
+                    <IconComponent className="w-5 h-5 shrink-0" />
                     <span>{item.name}</span>
                   </button>
                 </Link>

@@ -39,9 +39,12 @@ const initialState: AuthState = {
 const loadInitialState = (): AuthState => {
     if (typeof window === "undefined") return initialState;
     try {
-        const stored = localStorage.getItem("auth");
-        if (stored) {
-            const parsed = JSON.parse(stored) as {
+        const storedAuth = localStorage.getItem("auth");
+        const storedUser = localStorage.getItem("user");
+        const storedToken = localStorage.getItem("token") || localStorage.getItem("accessToken") || localStorage.getItem("authToken");
+        
+        if (storedAuth) {
+            const parsed = JSON.parse(storedAuth) as {
                 token: string;
                 user: User;
                 hasProfile?: boolean;
@@ -54,6 +57,20 @@ const loadInitialState = (): AuthState => {
                 hasProfile: parsed.hasProfile || false,
                 isPremium: parsed.isPremium || false,
             };
+        } else if (storedUser && storedToken) {
+            // Fallback for separate keys
+            try {
+                const parsedUser = JSON.parse(storedUser);
+                return {
+                    ...initialState,
+                    user: parsedUser,
+                    token: storedToken,
+                    hasProfile: localStorage.getItem("hasProfile") === "true",
+                    isPremium: localStorage.getItem("isPremium") === "true",
+                };
+            } catch (e) {
+                console.error("Failed to parse stored user", e);
+            }
         }
     } catch (error) {
         console.error("Failed to load auth from localStorage:", error);
@@ -130,17 +147,20 @@ const authSlice = createSlice({
             state.mentorSelected = false;
             state.mentorAccepted = false;
 
+            localStorage.removeItem("auth");
+            localStorage.removeItem("user");
+            localStorage.removeItem("accessToken");
+            localStorage.removeItem("token");
+            localStorage.removeItem("userName");
+            localStorage.removeItem("userRole");
+            localStorage.removeItem("authToken");
+            localStorage.removeItem("userId");
+            localStorage.removeItem("hasProfile");
+            localStorage.removeItem("isPremium");
 
-        localStorage.removeItem("auth");
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("userName");
-        localStorage.removeItem("userRole");
-        localStorage.removeItem("authToken");
-        localStorage.removeItem("userId");
-
-        // Clear cookies on logout
-        document.cookie = "token=; Max-Age=0; path=/; sameSite=strict";
-        document.cookie = "role=; Max-Age=0; path=/; sameSite=strict";
+            // Clear cookies on logout
+            document.cookie = "token=; Max-Age=0; path=/; sameSite=strict";
+            document.cookie = "role=; Max-Age=0; path=/; sameSite=strict";
         },
         setCredentials: (
             state,

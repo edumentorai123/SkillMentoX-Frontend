@@ -7,17 +7,23 @@ import {
   BookOpen,
   Menu,
   X,
+  LogOut,
+  Settings as SettingsIcon,
 } from "lucide-react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { useMemo, useState, useEffect } from "react";
 import Image from "next/image";
+import { useDispatch } from "react-redux";
+import { logout } from "@/redux/Slices/authSlice";
 
 function Sidebar() {
   const pathname = usePathname();
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const dispatch = useDispatch();
+  const router = useRouter();
 
   
   useEffect(() => {
@@ -63,6 +69,8 @@ function Sidebar() {
         return "Course";
       } else if (currentPath === "/Student/ProgressHeader") {
         return "Progress";
+      } else if (currentPath === "/Student/Settings") {
+        return "Settings";
       }
       return "DashBoard";
     };
@@ -80,9 +88,15 @@ function Sidebar() {
       { name: "Chats", icon: MessageCircle, href: "/Student/Chat" },
       { name: "Quizzes", icon: FileQuestion, href: "/Student/Quiezz" },
       { name: "Course", icon: BookOpen, href: "/Student/Course" },
+      { name: "Settings", icon: SettingsIcon, href: "/Student/Settings" },
     ],
     []
   );
+
+  const handleLogout = () => {
+    dispatch(logout());
+    router.replace("/loginForm");
+  };
 
   const sidebarWidth = isCollapsed ? "w-20" : "w-64";
 
@@ -116,6 +130,7 @@ function Sidebar() {
           h-screen top-0 left-0 flex flex-col bg-white shadow-xl z-40
           transition-all duration-300 ease-in-out
           border-r border-gray-100
+          overflow-x-hidden
         `}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
@@ -147,7 +162,7 @@ function Sidebar() {
         </div>
 
 
-        <nav className="flex-1 p-4 overflow-y-auto">
+        <nav className="flex-1 p-4 overflow-y-auto overflow-x-hidden">
           <ul className="space-y-2">
             {menuItems.map((item, index) => {
               const IconComponent = item.icon;
@@ -173,8 +188,8 @@ function Sidebar() {
                       transform hover:scale-[1.02] active:scale-[0.98]
                       ${
                         isActive
-                          ? "bg-gradient-to-r from-[#1887A1] to-[#0D4C5B] text-white shadow-lg shadow-[#1887A1]/25"
-                          : "text-[#0D4C5B] hover:bg-gradient-to-r hover:from-[#1887A1]/10 hover:to-[#0D4C5B]/10 hover:text-[#0D4C5B] hover:shadow-md"
+                          ? "bg-linear-to-r from-[#1887A1] to-[#0D4C5B] text-white shadow-lg shadow-[#1887A1]/25"
+                          : "text-[#0D4C5B] hover:bg-linear-to-r hover:from-[#1887A1]/10 hover:to-[#0D4C5B]/10 hover:text-[#0D4C5B] hover:shadow-md"
                       }
                     `}
                     replace={false}
@@ -182,7 +197,7 @@ function Sidebar() {
                     <div className="relative">
                       <IconComponent
                         className={`
-                          w-5 h-5 flex-shrink-0 transition-all duration-300
+                          w-5 h-5 shrink-0 transition-all duration-300
                           ${
                             isActive
                               ? "drop-shadow-sm"
@@ -220,10 +235,41 @@ function Sidebar() {
             })}
           </ul>
         </nav>
+
+        {/* Logout Button */}
+        <div className="p-4 border-t border-gray-100">
+          <button
+            onClick={handleLogout}
+            className={`
+              group relative w-full px-4 py-3 rounded-xl font-medium 
+              transition-all duration-300 ease-out cursor-pointer
+              flex items-center text-red-600 hover:bg-red-50 hover:shadow-md
+              ${isCollapsed ? "justify-center px-2" : "justify-start space-x-3"}
+              transform hover:scale-[1.02] active:scale-[0.98]
+            `}
+          >
+            <div className="relative">
+              <LogOut className="w-5 h-5 shrink-0 transition-all duration-300 group-hover:scale-110" />
+            </div>
+
+            {!isCollapsed && (
+              <span className="transition-opacity duration-200 truncate">
+                Logout
+              </span>
+            )}
+
+            {isCollapsed && (
+              <div className="absolute left-full ml-2 px-3 py-1 bg-gray-900 text-white text-sm rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap z-50 shadow-lg">
+                Logout
+                <div className="absolute left-0 top-1/2 transform -translate-x-1 -translate-y-1/2 w-2 h-2 bg-gray-900 rotate-45" />
+              </div>
+            )}
+          </button>
+        </div>
       </div>
 
       <div
-        className={`hidden md:block ${sidebarWidth} flex-shrink-0 transition-all duration-300`}
+        className={`hidden md:block ${sidebarWidth} shrink-0 transition-all duration-300`}
       />
     </>
   );

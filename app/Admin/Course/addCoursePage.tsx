@@ -208,12 +208,8 @@ const AddCoursePage = () => {
 
   const handleSaveCourse = () => {
     if (!validateForm()) {
-      console.log("Validation failed:", errors);
       return;
     }
-    console.log("Course data:", courseData);
-    console.log("Stack data:", chooseStack);
-    console.log("Course saved successfully!");
   };
 
   const resetForm = () => {
@@ -242,7 +238,7 @@ const AddCoursePage = () => {
     <div className="min-h-screen bg-gray-100 flex">
       <div className="flex-1">
         {/* Header */}
-        <div className="bg-gradient-to-r from-teal-500 to-teal-600 px-8 py-6">
+        <div className="bg-linear-to-r from-teal-500 to-teal-600 px-8 py-6">
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-2xl font-bold text-white mb-1">

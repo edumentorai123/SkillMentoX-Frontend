@@ -54,17 +54,14 @@ const MentorsPage = () => {
     const fetchMentors = async () => {
       try {
         setIsLoading(true);
-        console.log("Fetching mentors from:", `${API_BASE_URL}/api/admin/getAllmentors`);
         const response = await axios.get(`${API_BASE_URL}/api/admin/getAllmentors`, {
           withCredentials: true,
         });
-        console.log("Mentors API Response:", response.data);
         if (!response.data.success || !Array.isArray(response.data.data)) {
           throw new Error("Invalid API response: Expected an array");
         }
         setMentors(response.data.data);
       } catch (error: any) {
-        console.error("Error fetching mentors:", error);
         toast.error(
           error.response?.status === 404
             ? "Mentors endpoint not found. Please check the server configuration."
@@ -376,7 +373,7 @@ const MentorsPage = () => {
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center">
-                        <div className="w-12 h-12 bg-gradient-to-br from-[#1887A1] to-[#0D4C5B] rounded-full flex items-center justify-center text-white font-semibold text-sm relative shadow-sm">
+                        <div className="w-12 h-12 bg-linear-to-br from-[#1887A1] to-[#0D4C5B] rounded-full flex items-center justify-center text-white font-semibold text-sm relative shadow-sm">
                           {mentor.avatar}
                           {mentor.verified && (
                             <div className="absolute -top-1 -right-1 w-5 h-5 bg-green-500 rounded-full flex items-center justify-center border-2 border-white">

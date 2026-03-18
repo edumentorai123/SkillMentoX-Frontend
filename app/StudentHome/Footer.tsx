@@ -151,7 +151,7 @@ const Footer = () => {
               target="_blank" 
               className="text-[#1887A1] hover:underline"
             >
-              Mohammed Faisal
+              SkillMentorX Team
             </Link>
           </p>
         </div>

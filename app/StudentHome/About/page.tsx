@@ -127,7 +127,7 @@ const AboutPage = () => {
     return (
         <div className="min-h-screen bg-white">
             {/* Hero Section */}
-            <section className="relative overflow-hidden bg-gradient-to-br from-[#1887A1] to-[#0D4C5B] text-white">
+            <section className="relative overflow-hidden bg-linear-to-br from-[#1887A1] to-[#0D4C5B] text-white ">
                 <div className="absolute inset-0 bg-black/10"></div>
 
                 {/* Background Decorations */}
@@ -148,7 +148,7 @@ const AboutPage = () => {
                                 variants={itemVariants}
                             >
                                 About{' '}
-                                <span className="bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
+                                <span className="bg-linear-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
                                     SkillMentorX
                                 </span>
                             </motion.h1>
@@ -423,7 +423,7 @@ const AboutPage = () => {
             </section>
 
             {/* Call to Action */}
-            <section className="py-20 px-6 lg:px-8 bg-gradient-to-r from-[#1887A1] to-[#0D4C5B]">
+            <section className="py-20 px-6 lg:px-8 bg-linear-to-r from-[#1887A1] to-[#0D4C5B]">
                 <motion.div
                     className="max-w-4xl mx-auto text-center"
                     initial={{ opacity: 0, y: 50 }}

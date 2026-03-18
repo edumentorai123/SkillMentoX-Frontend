@@ -1,13 +1,8 @@
 import React, { useState } from "react";
-import { Search, MoreVertical, User, X } from "lucide-react";
+import { Search, MoreVertical, User, X, ArrowLeft } from "lucide-react";
+import { useRouter } from "next/navigation";
 
-interface Chat {
-    id: number;
-    title: string;
-    subtitle: string;
-    avatar: string;
-    status: "online" | "away" | "offline" | "group";
-}
+import { Chat } from "../Chat";
 
 type ChatTab = "Ask AI" | "Mentor";
 
@@ -15,10 +10,11 @@ interface SidebarProps {
     chats: Chat[];
     activeTab: ChatTab;
     setActiveTab: (tab: ChatTab) => void;
-    selectedChat: number | null;
-    setSelectedChat: (id: number) => void;
+    selectedChat: number | string | null;
+    setSelectedChat: (id: number | string) => void;
     isLoading?: boolean;
     error: string | null;
+    onToggle?: () => void;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
@@ -29,9 +25,11 @@ const Sidebar: React.FC<SidebarProps> = ({
     setSelectedChat,
     isLoading = false,
     error,
+    onToggle,
 }) => {
     const [searchTerm, setSearchTerm] = useState<string>("");
     const [showSearch, setShowSearch] = useState<boolean>(false);
+    const router = useRouter();
     
     const filteredChats = chats.filter(
         (chat) =>
@@ -56,9 +54,27 @@ const Sidebar: React.FC<SidebarProps> = ({
 
     return (
         <div className="w-80 bg-gray-50 border-r border-gray-200 flex flex-col h-full">
-            <div className="p-4 border-b border-gray-200 flex-shrink-0">
+            <div className="p-4 border-b border-gray-200 shrink-0">
                 <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-lg font-semibold text-gray-800">Chats</h2>
+                    <div className="flex items-center gap-3">
+                        <button
+                            onClick={() => router.push("/Student")}
+                            className="p-1 hover:bg-gray-200 rounded transition-colors text-gray-500 hover:text-gray-700"
+                            aria-label="Back to Dashboard"
+                        >
+                            <ArrowLeft size={20} className="cursor-pointer" />
+                        </button>
+                        {onToggle && (
+                            <button
+                                onClick={onToggle}
+                                className="lg:hidden p-2 hover:bg-gray-100 rounded-full transition-all text-gray-500 hover:text-red-500 bg-gray-50 border border-gray-100 shadow-sm"
+                                aria-label="Close Sidebar"
+                            >
+                                <X size={20} />
+                            </button>
+                        )}
+                        <h2 className="text-lg font-semibold text-gray-800">Chats</h2>
+                    </div>
                     <div className="flex items-center gap-2">
                         <button
                             onClick={() => setShowSearch(!showSearch)}
@@ -133,7 +149,12 @@ const Sidebar: React.FC<SidebarProps> = ({
                 </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto">
+            <div className="flex-1 overflow-y-auto scrollbar-hide" style={{ msOverflowStyle: 'none', scrollbarWidth: 'none' }}>
+                <style jsx>{`
+                    .scrollbar-hide::-webkit-scrollbar {
+                        display: none;
+                    }
+                `}</style>
                 {isLoading ? (
                     <div className="p-4 text-center text-gray-500">
                         <div className="animate-pulse">Loading...</div>
@@ -153,7 +174,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                                 }`}
                             >
                                 <div className="flex items-center gap-3">
-                                    <div className="relative flex-shrink-0">
+                                    <div className="relative shrink-0">
                                         <div className="w-10 h-10 bg-[#1887A1] rounded-full flex items-center justify-center text-white font-semibold text-sm">
                                             {chat.avatar}
                                         </div>
@@ -168,7 +189,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                                         <p className="text-sm text-gray-500 truncate">{chat.subtitle}</p>
                                     </div>
                                     {activeTab === "Mentor" && (
-                                        <User size={16} className="text-gray-400 flex-shrink-0" aria-hidden="true" />
+                                        <User size={16} className="text-gray-400 shrink-0" aria-hidden="true" />
                                     )}
                                 </div>
                             </div>
