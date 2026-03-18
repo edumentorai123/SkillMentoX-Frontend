@@ -125,14 +125,18 @@ const SetupProfilePage: React.FC = () => {
             })
           );
 
-          // Redirect based on subscription status
-          if (userData.isSubscribed) {
+          // Check if we are in "edit" mode or if it's the initial setup
+          const isForceEdit = window.location.search.includes("edit=true");
+
+          // Redirect based on subscription status ONLY if not forcing edit
+          if (userData.isSubscribed && !isForceEdit) {
             console.log("User is subscribed, redirecting to /Student");
             router.replace("/Student");
-          } else {
+          } else if (!isForceEdit) {
             console.log("User is not subscribed, redirecting to /subscription");
             router.replace("/subscription");
           }
+          // If isForceEdit is true, we stay on this page to allow editing!
         }
       } catch (error) {
         if (axios.isAxiosError(error) && error.response?.status === 401) {

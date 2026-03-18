@@ -106,11 +106,11 @@ const Hero: React.FC<HeroProps> = ({ _heroRef, _rightSideRef }) => {
   return (
     <section
       ref={_heroRef}
-      className="relative overflow-hidden bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen flex items-center scroll-animation"
+      className="relative overflow-hidden bg-linear-to-br from-slate-50 to-blue-50 min-h-screen flex items-center scroll-animation p-12"
     >
       <div
         data-aos="fade-up"
-        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 mt-0 pt-0"
+        className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 m-0 p-0"
       >
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           {/* Left Side */}
@@ -118,7 +118,7 @@ const Hero: React.FC<HeroProps> = ({ _heroRef, _rightSideRef }) => {
             <div className="space-y-6">
               <h1 className="text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
                 Learn Smarter with
-                <span className="bg-gradient-to-r from-[#1887A1] to-[#0D4C5B] bg-clip-text text-transparent block mt-2">
+                <span className="bg-linear-to-r from-[#1887A1] to-[#0D4C5B] bg-clip-text text-transparent block mt-2">
                   AI + Human
                 </span>
                 Mentorship
@@ -133,7 +133,7 @@ const Hero: React.FC<HeroProps> = ({ _heroRef, _rightSideRef }) => {
 
             <div className="flex flex-col sm:flex-row gap-4">
               <Link href="/registerForm">
-                <button className="bg-gradient-to-r from-[#1887A1] to-[#0D4C5B] text-white px-8 py-4 rounded-2xl hover:shadow-xl transition-all duration-300 transform hover:scale-105 flex items-center justify-center space-x-2 font-semibold cursor-pointer">
+                <button className="bg-linear-to-r from-[#1887A1] to-[#0D4C5B] text-white px-8 py-4 rounded-2xl hover:shadow-xl transition-all duration-300 transform hover:scale-105 flex items-center justify-center space-x-2 font-semibold cursor-pointer">
                   <span>Start Learning</span>
                   <ChevronRight className="w-5 h-5" />
                 </button>
@@ -153,7 +153,7 @@ const Hero: React.FC<HeroProps> = ({ _heroRef, _rightSideRef }) => {
               onMouseLeave={() => setIsPaused(false)}
             >
               {/* Background Pattern */}
-              <div className="absolute inset-0 bg-gradient-to-br from-gray-50 to-white"></div>
+              <div className="absolute inset-0 bg-linear-to-br from-gray-50 to-white"></div>
 
               {/* Slides Container */}
               <div className="relative h-full w-full">
@@ -198,7 +198,7 @@ const Hero: React.FC<HeroProps> = ({ _heroRef, _rightSideRef }) => {
                       <div className="flex-1 flex flex-col items-center justify-center space-y-6 pb-16">
                         {/* Icon */}
                         <div
-                          className={`w-20 h-20 bg-gradient-to-br ${slide.color} rounded-3xl flex items-center justify-center shadow-lg transform hover:scale-110 transition-transform duration-300`}
+                          className={`w-20 h-20 bg-linear-to-br ${slide.color} rounded-3xl flex items-center justify-center shadow-lg transform hover:scale-110 transition-transform duration-300`}
                         >
                           <slide.icon
                             className="w-10 h-10 text-white"
@@ -231,7 +231,7 @@ const Hero: React.FC<HeroProps> = ({ _heroRef, _rightSideRef }) => {
                               </div>
                               <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
                                 <div
-                                  className={`bg-gradient-to-r ${slide.color} h-full rounded-full transition-all duration-1000 ease-out`}
+                                  className={`bg-linear-to-r ${slide.color} h-full rounded-full transition-all duration-1000 ease-out`}
                                   style={{ width: `${slide.progress}%` }}
                                 ></div>
                               </div>
@@ -254,14 +254,14 @@ const Hero: React.FC<HeroProps> = ({ _heroRef, _rightSideRef }) => {
                             <div className="text-center space-y-4">
                               <div className="flex justify-center space-x-2">
                                 <div
-                                  className={`w-12 h-12 bg-gradient-to-br ${slide.color} rounded-xl flex items-center justify-center transform hover:scale-110 transition-transform duration-200`}
+                                  className={`w-12 h-12 bg-linear-to-br ${slide.color} rounded-xl flex items-center justify-center transform hover:scale-110 transition-transform duration-200`}
                                 >
                                   <GraduationCap className="w-6 h-6 text-white" />
                                 </div>
-                                <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl flex items-center justify-center transform hover:scale-110 transition-transform duration-200">
+                                <div className="w-12 h-12 bg-linear-to-br from-emerald-500 to-emerald-600 rounded-xl flex items-center justify-center transform hover:scale-110 transition-transform duration-200">
                                   <Target className="w-6 h-6 text-white" />
                                 </div>
-                                <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center transform hover:scale-110 transition-transform duration-200">
+                                <div className="w-12 h-12 bg-linear-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center transform hover:scale-110 transition-transform duration-200">
                                   <Zap className="w-6 h-6 text-white" />
                                 </div>
                               </div>
@@ -278,7 +278,7 @@ const Hero: React.FC<HeroProps> = ({ _heroRef, _rightSideRef }) => {
                                     key={idx}
                                     className="flex items-center space-x-2 bg-gray-50 rounded-lg p-2"
                                   >
-                                    <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                                    <CheckCircle className="w-4 h-4 text-green-500 shrink-0" />
                                     <span className="text-xs text-gray-700 font-medium">
                                       {feature}
                                     </span>
@@ -363,8 +363,8 @@ const Hero: React.FC<HeroProps> = ({ _heroRef, _rightSideRef }) => {
             </div>
 
             {/* Floating Elements */}
-            <div className="absolute -top-6 -right-0.5 w-16 h-16 bg-gradient-to-br from-blue-400 to-purple-400 rounded-full opacity-20 animate-pulse pointer-events-none"></div>
-            <div className="absolute -bottom-6  w-12 h-12 bg-gradient-to-br from-emerald-400 to-blue-400 rounded-full opacity-20 animate-pulse delay-1000 pointer-events-none"></div>
+            <div className="absolute -top-6 -right-0.5 w-16 h-16 bg-linear-to-br from-blue-400 to-purple-400 rounded-full opacity-20 animate-pulse pointer-events-none"></div>
+            <div className="absolute -bottom-6  w-12 h-12 bg-linear-to-br from-emerald-400 to-blue-400 rounded-full opacity-20 animate-pulse delay-1000 pointer-events-none"></div>
           </div>
         </div>
       </div>

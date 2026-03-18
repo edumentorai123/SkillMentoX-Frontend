@@ -8,6 +8,7 @@ import ProfileDropdown from "./components/ProfileDropdown";
 import ProgressCard from "./components/ProgressCard";
 import EventsCard from "./components/EventsCard";
 import AchievementsCard from "./components/AchievementsCard";
+import StudentProfileCard from "./components/StudentProfileCard";
 import ToastContainerWrapper from "./components/ToastContainerWrapper";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
@@ -107,6 +108,7 @@ const Dashboard = () => {
     const dispatch = useDispatch();
     const router = useRouter();
     const [animateProgress, setAnimateProgress] = useState(false);
+    const [isProfileViewOpen, setIsProfileViewOpen] = useState(false);
     const [currentTime, setCurrentTime] = useState(new Date());
     const [student, setStudent] = useState<Student | null>(null);
     const [progress, setProgress] = useState<Progress | null>(null);
@@ -127,11 +129,22 @@ const Dashboard = () => {
 
     const getSubscriptionStatus = () => {
         const authData = JSON.parse(localStorage.getItem("auth") || "{}");
+        // Check standard isPremium first
+        if (authData.isPremium || localStorage.getItem("isPremium") === "true") return true;
+        
         const user = authData.user;
         if (!user) return false;
-        const now = new Date();
-        const end = new Date(user.subscriptionEnd);
-        return Boolean(user.isSubscribed) && end >= now;
+
+        // Check if student profile has it
+        if (student?.isSubscribed) return true;
+
+        if (user.subscriptionEnd) {
+            const now = new Date();
+            const end = new Date(user.subscriptionEnd);
+            return Boolean(user.isSubscribed) && end >= now;
+        }
+        
+        return Boolean(user.isSubscribed);
     };
 
     useEffect(() => {
@@ -142,6 +155,17 @@ const Dashboard = () => {
             clearInterval(timeInterval);
         };
     }, []);
+
+    useEffect(() => {
+        if (isProfileViewOpen) {
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = "unset";
+        }
+        return () => {
+            document.body.style.overflow = "unset";
+        };
+    }, [isProfileViewOpen]);
 
     useEffect(() => {
         let isMounted = true;
@@ -255,6 +279,11 @@ const Dashboard = () => {
                         }
                     } catch (error) {
                         console.error("Error fetching profile or students:", error);
+                        if (axios.isAxiosError(error) && error.response?.status === 404) {
+                            console.log("Profile not found, redirecting to setup...");
+                            router.replace("/StudentProfile");
+                            return;
+                        }
                         setError("Failed to load profile or students. Please try again.");
                     }
                 };
@@ -543,7 +572,7 @@ const Dashboard = () => {
                     <p className="text-sm text-gray-600 mt-2">Please try refreshing or contact support.</p>
                     <button
                         onClick={() => window.location.reload()}
-                        className="mt-4 px-4 py-2 bg-gradient-to-r from-[#1887A1] to-[#0D4C5B] text-white text-sm font-semibold rounded-lg hover:scale-105 transition-all duration-300"
+                        className="mt-4 px-4 py-2 bg-linear-to-r from-[#1887A1] to-[#0D4C5B] text-white text-sm font-semibold rounded-lg hover:scale-105 transition-all duration-300"
                     >
                         Retry
                     </button>
@@ -564,7 +593,7 @@ const Dashboard = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-[#1887A1] to-[#0D4C5B] relative overflow-hidden">
+        <div className="min-h-screen bg-linear-to-br from-[#1887A1] to-[#0D4C5B] relative overflow-hidden">
             <div className="absolute inset-0">
                 <div className="absolute top-20 left-10 w-32 h-32 bg-white/5 rounded-full blur-xl animate-pulse"></div>
                 <div className="absolute top-40 right-20 w-24 h-24 bg-white/10 rounded-full blur-lg animate-bounce"></div>
@@ -577,18 +606,14 @@ const Dashboard = () => {
                     <div className="flex items-center space-x-2 sm:space-x-4 animate-slide-left">
                         <ProfileDropdown
                             student={student}
-                            profileForm={profileForm}
                             isProfileOpen={isProfileOpen}
                             setIsProfileOpen={setIsProfileOpen}
-                            handleProfileChange={handleProfileChange}
-                            handleProfileUpdate={handleProfileUpdate}
-                            handleLogout={handleLogout}
+                            onEditProfile={() => setIsProfileViewOpen(true)}
                         />
                     </div>
                 </div>
-
-                <div className="flex-1 grid grid-rows-1 lg:grid-rows-2 gap-4 sm:gap-6">
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+                <div className="flex-1 grid grid-cols-1 gap-4 sm:gap-6 overflow-y-auto">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 items-stretch">
                         <ProgressCard
                             progress={progress}
                             animateProgress={animateProgress}
@@ -604,10 +629,29 @@ const Dashboard = () => {
                         handleInitializeProgress={handleInitializeProgress}
                     />
                 </div>
+
+                {/* Profile Modal Overlay */}
+                {isProfileViewOpen && (
+                    <div 
+                        className="fixed inset-0 z-9999 flex items-center justify-center p-4 bg-[#0D4C5B]/80 backdrop-blur-md animate-fade-in"
+                        onClick={() => setIsProfileViewOpen(false)}
+                    >
+                        <div 
+                            className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto scrollbar-hide"
+                            onClick={(e) => e.stopPropagation()}
+                            style={{ msOverflowStyle: 'none', scrollbarWidth: 'none' }}
+                        >
+                            <StudentProfileCard student={student} />
+                        </div>
+                    </div>
+                )}
                 <ToastContainerWrapper />
             </div>
 
             <style jsx>{`
+                .scrollbar-hide::-webkit-scrollbar {
+                    display: none;
+                }
                 @keyframes fade-in {
                     from { opacity: 0; }
                     to { opacity: 1; }

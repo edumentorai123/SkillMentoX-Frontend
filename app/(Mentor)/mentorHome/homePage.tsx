@@ -58,18 +58,8 @@ const MentorHomePage: React.FC = () => {
         const storedRole = localStorage.getItem("userRole");
         const authToken = localStorage.getItem("authToken");
 
-        
-        // console.log(
-        //   "Auth Check - Name:",
-        //   storedName,
-        //   "Role:",
-        //   storedRole,
-        //   "Token:",
-        //   !!authToken
-        // );
 
         if (!storedName || !storedRole) {
-          console.log("Missing user credentials, redirecting to login");
           if (isMounted) {
             setAuthError("Please login to continue");
             setIsRedirecting(true);
@@ -84,7 +74,6 @@ const MentorHomePage: React.FC = () => {
         }
 
         if (storedRole !== "mentor") {
-          console.log("User role is not mentor, redirecting to student home");
           if (isMounted) {
             setAuthError("Redirecting to appropriate dashboard...");
             setIsRedirecting(true);
@@ -167,7 +156,7 @@ const MentorHomePage: React.FC = () => {
       title: "Active Hours Commitment",
       description:
         "Must be available and active from 10:00 AM to 3:00 PM daily for real-time student support, instant query resolution, and live mentoring sessions.",
-      gradient: "from-red-400 to-red-600",
+      linear: "from-red-400 to-red-600",
       priority: "Critical",
       timeframe: "10 AM - 3 PM Daily",
     },
@@ -176,7 +165,7 @@ const MentorHomePage: React.FC = () => {
       title: "Weekly Progress Reviews",
       description:
         "Conduct comprehensive weekend reviews for each student analyzing weekly progress, assigning scores, providing detailed feedback, and identifying improvement areas.",
-      gradient: "from-[#1887A1] to-[#0D4C5B]",
+      linear: "from-[#1887A1] to-[#0D4C5B]",
       priority: "High",
       timeframe: "Every Weekend",
     },
@@ -185,7 +174,7 @@ const MentorHomePage: React.FC = () => {
       title: "Weekly Study Plan Creation",
       description:
         "Design personalized weekly study plans at the beginning of each week with clear objectives, milestones, and tailored learning paths for individual students.",
-      gradient: "from-emerald-400 to-emerald-600",
+      linear: "from-emerald-400 to-emerald-600",
       priority: "High",
       timeframe: "Week Start",
     },
@@ -194,7 +183,7 @@ const MentorHomePage: React.FC = () => {
       title: "Real-Time Question Support",
       description:
         "Provide instant responses to student queries during active hours, maintain live chat sessions, and offer immediate clarification on academic doubts.",
-      gradient: "from-[#1887A1] to-[#0D4C5B]",
+      linear: "from-[#1887A1] to-[#0D4C5B]",
       priority: "Critical",
       timeframe: "10 AM - 3 PM",
     },
@@ -203,7 +192,7 @@ const MentorHomePage: React.FC = () => {
       title: "Weekly Task Assignment",
       description:
         "Create and assign weekly tasks for each student with clear deadlines, learning objectives, and progress tracking mechanisms to ensure continuous engagement.",
-      gradient: "from-orange-400 to-orange-600",
+      linear: "from-orange-400 to-orange-600",
       priority: "High",
       timeframe: "Weekly",
     },
@@ -212,7 +201,7 @@ const MentorHomePage: React.FC = () => {
       title: "Performance Analytics",
       description:
         "Monitor and analyze student performance metrics, track learning patterns, identify strengths and weaknesses, and provide data-driven insights for improvement.",
-      gradient: "from-[#1887A1] to-[#0D4C5B]",
+      linear: "from-[#1887A1] to-[#0D4C5B]",
       priority: "Medium",
       timeframe: "Continuous",
     },
@@ -221,7 +210,7 @@ const MentorHomePage: React.FC = () => {
       title: "Student Engagement Monitoring",
       description:
         "Track student participation levels, monitor engagement metrics, identify at-risk students, and implement intervention strategies to maintain active learning.",
-      gradient: "from-pink-400 to-pink-600",
+      linear: "from-pink-400 to-pink-600",
       priority: "Medium",
       timeframe: "Daily",
     },
@@ -230,7 +219,7 @@ const MentorHomePage: React.FC = () => {
       title: "Progress Documentation",
       description:
         "Maintain detailed records of student progress, document learning milestones, create progress reports, and update student profiles with achievements.",
-      gradient: "from-teal-400 to-teal-600",
+      linear: "from-teal-400 to-teal-600",
       priority: "Medium",
       timeframe: "Ongoing",
     },
@@ -239,7 +228,7 @@ const MentorHomePage: React.FC = () => {
       title: "Personalized Learning Strategies",
       description:
         "Develop customized learning approaches for each student based on their learning style, pace, and preferences to maximize educational outcomes.",
-      gradient: "from-[#1887A1] to-[#0D4C5B]",
+      linear: "from-[#1887A1] to-[#0D4C5B]",
       priority: "High",
       timeframe: "Adaptive",
     },
@@ -248,7 +237,7 @@ const MentorHomePage: React.FC = () => {
       title: "Motivation & Encouragement",
       description:
         "Provide consistent motivation, celebrate student achievements, offer encouragement during challenges, and maintain positive learning environment.",
-      gradient: "from-yellow-400 to-yellow-600",
+      linear: "from-yellow-400 to-yellow-600",
       priority: "High",
       timeframe: "Daily",
     },
@@ -257,7 +246,7 @@ const MentorHomePage: React.FC = () => {
       title: "Issue Identification & Resolution",
       description:
         "Proactively identify learning obstacles, academic difficulties, or engagement issues and implement timely solutions to keep students on track.",
-      gradient: "from-rose-400 to-rose-600",
+      linear: "from-rose-400 to-rose-600",
       priority: "High",
       timeframe: "As Needed",
     },
@@ -266,7 +255,7 @@ const MentorHomePage: React.FC = () => {
       title: "Goal Setting & Tracking",
       description:
         "Collaborate with students to set realistic academic goals, create achievement timelines, and regularly track progress toward goal completion.",
-      gradient: "from-cyan-400 to-cyan-600",
+      linear: "from-cyan-400 to-cyan-600",
       priority: "Medium",
       timeframe: "Monthly",
     },
@@ -275,7 +264,7 @@ const MentorHomePage: React.FC = () => {
       title: "Quality Assurance",
       description:
         "Ensure high-quality mentoring standards, maintain professional communication, follow platform guidelines, and uphold educational excellence.",
-      gradient: "from-gray-400 to-gray-600",
+      linear: "from-gray-400 to-gray-600",
       priority: "Critical",
       timeframe: "Always",
     },
@@ -284,7 +273,7 @@ const MentorHomePage: React.FC = () => {
       title: "Adaptive Response System",
       description:
         "Quickly adapt mentoring approaches based on student feedback, learning outcomes, and changing educational needs to optimize learning experience.",
-      gradient: "from-lime-400 to-lime-600",
+      linear: "from-lime-400 to-lime-600",
       priority: "Medium",
       timeframe: "Dynamic",
     },
@@ -306,7 +295,7 @@ const MentorHomePage: React.FC = () => {
   // Loading screen with better UX
   if (loading || isRedirecting) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#1887A1]/10 to-[#0D4C5B]/10">
+      <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-[#1887A1]/10 to-[#0D4C5B]/10">
         <div className="bg-white/90 backdrop-blur-md rounded-2xl p-8 flex flex-col items-center gap-4 shadow-lg max-w-md mx-4">
           <div className="w-12 h-12 border-4 border-t-transparent border-[#1887A1] rounded-full animate-spin"></div>
           <div className="text-xl font-semibold text-[#0D4C5B] text-center">
@@ -342,7 +331,7 @@ const MentorHomePage: React.FC = () => {
                     height={50}
                   />
                 </div>
-                <span className="ml-2 text-xl font-bold bg-gradient-to-r from-[#1887A1] to-[#0D4C5B] bg-clip-text text-transparent">
+                <span className="ml-2 text-xl font-bold bg-linear-to-r from-[#1887A1] to-[#0D4C5B] bg-clip-text text-transparent">
                   SkillMentorX
                 </span>
               </div>
@@ -355,7 +344,7 @@ const MentorHomePage: React.FC = () => {
             </div>
             <div className="relative">
               <div
-                className="w-8 h-8 bg-gradient-to-r from-[#1887A1] to-[#0D4C5B] rounded-full flex items-center justify-center cursor-pointer hover:scale-105 transition-transform duration-200 shadow-md"
+                className="w-8 h-8 bg-linear-to-r from-[#1887A1] to-[#0D4C5B] rounded-full flex items-center justify-center cursor-pointer hover:scale-105 transition-transform duration-200 shadow-md"
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               >
                 <User className="w-4 h-4 text-white" />
@@ -387,19 +376,19 @@ const MentorHomePage: React.FC = () => {
       </nav>
 
 
-      <section className="relative overflow-hidden bg-gradient-to-r from-[#1887A1] to-[#0D4C5B] text-white">
+      <section className="relative overflow-hidden bg-linear-to-r from-[#1887A1] to-[#0D4C5B] text-white">
         <div className="absolute inset-0 bg-black/10"></div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
           <div className="text-center">
             <h1 className="text-5xl md:text-6xl font-bold mb-6 animate-fade-in-up">
               Hello{" "}
-              <span className="bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
+              <span className="bg-linear-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
                 {userName || "Mentor"}
               </span>
             </h1>
             <h2 className="text-3xl md:text-4xl font-semibold mb-6 animate-fade-in-delay text-white/90">
               Your Mentor
-              <span className="block bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent animate-pulse">
+              <span className="block bg-linear-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent animate-pulse">
                 Responsibilities
               </span>
             </h2>
@@ -427,7 +416,7 @@ const MentorHomePage: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-white to-transparent"></div>
+        <div className="absolute bottom-0 left-0 right-0 h-20 bg-linear-to-t from-white to-transparent"></div>
       </section>
 
     
@@ -436,7 +425,7 @@ const MentorHomePage: React.FC = () => {
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 animate-fade-in-up">
               Your{" "}
-              <span className="bg-gradient-to-r from-[#1887A1] to-[#0D4C5B] bg-clip-text text-transparent">
+              <span className="bg-linear-to-r from-[#1887A1] to-[#0D4C5B] bg-clip-text text-transparent">
                 Core
               </span>{" "}
               Responsibilities
@@ -458,7 +447,7 @@ const MentorHomePage: React.FC = () => {
               >
                 <div className="flex items-center justify-between mb-6">
                   <div
-                    className={`w-16 h-16 bg-gradient-to-r ${item.gradient} rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-md`}
+                    className={`w-16 h-16 bg-linear-to-r ${item.linear} rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-md`}
                   >
                     <item.icon className="w-8 h-8 text-white" />
                   </div>
@@ -497,7 +486,7 @@ const MentorHomePage: React.FC = () => {
       </section>
 
 
-      <section className="py-20 bg-gradient-to-r from-[#1887A1] to-[#0D4C5B]">
+      <section className="py-20 bg-linear-to-r from-[#1887A1] to-[#0D4C5B]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="bg-white/10 backdrop-blur-md rounded-3xl p-12 animate-float">
             <div className="inline-flex items-center justify-center w-20 h-20 bg-white/20 rounded-full mb-8 animate-pulse-slow">
@@ -540,7 +529,7 @@ const MentorHomePage: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <div className="flex items-center justify-center mb-4">
-              <div className="w-10 h-10 bg-gradient-to-r from-[#1887A1] to-[#0D4C5B] rounded-xl flex items-center justify-center">
+              <div className="w-10 h-10 bg-linear-to-r from-[#1887A1] to-[#0D4C5B] rounded-xl flex items-center justify-center">
                 <span className="text-white font-bold">M</span>
               </div>
               <span className="text-base sm:text-lg lg:text-xl font-bold tracking-wide text-gray-800 group-hover:text-[#1887A1] transition-colors duration-200 ml-1 sm:ml-2 truncate">

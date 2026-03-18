@@ -31,7 +31,7 @@ export function middleware(request: NextRequest) {
 
     if (pathname === "/") {
         if (token && role) {
-            const redirectUrl = role === "student" ? "/Student"
+            const redirectUrl = role === "student" ? "/StudentHome"
                 : role === "mentor" ? "/mentorHome"
                     : role === "admin" ? "/admin"
                         : "/loginForm";
@@ -66,7 +66,7 @@ export function middleware(request: NextRequest) {
             (role === "admin" && ![...adminRoutes, ...publicRoutes].some(route => pathname.startsWith(route)));
 
         if (isAccessingWrongRoute) {
-            const redirectUrl = role === "student" ? "/Student"
+            const redirectUrl = role === "student" ? "/StudentHome"
                 : role === "mentor" ? "/mentorHome"
                     : role === "admin" ? "/admin"
                         : "/loginForm";

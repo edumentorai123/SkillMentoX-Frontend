@@ -28,8 +28,7 @@ const Hero: React.FC<HeroProps> = ({ _heroRef, _rightSideRef, studentName: propS
     const [activeIndex, setActiveIndex] = useState(0);
     const [isPaused, setIsPaused] = useState(false);
     const intervalRef = useRef<NodeJS.Timeout | null>(null);
-    const user = useSelector((state: RootState) => state.auth.user);
-    const isLoading = useSelector((state: RootState) => state.auth.loading);
+    const { user, loading: isLoading, hasProfile, isPremium } = useSelector((state: RootState) => state.auth);
 
     const getStudentName = () => {
         if (propStudentName) return propStudentName;
@@ -119,7 +118,7 @@ const Hero: React.FC<HeroProps> = ({ _heroRef, _rightSideRef, studentName: propS
     return (
         <section
             ref={_heroRef}
-            className="relative overflow-hidden bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen flex items-center scroll-animation"
+            className="relative overflow-hidden bg-linear-to-br from-slate-50 to-blue-50 min-h-screen flex items-center scroll-animation p-16"
         >
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 mt-0 pt-0">
                 <div className="grid lg:grid-cols-2 gap-16 items-center">
@@ -128,7 +127,7 @@ const Hero: React.FC<HeroProps> = ({ _heroRef, _rightSideRef, studentName: propS
                         <div className="flex items-center justify-between">
                             <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 leading-tight">
                                 Welcome back,
-                                <span className="bg-gradient-to-r from-[#1887A1] to-[#0D4C5B] bg-clip-text text-transparent block mt-1">
+                                <span className="bg-linear-to-r from-[#1887A1] to-[#0D4C5B] bg-clip-text text-transparent block m-0 p-0">
                                     {displayName}
                                 </span>
                             </h1>
@@ -138,8 +137,8 @@ const Hero: React.FC<HeroProps> = ({ _heroRef, _rightSideRef, studentName: propS
                         </p>
 
                         <div className="flex flex-col sm:flex-row gap-4">
-                            <Link href="/StudentProfile">
-                                <button className="bg-gradient-to-r from-[#1887A1] to-[#0D4C5B] text-white px-8 py-4 rounded-2xl hover:shadow-xl transition-all duration-300 transform hover:scale-105 flex items-center justify-center space-x-2 font-semibold cursor-pointer">
+                            <Link href={hasProfile ? (isPremium ? "/Student" : "/subscription") : "/StudentProfile"}>
+                                <button className="bg-linear-to-r from-[#1887A1] to-[#0D4C5B] text-white px-8 py-4 rounded-2xl hover:shadow-xl transition-all duration-300 transform hover:scale-105 flex items-center justify-center space-x-2 font-semibold cursor-pointer">
                                     <span>Continue Learning</span>
                                     <ChevronRight className="w-5 h-5" />
                                 </button>
@@ -159,7 +158,7 @@ const Hero: React.FC<HeroProps> = ({ _heroRef, _rightSideRef, studentName: propS
                             onMouseEnter={() => setIsPaused(true)}
                             onMouseLeave={() => setIsPaused(false)}
                         >
-                            <div className="absolute inset-0 bg-gradient-to-br from-gray-50 to-white"></div>
+                            <div className="absolute inset-0 bg-linear-to-br from-gray-50 to-white"></div>
                             <div className="relative h-full w-full">
                                 {slides.map((slide, index) => (
                                     <div
@@ -179,7 +178,7 @@ const Hero: React.FC<HeroProps> = ({ _heroRef, _rightSideRef, studentName: propS
 
                                             <div className="flex-1 flex flex-col items-center justify-center space-y-6 pb-16">
                                                 <div
-                                                    className={`w-20 h-20 bg-gradient-to-br ${slide.color} rounded-3xl flex items-center justify-center shadow-lg`}
+                                                    className={`w-20 h-20 bg-linear-to-br ${slide.color} rounded-3xl flex items-center justify-center shadow-lg`}
                                                 >
                                                     <slide.icon className="w-10 h-10 text-white" />
                                                 </div>
@@ -198,7 +197,7 @@ const Hero: React.FC<HeroProps> = ({ _heroRef, _rightSideRef, studentName: propS
                                                             </div>
                                                             <div className="w-full bg-gray-200 rounded-full h-2">
                                                                 <div
-                                                                    className={`bg-gradient-to-r ${slide.color} h-2 rounded-full`}
+                                                                    className={`bg-linear-to-r ${slide.color} h-2 rounded-full`}
                                                                     style={{ width: `${slide.progress}%` }}
                                                                 ></div>
                                                             </div>
@@ -207,17 +206,17 @@ const Hero: React.FC<HeroProps> = ({ _heroRef, _rightSideRef, studentName: propS
                                                         <div className="text-center space-y-4">
                                                             <div className="flex justify-center space-x-2">
                                                                 <div
-                                                                    className={`w-12 h-12 bg-gradient-to-br ${slide.color} rounded-xl flex items-center justify-center transform hover:scale-110 transition-transform duration-200`}
+                                                                    className={`w-12 h-12 bg-linear-to-br ${slide.color} rounded-xl flex items-center justify-center transform hover:scale-110 transition-transform duration-200`}
                                                                 >
                                                                     <GraduationCap className="w-6 h-6 text-white" />
                                                                 </div>
                                                                 <div
-                                                                    className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl flex items-center justify-center transform hover:scale-110 transition-transform duration-200"
+                                                                    className="w-12 h-12 bg-linear-to-br from-emerald-500 to-emerald-600 rounded-xl flex items-center justify-center transform hover:scale-110 transition-transform duration-200"
                                                                 >
                                                                     <Target className="w-6 h-6 text-white" />
                                                                 </div>
                                                                 <div
-                                                                    className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center transform hover:scale-110 transition-transform duration-200"
+                                                                    className="w-12 h-12 bg-linear-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center transform hover:scale-110 transition-transform duration-200"
                                                                 >
                                                                     <Zap className="w-6 h-6 text-white" />
                                                                 </div>

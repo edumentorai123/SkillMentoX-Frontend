@@ -51,7 +51,7 @@ const Nav = () => {
           <div className="flex justify-between items-center h-16 sm:h-18 lg:h-20">
             
             {/* Logo Section */}
-            <Link href="/" className="flex items-center group flex-shrink-0">
+            <Link href="/" className="flex items-center group shrink-0">
               <div className="relative w-20 h-12 sm:w-24 sm:h-14 lg:w-32 lg:h-16 transform group-hover:scale-105 transition-transform duration-200">
                 <Image
                   src="/skillmentorX.tm.png"

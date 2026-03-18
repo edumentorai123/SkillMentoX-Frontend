@@ -133,7 +133,7 @@ export default function RootLayout({
       >
         <Providers>
           <LandingNavFooterWrapper>
-            <main className="flex-grow">{children}</main>
+            <main className="grow">{children}</main>
           </LandingNavFooterWrapper>
         </Providers>
       </body>
