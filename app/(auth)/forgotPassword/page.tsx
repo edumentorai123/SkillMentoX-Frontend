@@ -15,7 +15,7 @@ interface FormData {
 }
 
 const API_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:9999/api/auth";
+  (process.env.NEXT_PUBLIC_BACKEND_URL ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth` : "http://localhost:9999/api/auth");
 
 const ForgotPassword: React.FC = () => {
   const router = useRouter();
@@ -93,7 +93,7 @@ const ForgotPassword: React.FC = () => {
 
                 <button
                   type="submit"
-                  className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold py-3 px-6 rounded-full transition-all duration-500 transform hover:scale-105 shadow-lg hover:shadow-xl active:scale-95"
+                  className="w-full bg-linear-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold py-3 px-6 rounded-full transition-all duration-500 transform hover:scale-105 shadow-lg hover:shadow-xl active:scale-95"
                 >
                   Send Reset Link
                 </button>
@@ -111,7 +111,7 @@ const ForgotPassword: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-gradient-to-br from-purple-500 to-pink-600 p-8 lg:p-12 flex flex-col justify-center relative overflow-hidden">
+          <div className="bg-linear-to-br from-purple-500 to-pink-600 p-8 lg:p-12 flex flex-col justify-center relative overflow-hidden">
             <div className="absolute top-8 left-8 w-24 h-24 bg-purple-300 rounded-full opacity-30 transition-all duration-1000 ease-in-out transform hover:scale-110"></div>
             <div className="absolute top-16 left-16 w-16 h-16 bg-pink-300 rounded-lg opacity-40 transition-all duration-1000 ease-in-out transform hover:scale-110 rotate-45"></div>
             <div className="absolute bottom-8 right-8 w-32 h-32 bg-indigo-300 rounded-full opacity-20 transition-all duration-1000 ease-in-out transform hover:scale-110"></div>
