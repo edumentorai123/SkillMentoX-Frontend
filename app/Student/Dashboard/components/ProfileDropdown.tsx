@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 
 interface Student {
     name: string;
+    avatar?: string;
 }
 
 interface ProfileDropdownProps {
@@ -42,11 +43,18 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({
                 className="flex items-center space-x-2 bg-white/20 rounded-full px-3 py-2 cursor-pointer backdrop-blur-md transition-all duration-300 group hover:bg-white/30 hover:shadow-lg hover:shadow-[#1887A1]/20 border border-white/30"
                 onClick={() => setIsProfileOpen(!isProfileOpen)}
             >
-                <div className="w-10 h-10 rounded-full bg-linear-to-br from-white to-gray-200 flex items-center justify-center shadow-md group-hover:shadow-xl group-hover:scale-105 transition-all duration-300">
-                    {/* Always show first letter as requested */}
-                    <span className="text-[#1887A1] font-bold text-lg">
-                        {student?.name ? student.name.charAt(0).toUpperCase() : 'U'}
-                    </span>
+                <div className="w-10 h-10 rounded-full bg-linear-to-br from-white to-gray-200 flex items-center justify-center shadow-md group-hover:shadow-xl group-hover:scale-105 transition-all duration-300 overflow-hidden">
+                    {student?.avatar ? (
+                        <img 
+                            src={student.avatar} 
+                            alt="Profile" 
+                            className="w-full h-full object-cover"
+                        />
+                    ) : (
+                        <span className="text-[#1887A1] font-bold text-lg">
+                            {student?.name ? student.name.charAt(0).toUpperCase() : 'U'}
+                        </span>
+                    )}
                 </div>
                 <span className="text-white font-semibold text-sm sm:text-base hidden sm:block">{student?.name || 'User'}</span>
                 <ChevronDown className={`w-4 h-4 text-white transform transition-transform duration-300 ${isProfileOpen ? "rotate-180" : ""}`} />

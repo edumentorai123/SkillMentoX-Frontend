@@ -52,8 +52,16 @@ const StudentProfileCard: React.FC<StudentProfileCardProps> = ({ student }) => {
             <div className="space-y-6">
                 {/* Header Section */}
                 <div className="flex items-center gap-4 p-4 bg-linear-to-br from-[#1887A1]/5 to-[#0D4C5B]/5 rounded-2xl border border-[#1887A1]/10">
-                    <div className="w-16 h-16 rounded-full bg-linear-to-br from-[#1887A1] to-[#0D4C5B] flex items-center justify-center text-white text-2xl font-bold shadow-lg border-2 border-white/50">
-                        {student.name ? student.name.charAt(0).toUpperCase() : "U"}
+                    <div className="w-16 h-16 rounded-full bg-linear-to-br from-[#1887A1] to-[#0D4C5B] flex items-center justify-center text-white text-2xl font-bold shadow-lg border-2 border-white/50 overflow-hidden">
+                        {student.avatar ? (
+                            <img 
+                                src={student.avatar} 
+                                alt="Profile" 
+                                className="w-full h-full object-cover"
+                            />
+                        ) : (
+                            student.name ? student.name.charAt(0).toUpperCase() : "U"
+                        )}
                     </div>
                     <div>
                         <h4 className="text-lg font-bold text-gray-800">{student.name}</h4>
