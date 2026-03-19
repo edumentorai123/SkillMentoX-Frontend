@@ -406,7 +406,7 @@ const RegisterForm: React.FC = () => {
                 <button
                   type="submit"
                   disabled={!isVerified}
-                  className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed text-white font-bold py-3 px-6 rounded-full transition-all duration-500 transform hover:scale-105 shadow-lg hover:shadow-xl active:scale-95"
+                  className="w-full bg-linear-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed text-white font-bold py-3 px-6 rounded-full transition-all duration-500 transform hover:scale-105 shadow-lg hover:shadow-xl active:scale-95"
                 >
                   {!isVerified ? "Verify Email First" : "Complete Registration"}
                 </button>
@@ -424,7 +424,7 @@ const RegisterForm: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-gradient-to-br from-teal-500 to-blue-600 p-8 lg:p-12 flex flex-col justify-center relative overflow-hidden">
+          <div className="bg-linear-to-br from-teal-500 to-blue-600 p-8 lg:p-12 flex flex-col justify-center relative overflow-hidden">
             <div className="absolute top-8 right-8 w-24 h-24 bg-teal-300 rounded-full opacity-30 transition-all duration-1000 ease-in-out transform hover:scale-110"></div>
             <div className="absolute top-16 right-16 w-16 h-16 bg-blue-300 rounded-lg opacity-40 transition-all duration-1000 ease-in-out transform hover:scale-110 rotate-45"></div>
             <div className="absolute bottom-8 left-8 w-32 h-32 bg-cyan-300 rounded-full opacity-20 transition-all duration-1000 ease-in-out transform hover:scale-110"></div>
