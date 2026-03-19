@@ -8,6 +8,7 @@ export interface User {
     firstName: string;
     lastName?: string | null;
     role: "student" | "mentor" | "admin" | null;
+    avatar?: string | null;
 }
 
 export interface AuthState {

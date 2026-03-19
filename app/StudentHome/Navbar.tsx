@@ -125,7 +125,7 @@ const Navbar: React.FC<NavbarProps> = ({ studentName: propStudentName }) => {
         <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6">
           <div className="flex justify-between items-center h-16 sm:h-18">
             {/* Logo Section */}
-            <Link href="/StudentHome" className="flex items-center group min-w-0 flex-shrink-0">
+            <Link href="/StudentHome" className="flex items-center group min-w-0 shrink-0">
               <div className="relative w-16 h-10 sm:w-20 sm:h-12 lg:w-24 lg:h-14 transform group-hover:scale-105 transition-transform duration-200">
                 <Image
                   src="/skillmentorX.tm.png"
@@ -162,16 +162,24 @@ const Navbar: React.FC<NavbarProps> = ({ studentName: propStudentName }) => {
             </div>
 
             {/* Right Side Actions */}
-            <div className="flex items-center space-x-2 sm:space-x-3 flex-shrink-0">
+            <div className="flex items-center space-x-2 sm:space-x-3 shrink-0">
               {/* Profile Dropdown */}
               <div className="relative" ref={profileRef}>
                 <button
                   onClick={toggleProfileDropdown}
-                  className="w-9 h-9 sm:w-10 sm:h-10 bg-gradient-to-r from-[#1887A1] to-[#0D4C5B] cursor-pointer rounded-full flex items-center justify-center text-white text-sm sm:text-base font-semibold hover:shadow-lg transform hover:scale-105 transition-all duration-200 ring-2 ring-transparent hover:ring-[#1887A1]/20 focus:outline-none focus:ring-2 focus:ring-[#1887A1]/30"
+                  className="w-9 h-9 sm:w-10 sm:h-10 bg-linear-to-r from-[#1887A1] to-[#0D4C5B] cursor-pointer rounded-full flex items-center justify-center text-white text-sm sm:text-base font-semibold hover:shadow-lg transform hover:scale-105 transition-all duration-200 ring-2 ring-transparent hover:ring-[#1887A1]/20 focus:outline-none focus:ring-2 focus:ring-[#1887A1]/30 overflow-hidden"
                   aria-label="Profile menu"
                   aria-expanded={isProfileDropdownOpen}
                 >
-                  {isMounted ? displayName.charAt(0).toUpperCase() : "G"}
+                  {isMounted && user?.avatar ? (
+                    <img 
+                      src={user.avatar} 
+                      alt="Profile" 
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    isMounted ? displayName.charAt(0).toUpperCase() : "G"
+                  )}
                 </button>
 
                 {isProfileDropdownOpen && (
@@ -193,7 +201,7 @@ const Navbar: React.FC<NavbarProps> = ({ studentName: propStudentName }) => {
                           onClick={handleLogout}
                           className="flex items-center w-full text-left px-3 sm:px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#1887A1] transition-colors duration-150"
                         >
-                          <item.icon className="w-4 h-4 mr-2 sm:mr-3 flex-shrink-0" />
+                          <item.icon className="w-4 h-4 mr-2 sm:mr-3 shrink-0" />
                           <span>{item.name}</span>
                         </button>
                       ) : (
@@ -203,7 +211,7 @@ const Navbar: React.FC<NavbarProps> = ({ studentName: propStudentName }) => {
                           className="flex items-center px-3 sm:px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#1887A1] transition-colors duration-150"
                           onClick={() => setIsProfileDropdownOpen(false)}
                         >
-                          <item.icon className="w-4 h-4 mr-2 sm:mr-3 flex-shrink-0" />
+                          <item.icon className="w-4 h-4 mr-2 sm:mr-3 shrink-0" />
                           <span>{item.name}</span>
                         </Link>
                       )
@@ -241,8 +249,16 @@ const Navbar: React.FC<NavbarProps> = ({ studentName: propStudentName }) => {
       >
         <div className="flex items-center justify-between p-4 border-b border-gray-100 bg-gray-50">
           <div className="flex items-center">
-            <div className="w-8 h-8 bg-gradient-to-r from-[#1887A1] to-[#0D4C5B] rounded-full flex items-center justify-center text-white text-sm font-semibold mr-3">
-              {isMounted ? displayName.charAt(0).toUpperCase() : "G"}
+            <div className="w-8 h-8 bg-linear-to-r from-[#1887A1] to-[#0D4C5B] rounded-full flex items-center justify-center text-white text-sm font-semibold mr-3 overflow-hidden">
+              {isMounted && user?.avatar ? (
+                <img 
+                  src={user.avatar} 
+                  alt="Profile" 
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                isMounted ? displayName.charAt(0).toUpperCase() : "G"
+              )}
             </div>
             <div>
               <p className="text-sm font-medium text-gray-900">{isMounted ? displayName : "Loading..."}</p>
@@ -289,7 +305,7 @@ const Navbar: React.FC<NavbarProps> = ({ studentName: propStudentName }) => {
                 className="flex items-center px-4 py-3 text-base text-gray-700 hover:text-[#1887A1] hover:bg-gray-50 rounded-lg transition-colors duration-150 min-h-[48px]"
                 onClick={closeMobileMenu}
               >
-                <item.icon className="w-5 h-5 mr-3 flex-shrink-0" />
+                <item.icon className="w-5 h-5 mr-3 shrink-0" />
                 <span>{item.name}</span>
               </Link>
             ))}
