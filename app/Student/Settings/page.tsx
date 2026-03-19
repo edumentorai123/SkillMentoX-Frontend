@@ -129,7 +129,7 @@ export default function SettingsPage() {
                                 "Certificate Verification"
                             ].map((feature, i) => (
                                 <div key={i} className="flex items-center gap-3 bg-white p-3 rounded-xl border border-teal-50 shadow-xs">
-                                    <div className="w-5 h-5 bg-teal-100 text-teal-600 rounded-full flex items-center justify-center flex-shrink-0">
+                                    <div className="w-5 h-5 bg-teal-100 text-teal-600 rounded-full flex items-center justify-center shrink-0">
                                         <CheckCircle2 className="w-3.5 h-3.5" />
                                     </div>
                                     <span className="text-sm font-medium text-gray-700">{feature}</span>
