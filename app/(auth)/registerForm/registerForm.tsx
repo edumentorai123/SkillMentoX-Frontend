@@ -43,6 +43,7 @@ const RegisterForm: React.FC = () => {
   const [otp, setOtp] = useState<string[]>(["", "", "", "", "", ""]);
   const [isVerified, setIsVerified] = useState<boolean>(false);
   const [userId, setUserId] = useState<string>("");
+  const [isSendingOtp, setIsSendingOtp] = useState<boolean>(false);
 
   const router = useRouter();
 
@@ -80,6 +81,7 @@ const RegisterForm: React.FC = () => {
     }
 
     try {
+      setIsSendingOtp(true);
       const response = await axios.post<OTPResponse>(`${API_URL}/api/auth/register`, {
         email,
         firstName: watch("firstName"),
@@ -96,6 +98,8 @@ const RegisterForm: React.FC = () => {
         ? error.response?.data?.message || "Failed to send verification code"
         : "An unexpected error occurred";
       toast.error(message);
+    } finally {
+      setIsSendingOtp(false);
     }
   };
 
@@ -235,9 +239,12 @@ const RegisterForm: React.FC = () => {
                       <button
                         type="button"
                         onClick={handleVerifyEmail}
-                        className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-lg text-sm transition-all duration-300 hover:scale-105"
+                        disabled={isSendingOtp}
+                        className={`absolute right-2 top-1/2 transform -translate-y-1/2 bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-lg text-sm transition-all duration-300 hover:scale-105 ${
+                          isSendingOtp ? "opacity-50 cursor-not-allowed" : ""
+                        }`}
                       >
-                        Verify
+                        {isSendingOtp ? "Sending..." : "Verify"}
                       </button>
                     ) : (
                       <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center text-green-600">
