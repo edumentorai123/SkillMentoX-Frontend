@@ -20,12 +20,13 @@ const mentors = [
     color: "bg-[#0D4C5B]"
   },
   {
-    name: "Faisal Pk",
-    role: "UI President",
+    name: "Mohammed Faisal",
+    role: "Ai Engineer",
     rating: 4.9,
     students: "1.8k",
     avatar: "FP",
-    color: "bg-gradient-to-br from-[#1887A1] to-[#0D4C5B]"
+    color: "bg-gradient-to-br from-[#1887A1] to-[#0D4C5B]",
+    linkedin: "https://linkedin.com/in/mohammed-faisal-a779bb2b6"
   }
 ];
 
@@ -68,7 +69,11 @@ const Mentors = () => {
                 <div className="text-gray-400">•</div>
                 <div className="text-gray-600">{mentor.students} students</div>
               </div>
-              <Link href={`/mentors/${mentor.name.toLowerCase().replace(/\s+/g, '-')}`}>
+              <Link 
+                href={mentor.linkedin || `/mentors/${mentor.name.toLowerCase().replace(/\s+/g, '-')}`}
+                target={mentor.linkedin ? "_blank" : undefined}
+                rel={mentor.linkedin ? "noopener noreferrer" : undefined}
+              >
                 <button className="mt-6 w-full bg-gray-100 text-gray-700 py-3 rounded-xl hover:bg-[#1887A1] hover:text-white transition-colors duration-300 cursor-pointer">
                   View Profile
                 </button>
